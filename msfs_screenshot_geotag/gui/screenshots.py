@@ -6,8 +6,8 @@ from typing import Optional
 import tzlocal
 from PyQt5.QtGui import QGuiApplication
 
-from ..exif_service import ExifLocationData, ExifService
-from ..sim_service import SimService, SimServiceError
+from ..exif import ExifLocationData, ExifService
+from ..sim import SimService, SimServiceError
 
 
 class ScreenShotService:

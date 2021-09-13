@@ -7,7 +7,7 @@ from typing import Optional
 import psutil
 from SimConnect import AircraftRequests, SimConnect
 
-from .exif_service import ExifLocationData
+from .exif import ExifLocationData
 
 
 class SimServiceError(Exception):
