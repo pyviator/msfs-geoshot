@@ -1,8 +1,11 @@
-from typing import Optional
-from SimConnect import SimConnect, AircraftRequests
-import psutil
-from dataclasses import dataclass, asdict
 import time
+import traceback
+import warnings
+from dataclasses import asdict, dataclass
+from typing import Optional
+
+import psutil
+from SimConnect import AircraftRequests, SimConnect
 
 from .exif_service import ExifLocationData
 
@@ -42,11 +45,16 @@ class SimService:
             and sim_location_data.speed >= 0.1
         )
 
-    def get_current_location(self) -> ExifLocationData:
+    def get_current_location(self) -> Optional[ExifLocationData]:
         if not self._is_sim_running():
             raise SimServiceError("Simulator is not running")
 
-        sim_connect = SimConnect()
+        try:
+            sim_connect = SimConnect()
+        except ConnectionError as e:
+            traceback.print_exc()
+            raise SimServiceError("Could not connect to SimConnect")
+        
         aircraft_requests = AircraftRequests(sim_connect)
 
         raw_sim_location_data = RawSimLocationData(
@@ -72,6 +80,10 @@ class SimService:
         sim_location_data = SimLocationData(
             **asdict(raw_sim_location_data), time=time.time()
         )
+
+        if not self._is_user_in_flight(sim_location_data):
+            warnings.warn("User is not currently in flight.")
+            return None
 
         return self._sim_location_to_exif_location(sim_location_data)
 
