@@ -27,6 +27,6 @@ class ExifLocationData:
 
 
 
-class ExifLocationService:
+class ExifService:
     def write_data(self, exif_location_data: ExifLocationData, image: Path):
         pass
