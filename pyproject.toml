@@ -10,12 +10,15 @@ PyQt5 = "^5.15.4"
 SimConnect = "^0.4.24"
 psutil = "^5.8.0"
 pyqtkeybind = "^0.0.8"
+tzlocal = "^3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 black = "^21.8b0"
 mypy = "^0.910"
 flake8 = "^3.9.2"
+pyinstaller = "^4.5.1"
+types-tzlocal = "^0.1.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
