@@ -19,7 +19,7 @@ class ExifLocationData:
     # km/h, mph, knots
     gps_speed_ref: Union[Literal["K"], Literal["M"], Literal["N"]] = field(init=False)
 
-    def __post__init__(self):
+    def __post_init__(self):
         self.gps_longitude_ref = "E" if self.gps_longitude >= 0 else "W"
         self.gps_latitude_ref = "N" if self.gps_latitude >= 0 else "S"
         self.gps_altitude_ref = 1 if self.gps_altitude >= 0 else 0
