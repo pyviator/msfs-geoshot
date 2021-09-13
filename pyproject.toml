@@ -8,6 +8,7 @@ authors = ["placeholder <placeholder3433475435@placeholder43453.com>"]
 python = "^3.9"
 PyQt5 = "^5.15.4"
 SimConnect = "^0.4.24"
+psutil = "^5.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
