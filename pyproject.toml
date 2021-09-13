@@ -6,9 +6,14 @@ authors = ["placeholder <placeholder3433475435@placeholder43453.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+PyQt5 = "^5.15.4"
+SimConnect = "^0.4.24"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+black = "^21.8b0"
+mypy = "^0.910"
+flake8 = "^3.9.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
