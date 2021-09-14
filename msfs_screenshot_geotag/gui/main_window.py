@@ -1,3 +1,4 @@
+from msfs_screenshot_geotag.exif import ExifService
 from typing import TYPE_CHECKING, Optional
 
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
@@ -6,17 +7,23 @@ from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from .notification import NotificationColor, NotificationHandler
-from .screenshots import ScreenShotService
+from .screenshots import ScreenshotService
 
 
 class MainWindow(QMainWindow):
 
     closed = pyqtSignal()
 
-    def __init__(self, sim_service: SimService, screenshot_service: ScreenShotService):
+    def __init__(
+        self,
+        sim_service: SimService,
+        exif_service: ExifService,
+        screenshot_service: ScreenshotService,
+    ):
         super().__init__()
 
         self._sim_service = sim_service
+        self._exif_service = exif_service
         self._screenshot_service = screenshot_service
         self._notification_handler = NotificationHandler(parent=self)
 
@@ -44,6 +51,11 @@ class MainWindow(QMainWindow):
         screenshot = self._screenshot_service.take_screenshot(
             location_data=location_data
         )
+
+        if location_data:
+            self._exif_service.write_data(
+                image_path=screenshot, exif_location_data=location_data
+            )
 
         self._notification_handler.notify(
             message=f"<b>Screenshot saved</b>: {screenshot.name}",

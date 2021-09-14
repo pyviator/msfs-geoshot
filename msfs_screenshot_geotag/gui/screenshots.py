@@ -26,7 +26,7 @@ class _ImageFormatSettings:
     progressive_scan_write: Optional[bool]
 
 
-class ScreenShotService:
+class ScreenshotService:
 
     _date_format = "%Y-%m-%d-%H%M%S"
     _file_stem_format = "MSFS_{date}"
@@ -57,8 +57,7 @@ class ScreenShotService:
         ),
     }
 
-    def __init__(self, exif_service: ExifService, target_folder: Path):
-        self._exif_service = exif_service
+    def __init__(self, target_folder: Path):
         self._target_folder = target_folder
 
     def take_screenshot(
@@ -66,18 +65,17 @@ class ScreenShotService:
         location_data: Optional[ExifLocationData] = None,
         image_format: ImageFormat = ImageFormat.tiff,
     ) -> Path:
-        out_path = self._get_new_screenshot_path(image_format)
+        out_path = self._get_new_screenshot_path(
+            image_format=image_format, location_data=location_data
+        )
 
         self._grab_screenshot(out_path=out_path, image_format=image_format)
-        if location_data:
-            self._write_metadata(
-                screenshot=out_path,
-                location_data=location_data,
-            )
 
         return out_path
 
-    def _get_new_screenshot_path(self, image_format: ImageFormat) -> Path:
+    def _get_new_screenshot_path(
+        self, image_format: ImageFormat, location_data: Optional[ExifLocationData]
+    ) -> Path:
         capture_time = time.time()
 
         local_timezone = tzlocal.get_localzone()
@@ -115,8 +113,3 @@ class ScreenShotService:
             image_writer.setProgressiveScanWrite(progressive_scan_write)
 
         image_writer.write(image)
-
-    def _write_metadata(self, screenshot: Path, location_data: ExifLocationData):
-        self._exif_service.write_data(
-            exif_location_data=location_data, image_path=screenshot
-        )

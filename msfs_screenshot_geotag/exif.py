@@ -7,6 +7,7 @@ import exif
 
 @dataclass
 class ExifLocationData:
+    # FIXME: add GPSVersionID to let images be recognized bey GeoSetter
     gps_latitude: float
     gps_longitude: float
     gps_altitude: float
@@ -28,9 +29,15 @@ class ExifLocationData:
 
 
 class ExifService:
-    def write_data(self, exif_location_data: ExifLocationData, image_path: Path):
+    def write_data(
+        self,
+        image_path: Path,
+        exif_location_data: ExifLocationData,
+    ):
         with image_path.open("rb") as image_file:
             image = Image(image_file)
+
+        print(image.list_all())
 
         # image.gps_datestamp = exif_location_data.gps_datestamp
         image.gps_latitude = exif_location_data.gps_latitude

@@ -15,7 +15,7 @@ from msfs_screenshot_geotag.gui.hotkeys import (
     WindowsEventFilter,
 )
 from msfs_screenshot_geotag.gui.main_window import MainWindow
-from msfs_screenshot_geotag.gui.screenshots import ScreenShotService
+from msfs_screenshot_geotag.gui.screenshots import ScreenshotService
 from msfs_screenshot_geotag.sim import SimService
 
 
@@ -23,14 +23,18 @@ def run():
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
     sim_service = SimService()
     exif_service = ExifService()
-    screenshot_service = ScreenShotService(
-        sim_service=sim_service, exif_service=exif_service, target_folder=(Path.home() / "Pictures" / "MSFS")
+    screenshot_service = ScreenshotService(
+        target_folder=(Path.home() / "Pictures" / "MSFS")
     )
-    main_window = MainWindow(screenshot_service=screenshot_service)
+    main_window = MainWindow(
+        sim_service=sim_service,
+        exif_service=exif_service,
+        screenshot_service=screenshot_service,
+    )
 
     keybinder.init()
 
-    # For whatever reason, this only works when run in the same function closure:
+    # For whatever reason, this only works when run in the context of this function:
     win_event_filter = WindowsEventFilter(keybinder)  # type: ignore
     event_dispatcher = QAbstractEventDispatcher.instance()
     event_dispatcher.installNativeEventFilter(win_event_filter)
@@ -38,10 +42,12 @@ def run():
     hotkey_service = GlobalHotkeyService(
         keybinder=keybinder, window_id=main_window.winId()  # type: ignore
     )
-    hotkey_service.set_hotkeys([Hotkey(key="Ctrl+Shift+S", callback=main_window.take_screenshot)])
+    hotkey_service.set_hotkeys(
+        [Hotkey(key="Ctrl+Shift+S", callback=main_window.take_screenshot)]
+    )
 
     main_window.closed.connect(hotkey_service.remove_hotkeys)
-    
+
     main_window.show()
     return app.exec()
 
