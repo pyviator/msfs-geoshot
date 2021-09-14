@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional
 
 import tzlocal
-from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtGui import QGuiApplication, QImageWriter
 
 from ..exif import ExifLocationData, ExifService
 from ..sim import SimService, SimServiceError
@@ -14,7 +14,7 @@ class ScreenShotService:
 
     _date_format = "%Y-%m-%d-%H%M%S"
     _file_stem_format = "MSFS_{date}"
-    _extension = "jpg"
+    _extension = "tiff"
 
     def __init__(
         self, sim_service: SimService, exif_service: ExifService, target_folder: Path
@@ -54,7 +54,18 @@ class ScreenShotService:
         # TODO: identify actual window rather than using primary screen
         active_screen = QGuiApplication.primaryScreen()
         root_window = active_screen.grabWindow(0)  # type: ignore
-        root_window.save(str(out_path), quality=100)
+        image = root_window.toImage()
+
+        image_writer = QImageWriter()
+        image_writer.setFileName(str(out_path))
+        image_writer.setFormat(b"tiff")
+        image_writer.setCompression(1)
+        image_writer.setOptimizedWrite(True)
+        print(image_writer.quality())
+        image_writer.write(image)
+
+        # root_window.save(str(out_path), quality=-1)
+        # root_window.save(str(out_path.with_suffix(".png")), quality=-1)
 
     def _write_metadata(self, location_data: ExifLocationData, screenshot: Path):
         self._exif_service.write_data(
