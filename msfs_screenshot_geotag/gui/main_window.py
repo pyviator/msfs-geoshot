@@ -39,22 +39,23 @@ class MainWindow(QMainWindow):
 
     def take_screenshot(self) -> bool:
         try:
-            location_data = self._sim_service.get_current_location()
+            exif_data = self._sim_service.get_flight_data()
         except SimServiceError as e:
             print(e)
             self._notification_handler.notify(
-                message="<b>Error</b>: Could not connect to Simulator",
+                message="<b>Error</b>: Could not connect to Simulator<br>or received invalid data",
                 color=NotificationColor.error,
             )
-            return False
+            exif_data = None
+            # return False
 
         screenshot = self._screenshot_service.take_screenshot(
-            location_data=location_data
+            exif_data=exif_data
         )
 
-        if location_data:
+        if exif_data:
             self._exif_service.write_data(
-                image_path=screenshot, exif_location_data=location_data
+                image_path=screenshot, exif_data=exif_data
             )
 
         self._notification_handler.notify(

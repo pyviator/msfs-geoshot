@@ -8,7 +8,7 @@ from typing import Dict, Optional
 import tzlocal
 from PyQt5.QtGui import QGuiApplication, QImageWriter
 
-from ..exif import ExifLocationData, ExifService
+from ..exif import ExifData, ExifService
 
 
 class ImageFormat(Enum):
@@ -62,11 +62,11 @@ class ScreenshotService:
 
     def take_screenshot(
         self,
-        location_data: Optional[ExifLocationData] = None,
+        exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.tiff,
     ) -> Path:
         out_path = self._get_new_screenshot_path(
-            image_format=image_format, location_data=location_data
+            image_format=image_format, exif_data=exif_data
         )
 
         self._grab_screenshot(out_path=out_path, image_format=image_format)
@@ -74,7 +74,7 @@ class ScreenshotService:
         return out_path
 
     def _get_new_screenshot_path(
-        self, image_format: ImageFormat, location_data: Optional[ExifLocationData]
+        self, image_format: ImageFormat, exif_data: Optional[ExifData]
     ) -> Path:
         capture_time = time.time()
 

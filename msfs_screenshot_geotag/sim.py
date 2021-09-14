@@ -7,7 +7,7 @@ from typing import Optional
 import psutil
 from SimConnect import AircraftRequests, SimConnect
 
-from .exif import ExifLocationData
+from .exif import ExifData
 
 
 class SimServiceError(Exception):
@@ -45,7 +45,7 @@ class SimService:
             and sim_location_data.speed >= 0.1
         )
 
-    def get_current_location(self) -> Optional[ExifLocationData]:
+    def get_flight_data(self) -> Optional[ExifData]:
         if not self._is_sim_running():
             raise SimServiceError("Simulator is not running")
 
@@ -85,12 +85,12 @@ class SimService:
             warnings.warn("User is not currently in flight.")
             return None
 
-        return self._sim_location_to_exif_location(sim_location_data)
+        return self._sim_location_to_exif_data(sim_location_data)
 
-    def _sim_location_to_exif_location(
+    def _sim_location_to_exif_data(
         self, sim_location_data: SimLocationData
-    ) -> ExifLocationData:
-        return ExifLocationData(
+    ) -> ExifData:
+        return ExifData(
             gps_latitude=round(sim_location_data.latitude, 5),
             gps_longitude=round(sim_location_data.longitude, 5),
             gps_altitude=round(sim_location_data.altitude, 2),

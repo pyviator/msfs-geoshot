@@ -6,7 +6,7 @@ import exif
 
 
 @dataclass
-class ExifLocationData:
+class ExifData:
     # FIXME: add GPSVersionID to let images be recognized bey GeoSetter
     gps_latitude: float
     gps_longitude: float
@@ -32,7 +32,7 @@ class ExifService:
     def write_data(
         self,
         image_path: Path,
-        exif_location_data: ExifLocationData,
+        exif_data: ExifData,
     ):
         with image_path.open("rb") as image_file:
             image = Image(image_file)
@@ -40,14 +40,14 @@ class ExifService:
         print(image.list_all())
 
         # image.gps_datestamp = exif_location_data.gps_datestamp
-        image.gps_latitude = exif_location_data.gps_latitude
-        image.gps_longitude = exif_location_data.gps_longitude
-        image.gps_altitude = exif_location_data.gps_altitude
-        image.gps_speed = exif_location_data.gps_speed
-        image.gps_latitude_ref = exif_location_data.gps_latitude_ref
-        image.gps_longitude_ref = exif_location_data.gps_longitude_ref
-        image.gps_altitude_ref = exif_location_data.gps_altitude_ref
-        image.gps_speed_ref = exif_location_data.gps_speed_ref
+        image.gps_latitude = exif_data.gps_latitude
+        image.gps_longitude = exif_data.gps_longitude
+        image.gps_altitude = exif_data.gps_altitude
+        image.gps_speed = exif_data.gps_speed
+        image.gps_latitude_ref = exif_data.gps_latitude_ref
+        image.gps_longitude_ref = exif_data.gps_longitude_ref
+        image.gps_altitude_ref = exif_data.gps_altitude_ref
+        image.gps_speed_ref = exif_data.gps_speed_ref
 
         image_path.unlink()
 
