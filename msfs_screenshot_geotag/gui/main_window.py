@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
 from pyqtkeybind import keybinder
 
 from .screenshots import ScreenShotService
+from .notification import NotificationHandler
 
 
 class MainWindow(QMainWindow):
@@ -35,7 +36,15 @@ class MainWindow(QMainWindow):
 
     def take_screenshot(self):
         screenshot = self._screenshot_service.take_screenshot()
-        print(f"Took screenshot {screenshot}")
+        if screenshot:
+            screenshot_name = screenshot.name
+            message = f"Saved screenshot {screenshot_name}"
+            color = "#90ee90"
+        else:
+            message = "<b>Error</b>: Could not connect to Simulator"
+            color = "#ffcccb"
+        notification_handler = NotificationHandler(parent=self)
+        notification_handler.notify(message=message, color=color)
 
     def closeEvent(self, close_event: QCloseEvent) -> None:
         self.closed.emit()
