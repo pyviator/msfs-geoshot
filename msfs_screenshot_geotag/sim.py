@@ -91,8 +91,8 @@ class SimService:
         self, sim_location_data: SimLocationData
     ) -> ExifData:
         return ExifData(
-            gps_latitude=round(sim_location_data.latitude, 5),
-            gps_longitude=round(sim_location_data.longitude, 5),
-            gps_altitude=round(sim_location_data.altitude, 2),
-            gps_speed=round(sim_location_data.speed * 3.6, 2),  # m/s to km/h
+            GPSLatitude=round(sim_location_data.latitude, 5),
+            GPSLongitude=round(sim_location_data.longitude, 5),
+            GPSAltitude=round(sim_location_data.altitude, 2),
+            GPSSpeed=round(sim_location_data.speed * 3.6, 2),  # m/s to km/h
         )

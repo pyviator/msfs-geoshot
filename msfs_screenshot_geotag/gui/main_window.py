@@ -1,4 +1,4 @@
-from msfs_screenshot_geotag.exif import ExifService
+from msfs_screenshot_geotag.exif import ExifService, ExifData
 from typing import TYPE_CHECKING, Optional
 
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
@@ -9,6 +9,12 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidg
 from .notification import NotificationColor, NotificationHandler
 from .screenshots import ScreenshotService
 
+mock_exif_data = ExifData(
+    GPSLatitude=60,
+    GPSLongitude=60,
+    GPSAltitude=100,
+    GPSSpeed=200,  # m/s to km/h
+)
 
 class MainWindow(QMainWindow):
 
@@ -41,22 +47,25 @@ class MainWindow(QMainWindow):
         try:
             exif_data = self._sim_service.get_flight_data()
         except SimServiceError as e:
-            print(e)
-            self._notification_handler.notify(
-                message="<b>Error</b>: Could not connect to Simulator<br>or received invalid data",
-                color=NotificationColor.error,
-            )
-            exif_data = None
+            # print(e)
+            # self._notification_handler.notify(
+            #     message="<b>Error</b>: Could not connect to Simulator<br>or received invalid data",
+            #     color=NotificationColor.error,
+            # )
+            exif_data = mock_exif_data # DEBUG
             # return False
 
-        screenshot = self._screenshot_service.take_screenshot(
-            exif_data=exif_data
-        )
+        screenshot = self._screenshot_service.take_screenshot(exif_data=exif_data)
 
         if exif_data:
-            self._exif_service.write_data(
+            if not self._exif_service.write_data(
                 image_path=screenshot, exif_data=exif_data
-            )
+            ):
+                self._notification_handler.notify(
+                    message="<b>Error</b>: Could not write metadata to screenshot",
+                    color=NotificationColor.error,
+                )
+                return False
 
         self._notification_handler.notify(
             message=f"<b>Screenshot saved</b>: {screenshot.name}",
