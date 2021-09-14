@@ -13,7 +13,7 @@ from ..sim import SimService, SimServiceError
 class ScreenShotService:
 
     _date_format = "%Y-%m-%d-%H%M%S"
-    _file_stem_format = "MSFS_Screenshot_{date}"
+    _file_stem_format = "MSFS_{date}"
     _extension = "jpg"
 
     def __init__(
