@@ -30,6 +30,7 @@ def run():
 
     keybinder.init()
 
+    # For whatever reason, this only works when run in the same function closure:
     win_event_filter = WindowsEventFilter(keybinder)  # type: ignore
     event_dispatcher = QAbstractEventDispatcher.instance()
     event_dispatcher.installNativeEventFilter(win_event_filter)
@@ -37,14 +38,12 @@ def run():
     hotkey_service = GlobalHotkeyService(
         keybinder=keybinder, window_id=main_window.winId()  # type: ignore
     )
+    hotkey_service.set_hotkeys([Hotkey(key="Ctrl+Shift+S", callback=main_window.take_screenshot)])
 
-    with hotkey_service.hotkeys_set(
-        hotkeys=[Hotkey(key="Ctrl+Shift+S", callback=main_window.take_screenshot)]
-    ):
-        main_window.show()
-        ret = app.exec()
-
-    return ret
+    main_window.closed.connect(hotkey_service.remove_hotkeys)
+    
+    main_window.show()
+    return app.exec()
 
 
 sys.exit(run())

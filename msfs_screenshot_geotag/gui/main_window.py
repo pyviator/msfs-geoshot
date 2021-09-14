@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from PyQt5.QtCore import pyqtSignal
 
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import (
@@ -14,6 +15,8 @@ from .screenshots import ScreenShotService
 
 
 class MainWindow(QMainWindow):
+
+    closed = pyqtSignal()
 
     def __init__(self, screenshot_service: ScreenShotService):
         super().__init__()
@@ -33,3 +36,7 @@ class MainWindow(QMainWindow):
     def take_screenshot(self):
         screenshot = self._screenshot_service.take_screenshot()
         print(f"Took screenshot {screenshot}")
+
+    def closeEvent(self, close_event: QCloseEvent) -> None:
+        self.closed.emit()
+        return super().closeEvent(close_event)

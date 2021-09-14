@@ -1,6 +1,5 @@
-from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, Iterable, Iterator, List
+from typing import TYPE_CHECKING, Callable, List
 
 from PyQt5.QtCore import QAbstractNativeEventFilter
 from pyqtkeybind import keybinder
@@ -33,12 +32,6 @@ class GlobalHotkeyService:
         self._keybinder = keybinder
         self._window_id = window_id
         self._hotkeys: HotkeysType = []
-
-    @contextmanager
-    def hotkeys_set(self, hotkeys: HotkeysType) -> Iterator[None]:
-        self.set_hotkeys(hotkeys)
-        yield
-        self.remove_hotkeys()
 
     def set_hotkeys(self, hotkeys: HotkeysType):
         for hotkey in hotkeys:
