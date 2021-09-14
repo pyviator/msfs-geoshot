@@ -1,3 +1,11 @@
+"""
+Parts of this module are based on msfs-screenshot-gps-data by Luuk3333
+
+Copyright (C) 2020 Luuk3333 <https://github.com/Luuk3333/msfs-screenshot-gps-data>
+
+Used under the GNU Affero General Public License v3.0
+"""
+
 import time
 import traceback
 import warnings
@@ -54,7 +62,7 @@ class SimService:
         except ConnectionError as e:
             traceback.print_exc()
             raise SimServiceError("Could not connect to SimConnect")
-        
+
         aircraft_requests = AircraftRequests(sim_connect)
 
         raw_sim_location_data = RawSimLocationData(

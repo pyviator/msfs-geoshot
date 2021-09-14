@@ -1,7 +1,15 @@
+"""
+Parts of this module are based on msfs-screenshot-gps-data
+
+Copyright (C) 2020 Luuk3333 <https://github.com/Luuk3333/msfs-screenshot-gps-data>
+
+Used under the GNU Affero General Public License v3.0
+"""
+
 import subprocess
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Literal, Union
+from typing import Literal
 
 from . import DEBUG
 
@@ -44,6 +52,7 @@ class ExifService:
 
         for attribute, value in asdict(exif_data).items():
             if value == -999999:
+                # TODO: Is this necessary?
                 print(f"Invalid value {value} for attribute {attribute}. Skipping.")
                 continue
             arguments.append(f"-{attribute}={value}")
