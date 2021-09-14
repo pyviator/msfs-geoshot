@@ -24,7 +24,7 @@ def run():
     sim_service = SimService()
     exif_service = ExifService()
     screenshot_service = ScreenShotService(
-        sim_service=sim_service, exif_service=exif_service, target_folder=Path.home()
+        sim_service=sim_service, exif_service=exif_service, target_folder=(Path.home() / "Pictures" / "MSFS")
     )
     main_window = MainWindow(screenshot_service=screenshot_service)
 
