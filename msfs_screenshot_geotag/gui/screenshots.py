@@ -58,27 +58,20 @@ class ScreenShotService:
         ),
     }
 
-    def __init__(
-        self, sim_service: SimService, exif_service: ExifService, target_folder: Path
-    ):
-        self._sim_service = sim_service
+    def __init__(self, exif_service: ExifService, target_folder: Path):
         self._exif_service = exif_service
         self._target_folder = target_folder
 
     def take_screenshot(
-        self, image_format: ImageFormat = ImageFormat.tiff
-    ) -> Optional[Path]:
-        try:
-            location_data = self._sim_service.get_current_location()
-        except SimServiceError as e:
-            print(e)
-            return None
-
+        self,
+        location_data: Optional[ExifLocationData] = None,
+        image_format: ImageFormat = ImageFormat.tiff,
+    ) -> Path:
         out_path = self._get_new_screenshot_path(image_format)
 
         self._grab_screenshot(out_path=out_path, image_format=image_format)
         if location_data:
-            self._write_metadata(location_data, out_path)
+            self._write_metadata(screenshot=out_path, location_data=location_data, )
 
         return out_path
 
@@ -99,8 +92,8 @@ class ScreenShotService:
     def _grab_screenshot(self, out_path: Path, image_format: ImageFormat):
         # TODO: identify actual window rather than using primary screen
         active_screen = QGuiApplication.primaryScreen()
-        root_window = active_screen.grabWindow(0)  # type: ignore
-        image = root_window.toImage()
+        root_window_pixmap = active_screen.grabWindow(0)  # type: ignore
+        image = root_window_pixmap.toImage()
 
         image_format_settings = self._settings_by_image_format[image_format]
 
@@ -121,7 +114,7 @@ class ScreenShotService:
 
         image_writer.write(image)
 
-    def _write_metadata(self, location_data: ExifLocationData, screenshot: Path):
+    def _write_metadata(self, screenshot: Path, location_data: ExifLocationData):
         self._exif_service.write_data(
             exif_location_data=location_data, image_path=screenshot
         )

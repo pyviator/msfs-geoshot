@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from msfs_screenshot_geotag.sim import SimService, SimServiceError
+from typing import TYPE_CHECKING, Optional
 from PyQt5.QtCore import pyqtSignal
 
 from PyQt5.QtGui import QCloseEvent
@@ -12,17 +13,19 @@ from PyQt5.QtWidgets import (
 from pyqtkeybind import keybinder
 
 from .screenshots import ScreenShotService
-from .notification import NotificationHandler
+from .notification import NotificationHandler, NotificationColor
 
 
 class MainWindow(QMainWindow):
 
     closed = pyqtSignal()
 
-    def __init__(self, screenshot_service: ScreenShotService):
+    def __init__(self, sim_service: SimService, screenshot_service: ScreenShotService):
         super().__init__()
 
+        self._sim_service = sim_service
         self._screenshot_service = screenshot_service
+        self._notification_handler = NotificationHandler(parent=self)
 
         self._setup_ui()
 
@@ -34,17 +37,27 @@ class MainWindow(QMainWindow):
         self.central_layout.addWidget(QLabel("My label", parent=central_widget))
         self.central_layout.addWidget(QPushButton("My button", parent=central_widget))
 
-    def take_screenshot(self):
-        screenshot = self._screenshot_service.take_screenshot()
-        if screenshot:
-            screenshot_name = screenshot.name
-            message = f"<b>Screenshot saved</b>: {screenshot_name}"
-            color = "#90ee90"
-        else:
-            message = "<b>Error</b>: Could not connect to Simulator"
-            color = "#ffcccb"
-        notification_handler = NotificationHandler(parent=self)
-        notification_handler.notify(message=message, color=color)
+    def take_screenshot(self) -> bool:
+        try:
+            location_data = self._sim_service.get_current_location()
+        except SimServiceError as e:
+            print(e)
+            self._notification_handler.notify(
+                message="<b>Error</b>: Could not connect to Simulator",
+                color=NotificationColor.error,
+            )
+            return False
+
+        screenshot = self._screenshot_service.take_screenshot(
+            location_data=location_data
+        )
+
+        self._notification_handler.notify(
+            message=f"<b>Screenshot saved</b>: {screenshot.name}",
+            color=NotificationColor.success,
+        )
+
+        return True
 
     def closeEvent(self, close_event: QCloseEvent) -> None:
         self.closed.emit()
