@@ -1,8 +1,8 @@
 from enum import Enum
-from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtCore import QObject, QPoint, Qt, QTimer
-
 from typing import Optional
+
+from PyQt5.QtCore import QObject, QPoint, Qt, QTimer
+from PyQt5.QtWidgets import QLabel, QWidget
 
 
 class NotificationColor(Enum):

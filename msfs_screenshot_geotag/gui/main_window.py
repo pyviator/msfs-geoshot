@@ -1,19 +1,12 @@
-from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from typing import TYPE_CHECKING, Optional
+
+from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from PyQt5.QtCore import pyqtSignal
-
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import (
-    QLabel,
-    QMainWindow,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
-from pyqtkeybind import keybinder
+from PyQt5.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
+from .notification import NotificationColor, NotificationHandler
 from .screenshots import ScreenShotService
-from .notification import NotificationHandler, NotificationColor
 
 
 class MainWindow(QMainWindow):

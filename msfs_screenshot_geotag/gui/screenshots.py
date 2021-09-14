@@ -1,15 +1,14 @@
-from dataclasses import dataclass
 import time
+from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Dict, Optional
-from enum import Enum
 
 import tzlocal
 from PyQt5.QtGui import QGuiApplication, QImageWriter
 
 from ..exif import ExifLocationData, ExifService
-from ..sim import SimService, SimServiceError
 
 
 class ImageFormat(Enum):
@@ -71,7 +70,10 @@ class ScreenShotService:
 
         self._grab_screenshot(out_path=out_path, image_format=image_format)
         if location_data:
-            self._write_metadata(screenshot=out_path, location_data=location_data, )
+            self._write_metadata(
+                screenshot=out_path,
+                location_data=location_data,
+            )
 
         return out_path
 
