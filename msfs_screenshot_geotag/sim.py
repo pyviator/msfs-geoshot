@@ -91,7 +91,6 @@ class SimService:
         self, sim_location_data: SimLocationData
     ) -> ExifLocationData:
         return ExifLocationData(
-            gps_datestamp=round(sim_location_data.time),
             gps_latitude=round(sim_location_data.latitude, 5),
             gps_longitude=round(sim_location_data.longitude, 5),
             gps_altitude=round(sim_location_data.altitude, 2),

@@ -14,7 +14,7 @@ class ScreenShotService:
 
     _date_format = "%Y-%m-%d-%H%M%S"
     _file_stem_format = "MSFS_Screenshot_{date}"
-    _extension = "png"
+    _extension = "jpg"
 
     def __init__(
         self, sim_service: SimService, exif_service: ExifService, target_folder: Path
@@ -30,7 +30,7 @@ class ScreenShotService:
             print(e)
             return None
 
-        out_path = self._get_new_screenshot_path(location_data)
+        out_path = self._get_new_screenshot_path()
 
         self._grab_screenshot(out_path)
         if location_data:
@@ -38,13 +38,8 @@ class ScreenShotService:
 
         return out_path
 
-    def _get_new_screenshot_path(
-        self, exif_location_data: Optional[ExifLocationData] = None
-    ) -> Path:
-        if exif_location_data:
-            capture_time: float = exif_location_data.gps_datestamp
-        else:
-            capture_time = time.time()
+    def _get_new_screenshot_path(self) -> Path:
+        capture_time = time.time()
 
         local_timezone = tzlocal.get_localzone()
         capture_datetime = datetime.fromtimestamp(capture_time, tz=local_timezone)
@@ -63,5 +58,5 @@ class ScreenShotService:
 
     def _write_metadata(self, location_data: ExifLocationData, screenshot: Path):
         self._exif_service.write_data(
-            exif_location_data=location_data, image=screenshot
+            exif_location_data=location_data, image_path=screenshot
         )

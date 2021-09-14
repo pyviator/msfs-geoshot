@@ -1,11 +1,12 @@
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import Literal, Union
 from pathlib import Path
+from exif import Image
+import exif
 
 
 @dataclass
 class ExifLocationData:
-    gps_datestamp: int
     gps_latitude: float
     gps_longitude: float
     gps_altitude: float
@@ -22,11 +23,26 @@ class ExifLocationData:
     def __post_init__(self):
         self.gps_longitude_ref = "E" if self.gps_longitude >= 0 else "W"
         self.gps_latitude_ref = "N" if self.gps_latitude >= 0 else "S"
-        self.gps_altitude_ref = 1 if self.gps_altitude >= 0 else 0
+        self.gps_altitude_ref = 0 if self.gps_altitude >= 0 else 1
         self.gps_speed_ref = "K"
 
 
-
 class ExifService:
-    def write_data(self, exif_location_data: ExifLocationData, image: Path):
-        pass
+    def write_data(self, exif_location_data: ExifLocationData, image_path: Path):
+        with image_path.open("rb") as image_file:
+            image = Image(image_file)
+
+        # image.gps_datestamp = exif_location_data.gps_datestamp
+        image.gps_latitude = exif_location_data.gps_latitude
+        image.gps_longitude = exif_location_data.gps_longitude
+        image.gps_altitude = exif_location_data.gps_altitude
+        image.gps_speed = exif_location_data.gps_speed
+        image.gps_latitude_ref = exif_location_data.gps_latitude_ref
+        image.gps_longitude_ref = exif_location_data.gps_longitude_ref
+        image.gps_altitude_ref = exif_location_data.gps_altitude_ref
+        image.gps_speed_ref = exif_location_data.gps_speed_ref
+
+        image_path.unlink()
+
+        with image_path.open("wb") as new_image_file:
+            new_image_file.write(image.get_file())

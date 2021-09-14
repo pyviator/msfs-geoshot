@@ -86,6 +86,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "exif"
+version = "1.3.2"
+description = "Read and modify image EXIF metadata using Python."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+plum-py = ">=0.5.0"
+
+[[package]]
 name = "flake8"
 version = "3.9.2"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -210,6 +221,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.extras]
 dev = ["pre-commit", "tox"]
+
+[[package]]
+name = "plum-py"
+version = "0.7.0"
+description = "Pack/Unpack Memory."
+category = "main"
+optional = false
+python-versions = ">=3.6.*"
 
 [[package]]
 name = "psutil"
@@ -471,7 +490,7 @@ six = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "ae105fab382b439cb5aca2a9974252381555694984f028e49b4ebfd9d53f95f1"
+content-hash = "66389dd41e7f8a646319682f0a2f57b6a0eee1c5c7397256f2723d467140bf04"
 
 [metadata.files]
 altgraph = [
@@ -545,6 +564,10 @@ colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
+exif = [
+    {file = "exif-1.3.2-py3-none-any.whl", hash = "sha256:d9bae4fd7737a879402dd6e5d1675e230185e1221c3df62238faf2c8f08756d4"},
+    {file = "exif-1.3.2.tar.gz", hash = "sha256:7a93ced12bca131b04c7e92c13a16a40685b9eb83414f9ed479d38df1c686633"},
+]
 flake8 = [
     {file = "flake8-3.9.2-py2.py3-none-any.whl", hash = "sha256:bf8fd333346d844f616e8d47905ef3a3384edae6b4e9beb0c5101e25e3110907"},
     {file = "flake8-3.9.2.tar.gz", hash = "sha256:07528381786f2a6237b061f6e96610a4167b226cb926e2aa2b6b1d78057c576b"},
@@ -611,6 +634,10 @@ platformdirs = [
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
+]
+plum-py = [
+    {file = "plum-py-0.7.0.tar.gz", hash = "sha256:6d0bdf7aefa10e519d2902827dee2f96a554e55f04064c978197714b26ca1ab9"},
+    {file = "plum_py-0.7.0-py3-none-any.whl", hash = "sha256:b02077cda2403d9dac65db38dba072a9db751129cc7b6d569837bf7a2276fd39"},
 ]
 psutil = [
     {file = "psutil-5.8.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:0066a82f7b1b37d334e68697faba68e5ad5e858279fd6351c8ca6024e8d6ba64"},
