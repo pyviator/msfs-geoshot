@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         screenshot = self._screenshot_service.take_screenshot()
         if screenshot:
             screenshot_name = screenshot.name
-            message = f"Saved screenshot {screenshot_name}"
+            message = f"<b>Screenshot saved</b>: {screenshot_name}"
             color = "#90ee90"
         else:
             message = "<b>Error</b>: Could not connect to Simulator"
