@@ -58,9 +58,7 @@ class FileNameComposer:
         except ValueError:
             return False, "Format string is invalid."
 
-        print(items)
         field_names = [name for text, name, spec, conv in items if name is not None]
-        print(field_names)
 
         known_names = []
         for file_name_field in self._file_name_fields:
