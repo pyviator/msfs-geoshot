@@ -27,6 +27,8 @@ class MainWindow(QMainWindow):
 
     closed = pyqtSignal()
 
+    _maps_url = "https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"
+
     def __init__(
         self,
         sim_service: SimService,
@@ -42,6 +44,7 @@ class MainWindow(QMainWindow):
         self._settings = settings
 
         self._last_screenshot: Optional[Path] = None
+        self._last_exif_data: Optional[ExifData] = None
 
         self._notification_handler = NotificationHandler(parent=self)
 
@@ -91,7 +94,7 @@ class MainWindow(QMainWindow):
             color=NotificationColor.success,
         )
 
-        self._set_last_opened_screenshot(screenshot)
+        self._set_last_opened_screenshot(path=screenshot, exif_data=exif_data)
 
         return True
 
@@ -100,6 +103,7 @@ class MainWindow(QMainWindow):
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
         self._form.open_screenshots.clicked.connect(self._on_open_folder)
         self._form.view_last_screenshot.clicked.connect(self._on_open_last_screenshot)
+        self._form.view_last_location.clicked.connect(self._on_open_last_location)
 
     def _setup_input_widget_connections(self):
         self._form.select_format.currentTextChanged.connect(
@@ -160,15 +164,40 @@ class MainWindow(QMainWindow):
         url = QUrl.fromLocalFile(str(self._settings.screenshot_folder))
         QDesktopServices.openUrl(url)
 
-    def _set_last_opened_screenshot(self, path: Path):
+    def _set_last_opened_screenshot(
+        self, path: Path, exif_data: Optional[ExifData] = None
+    ):
         self._form.view_last_screenshot.setEnabled(True)
         self._last_screenshot = path
+
+        if (
+            exif_data
+            and exif_data.GPSLatitude is not None
+            and exif_data.GPSLongitude is not None
+        ):
+            self._form.view_last_location.setEnabled(True)
+        self._last_exif_data = exif_data
 
     @pyqtSlot(bool)
     def _on_open_last_screenshot(self, checked: bool):
         if not self._last_screenshot:
             return
         url = QUrl.fromLocalFile(str(self._last_screenshot))
+        QDesktopServices.openUrl(url)
+
+    @pyqtSlot(bool)
+    def _on_open_last_location(self, checked: bool):
+        if not self._last_exif_data:
+            return
+        latitude = self._last_exif_data.GPSLatitude
+        longitude = self._last_exif_data.GPSLongitude
+
+        if latitude is None or longitude is None:
+            print("Invalid GPS data for last screenshot")
+            return
+
+        url_str = self._maps_url.format(latitude=latitude, longitude=longitude)
+        url = QUrl(url_str)
         QDesktopServices.openUrl(url)
 
     def closeEvent(self, close_event: QCloseEvent) -> None:
