@@ -1,21 +1,20 @@
-from msfs_screenshot_geotag.names import FileNameComposer
 from pathlib import Path
 from typing import Optional
 
 from msfs_screenshot_geotag.exif import ExifData, ExifService
+from msfs_screenshot_geotag.names import FileNameComposer
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from PyQt5.QtCore import QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
-from PyQt5.QtWidgets import QFileDialog, QMainWindow
+from PyQt5.QtWidgets import QFileDialog, QLineEdit, QMainWindow
 
+from .. import __app_name__
 from .forms.main_window import Ui_MainWindow
+from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
 from .screenshots import ImageFormat, ScreenshotService
 from .settings import AppSettings
-from .keyedit import CustomKeySequenceEdit
-from .validators import FileNameFormatValidator, DateFormatValidator
-
-from .. import __app_name__
+from .validators import DateFormatValidator, FileNameFormatValidator
 
 mock_exif_data = ExifData(
     GPSLatitude=30,
@@ -44,6 +43,7 @@ class MainWindow(QMainWindow):
         self._sim_service = sim_service
         self._exif_service = exif_service
         self._screenshot_service = screenshot_service
+        self._file_name_composer = file_name_composer
         self._settings = settings
 
         self._last_screenshot: Optional[Path] = None
@@ -59,28 +59,10 @@ class MainWindow(QMainWindow):
         self._form.open_screenshots.setFocus()  # prevent focus steal by hotkey
 
         self._load_ui_state_from_settings()
+        self._setup_input_validators()
 
         self._setup_input_widget_connections()
         self._setup_button_connections()
-
-        self._form.file_name_format_warning.hide()
-        self._form.date_format_warning.hide()
-        file_name_format_validator = FileNameFormatValidator(
-            line_edit=self._form.file_name_format,
-            warning_label=self._form.file_name_format_warning,
-            file_name_composer=file_name_composer,
-            parent=self,
-        )
-        date_format_validator = DateFormatValidator(
-            line_edit=self._form.date_format,
-            warning_label=self._form.date_format_warning,
-            file_name_composer=file_name_composer,
-            parent=self,
-        )
-        self._form.file_name_format.setValidator(file_name_format_validator)
-        self._form.date_format.setValidator(date_format_validator)
-
-        self._form.file_name_format.editingFinished.connect(lambda: print("editing finished"))
 
         self.setWindowTitle(__app_name__)
 
@@ -123,8 +105,23 @@ class MainWindow(QMainWindow):
 
         return True
 
-    def _setup_advanced_settings(self):
-        pass
+    def _setup_input_validators(self):
+        self._file_name_format_validator = FileNameFormatValidator(
+            line_edit=self._form.file_name_format,
+            warning_label=self._form.file_name_format_warning,
+            save_button=self._form.file_name_format_save,
+            file_name_composer=self._file_name_composer,
+            parent=self,
+        )
+        self._date_format_validator = DateFormatValidator(
+            line_edit=self._form.date_format,
+            warning_label=self._form.date_format_warning,
+            save_button=self._form.date_format_save,
+            file_name_composer=self._file_name_composer,
+            parent=self,
+        )
+        self._form.file_name_format.setValidator(self._file_name_format_validator)
+        self._form.date_format.setValidator(self._date_format_validator)
 
     def _setup_button_connections(self):
         self._form.select_folder.clicked.connect(self._on_select_folder)
@@ -132,6 +129,8 @@ class MainWindow(QMainWindow):
         self._form.open_screenshots.clicked.connect(self._on_open_folder)
         self._form.view_last_screenshot.clicked.connect(self._on_open_last_screenshot)
         self._form.view_last_location.clicked.connect(self._on_open_last_location)
+        self._form.file_name_format_save.clicked.connect(self._on_file_name_format_save)
+        self._form.date_format_save.clicked.connect(self._on_date_format_save)
 
     def _setup_input_widget_connections(self):
         self._form.select_format.currentTextChanged.connect(
@@ -155,6 +154,22 @@ class MainWindow(QMainWindow):
         self._form.select_format.setCurrentText(self._settings.image_format.name)
         self._form.file_name_format.setText(self._settings.file_name_format)
         self._form.date_format.setText(self._settings.date_format)
+
+    @pyqtSlot(bool)
+    def _on_file_name_format_save(self, checked: bool):
+        if not self._form.file_name_format.hasAcceptableInput():
+            return  # should not happen
+        self._settings.file_name_format = self._form.file_name_format.text()
+        self._form.file_name_format.setPalette(QLineEdit().palette())
+        self._form.file_name_format_save.setDisabled(True)
+
+    @pyqtSlot(bool)
+    def _on_date_format_save(self, checked: bool):
+        if not self._form.date_format.hasAcceptableInput():
+            return  # should not happen
+        self._settings.date_format = self._form.date_format.text()
+        self._form.date_format.setPalette(QLineEdit().palette())
+        self._form.date_format_save.setDisabled(True)
 
     @pyqtSlot(bool)
     def _on_restore_defaults(self, checked: bool):
