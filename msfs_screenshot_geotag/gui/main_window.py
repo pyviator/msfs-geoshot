@@ -1,6 +1,4 @@
-from msfs_screenshot_geotag.exif import ExifService, ExifData
-from typing import TYPE_CHECKING, Optional
-
+from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QCloseEvent
@@ -8,6 +6,7 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidg
 
 from .notification import NotificationColor, NotificationHandler
 from .screenshots import ScreenshotService
+from .settings import AppSettings
 
 mock_exif_data = ExifData(
     GPSLatitude=60,
@@ -15,6 +14,7 @@ mock_exif_data = ExifData(
     GPSAltitude=100,
     GPSSpeed=200,  # m/s to km/h
 )
+
 
 class MainWindow(QMainWindow):
 
@@ -32,6 +32,12 @@ class MainWindow(QMainWindow):
         self._exif_service = exif_service
         self._screenshot_service = screenshot_service
         self._notification_handler = NotificationHandler(parent=self)
+
+        settings = AppSettings(self)
+
+        print(settings.screenshot_path, type(settings.screenshot_path))
+        print(settings.image_format, type(settings.image_format))
+        print(settings.screenshot_hotkey, type(settings.screenshot_hotkey))
 
         self._setup_ui()
 
@@ -52,7 +58,7 @@ class MainWindow(QMainWindow):
             #     message="<b>Error</b>: Could not connect to Simulator<br>or received invalid data",
             #     color=NotificationColor.error,
             # )
-            exif_data = mock_exif_data # DEBUG
+            exif_data = mock_exif_data  # DEBUG
             # return False
 
         screenshot = self._screenshot_service.take_screenshot(exif_data=exif_data)
