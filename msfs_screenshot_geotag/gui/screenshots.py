@@ -12,9 +12,9 @@ from ..exif import ExifData, ExifService
 
 
 class ImageFormat(Enum):
-    png = "png"
-    jpg = "jpg"
-    tiff = "tiff"
+    PNG = "png"
+    JPG = "jpg"
+    TIFF = "tiff"
 
 
 @dataclass
@@ -33,14 +33,14 @@ class ScreenshotService:
 
     _settings_by_image_format: Dict[ImageFormat, _ImageFormatSettings] = {
         # compression is in range 0,100, quality just maps to compression in reverse
-        ImageFormat.png: _ImageFormatSettings(
+        ImageFormat.PNG: _ImageFormatSettings(
             extension="png",
             quality=None,
             compression=100,
             optimized_write=True,
             progressive_scan_write=True,
         ),
-        ImageFormat.jpg: _ImageFormatSettings(
+        ImageFormat.JPG: _ImageFormatSettings(
             extension="jpg",
             quality=100,
             compression=None,
@@ -48,7 +48,7 @@ class ScreenshotService:
             progressive_scan_write=None,
         ),
         # compression is binary 0/1, quality is ignored
-        ImageFormat.tiff: _ImageFormatSettings(
+        ImageFormat.TIFF: _ImageFormatSettings(
             extension="tiff",
             quality=None,
             compression=1,
@@ -61,7 +61,7 @@ class ScreenshotService:
         self,
         target_folder: Path,
         exif_data: Optional[ExifData] = None,
-        image_format: ImageFormat = ImageFormat.tiff,
+        image_format: ImageFormat = ImageFormat.TIFF,
     ) -> Path:
         if not target_folder.is_dir():
             target_folder.mkdir(parents=True, exist_ok=True)

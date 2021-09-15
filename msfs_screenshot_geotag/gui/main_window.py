@@ -1,12 +1,13 @@
 from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtGui import QCloseEvent, QKeySequence
 from PyQt5.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from .notification import NotificationColor, NotificationHandler
-from .screenshots import ScreenshotService
+from .screenshots import ImageFormat, ScreenshotService
 from .settings import AppSettings
+from .forms.main_window import Ui_MainWindow
 
 mock_exif_data = ExifData(
     GPSLatitude=60,
@@ -36,15 +37,16 @@ class MainWindow(QMainWindow):
 
         self._notification_handler = NotificationHandler(parent=self)
 
-        self._setup_ui()
+        self._form = Ui_MainWindow()
+        self._form.setupUi(self)
 
-    def _setup_ui(self):
-        central_widget = QWidget(self)
-        self.central_layout = QVBoxLayout(central_widget)
-        central_widget.setLayout(self.central_layout)
-        self.setCentralWidget(central_widget)
-        self.central_layout.addWidget(QLabel("My label", parent=central_widget))
-        self.central_layout.addWidget(QPushButton("My button", parent=central_widget))
+        self._finalize_ui()
+
+    def _finalize_ui(self):
+        self._form.current_folder.setText(str(self._settings.screenshot_folder))
+        self._form.select_hotkey.setKeySequence(QKeySequence(self._settings.screenshot_hotkey))
+        self._form.select_format.addItems(format.name for format in ImageFormat)
+        self._form.select_format.setCurrentText(self._settings.image_format.name)
 
     def take_screenshot(self) -> bool:
         try:

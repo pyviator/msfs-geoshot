@@ -15,7 +15,7 @@ class _SettingsData:
     screenshot_folder: Path = (
         Path(QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)) / "MSFS"
     )
-    image_format: ImageFormat = ImageFormat.tiff
+    image_format: ImageFormat = ImageFormat.TIFF
     screenshot_hotkey: str = "Ctrl+Shift+S"
 
 

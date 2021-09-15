@@ -141,3 +141,4 @@ cython_debug/
 .vscode
 temp/
 notes/
+msfs_screenshot_geotag/gui/forms/
