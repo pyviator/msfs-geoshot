@@ -2,8 +2,8 @@ from msfs_screenshot_geotag.names import FileNameComposer
 import sys
 from typing import List
 
-from PyQt5.QtCore import QAbstractEventDispatcher, QAbstractNativeEventFilter
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QAbstractEventDispatcher
+from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
 
 from . import __app_name__, __version__
@@ -12,6 +12,7 @@ from .gui.hotkeys import GlobalHotkeyService, Hotkey, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.screenshots import ScreenshotService
 from .gui.settings import AppSettings
+from .gui.tray_icon import AppTrayIcon
 from .sim import SimService
 
 
@@ -45,6 +46,10 @@ def run():
         file_name_composer=file_name_composer
     )
 
+    pixmap = QStyle.StandardPixmap.SP_BrowserReload
+    icon = app.style().standardIcon(pixmap)
+    tray_icon = AppTrayIcon(icon, main_window)
+
     keybinder.init()
 
     # For whatever reason, this only works when run in the context of this function:
@@ -65,6 +70,7 @@ def run():
 
     main_window.closed.connect(hotkey_service.remove_hotkeys)
 
+    tray_icon.show()
     main_window.show()
 
     return app.exec()

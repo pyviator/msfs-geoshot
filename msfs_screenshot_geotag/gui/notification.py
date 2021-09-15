@@ -26,7 +26,7 @@ class NotificationHandler(QObject):
         self.close_notification()
 
         self._notification = Notification(
-            message=message, color=color.value, parent=self._parent
+            message=message, color=color.value
         )
         self._timer = QTimer.singleShot(timeout, self.close_notification)
         self._notification.show()

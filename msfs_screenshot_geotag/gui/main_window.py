@@ -4,7 +4,7 @@ from typing import Optional
 from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.names import FileNameComposer
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
-from PyQt5.QtCore import QUrl, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QEvent, QTimer, QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
 from PyQt5.QtWidgets import QFileDialog, QLineEdit, QMainWindow
 
@@ -267,3 +267,11 @@ class MainWindow(QMainWindow):
     def closeEvent(self, close_event: QCloseEvent) -> None:
         self.closed.emit()
         return super().closeEvent(close_event)
+
+    def changeEvent(self, event: QEvent):
+        if event.type() != QEvent.Type.WindowStateChange:
+            return super().changeEvent(event)
+        if self.isMinimized() and self._settings.minimize_to_tray:
+            event.ignore()
+            QTimer.singleShot(0, self.hide)
+        

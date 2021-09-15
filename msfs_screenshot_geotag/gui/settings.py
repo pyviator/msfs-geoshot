@@ -19,6 +19,7 @@ class _SettingsData:
     screenshot_hotkey: str = "Ctrl+Shift+S"
     file_name_format: str = "MSFS_{datetime}_{geocode}"
     date_format: str = "%Y-%m-%d-%H%M%S"
+    minimize_to_tray: bool = True
 
 
 class AppSettings(QObject):
@@ -90,6 +91,16 @@ class AppSettings(QObject):
     @date_format.setter
     def date_format(self, value: str):
         self._settings.setValue("date_format", value)
+    
+    @property
+    def minimize_to_tray(self) -> bool:
+        if (value := self._settings.value("minimize_to_tray", defaultValue=None)) is None:
+            return self._defaults.minimize_to_tray
+        return value
+
+    @minimize_to_tray.setter
+    def minimize_to_tray(self, value: bool):
+        self._settings.setValue("minimize_to_tray", value)
 
     def restore_defaults(self):
         for attribute, value in asdict(self._defaults).items():
