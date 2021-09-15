@@ -4,6 +4,7 @@ import time
 from datetime import date, datetime
 from typing import Dict, NamedTuple, Optional, Tuple, cast
 
+from pathvalidate import ValidationError, validate_filename
 import tzlocal
 from geopy.geocoders import Nominatim
 from geopy.location import Location
@@ -52,6 +53,12 @@ class FileNameComposer:
         if not name_format:
             return False, "Name format must not be empty."
 
+        try:
+            mock_file_name = f"{name_format}.extension"
+            validate_filename(mock_file_name)
+        except ValidationError as e:
+            return False, str(e)
+
         formatter = string.Formatter().parse(name_format)
         try:
             items = list(formatter)
@@ -76,6 +83,12 @@ class FileNameComposer:
         if not date_format:
             return False, "Date format must not be empty."
         
+        try:
+            mock_file_name = f"{date_format}.extension"
+            validate_filename(mock_file_name)
+        except ValidationError as e:
+            return False, str(e)
+
         test_time = datetime.fromtimestamp(1631728655)
         try:
             formatted = test_time.strftime(date_format)

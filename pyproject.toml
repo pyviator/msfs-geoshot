@@ -12,6 +12,7 @@ psutil = "^5.8.0"
 pyqtkeybind = "^0.0.8"
 tzlocal = "^3.0"
 geopy = "^2.2.0"
+pathvalidate = "^2.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
