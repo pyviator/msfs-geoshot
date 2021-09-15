@@ -1,3 +1,4 @@
+from msfs_screenshot_geotag.names import FileNameComposer
 from pathlib import Path
 from typing import Optional
 
@@ -12,6 +13,7 @@ from .notification import NotificationColor, NotificationHandler
 from .screenshots import ImageFormat, ScreenshotService
 from .settings import AppSettings
 from .keyedit import CustomKeySequenceEdit
+from .validators import FileNameFormatValidator, DateFormatValidator
 
 from .. import __app_name__
 
@@ -21,6 +23,7 @@ mock_exif_data = ExifData(
     GPSAltitude=100,
     GPSSpeed=200,  # m/s to km/h
 )
+
 
 class MainWindow(QMainWindow):
 
@@ -34,6 +37,7 @@ class MainWindow(QMainWindow):
         exif_service: ExifService,
         screenshot_service: ScreenshotService,
         settings: AppSettings,
+        file_name_composer: FileNameComposer,
     ):
         super().__init__()
 
@@ -58,6 +62,25 @@ class MainWindow(QMainWindow):
 
         self._setup_input_widget_connections()
         self._setup_button_connections()
+
+        self._form.file_name_format_warning.hide()
+        self._form.date_format_warning.hide()
+        file_name_format_validator = FileNameFormatValidator(
+            line_edit=self._form.file_name_format,
+            warning_label=self._form.file_name_format_warning,
+            file_name_composer=file_name_composer,
+            parent=self,
+        )
+        date_format_validator = DateFormatValidator(
+            line_edit=self._form.date_format,
+            warning_label=self._form.date_format_warning,
+            file_name_composer=file_name_composer,
+            parent=self,
+        )
+        self._form.file_name_format.setValidator(file_name_format_validator)
+        self._form.date_format.setValidator(date_format_validator)
+
+        self._form.file_name_format.editingFinished.connect(lambda: print("editing finished"))
 
         self.setWindowTitle(__app_name__)
 
@@ -100,6 +123,9 @@ class MainWindow(QMainWindow):
 
         return True
 
+    def _setup_advanced_settings(self):
+        pass
+
     def _setup_button_connections(self):
         self._form.select_folder.clicked.connect(self._on_select_folder)
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
@@ -127,6 +153,8 @@ class MainWindow(QMainWindow):
         self._form.select_format.clear()
         self._form.select_format.addItems(format.name for format in ImageFormat)
         self._form.select_format.setCurrentText(self._settings.image_format.name)
+        self._form.file_name_format.setText(self._settings.file_name_format)
+        self._form.date_format.setText(self._settings.date_format)
 
     @pyqtSlot(bool)
     def _on_restore_defaults(self, checked: bool):

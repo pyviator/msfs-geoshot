@@ -134,7 +134,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="General" native="true">
        <attribute name="title">
@@ -280,19 +280,39 @@
           </property>
          </spacer>
         </item>
-        <item row="8" column="2">
+        <item row="3" column="1">
+         <widget class="QLabel" name="file_name_format_warning">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="2">
          <widget class="QPushButton" name="restore_defaults_advanced">
           <property name="text">
            <string>Restore Defaults</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1" colspan="2">
+        <item row="6" column="1" colspan="2">
          <widget class="QLineEdit" name="date_format">
           <property name="placeholderText">
            <string>The date format that should be used for the 'datetime' field</string>
           </property>
          </widget>
+        </item>
+        <item row="9" column="2">
+         <spacer name="verticalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item row="2" column="1" colspan="2">
          <widget class="QLineEdit" name="file_name_format">
@@ -304,14 +324,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Date Format</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" colspan="2">
+        <item row="0" column="0" colspan="3">
          <widget class="QLabel" name="label_8">
           <property name="text">
            <string>&lt;b&gt;Warning&lt;/b&gt;: The settings below are meant for advanced users. Please only modify them if you know what you are doing. Setting these up wrong could prevent the tool from working.</string>
@@ -321,21 +334,28 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Date Format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
          <widget class="QLabel" name="label_9">
           <property name="text">
            <string>The following fields are available for use:</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="5" column="1">
          <widget class="QLabel" name="available_fields">
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="8" column="1">
          <widget class="QLabel" name="label_10">
           <property name="text">
            <string>Please see the &lt;a href=&quot;https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior&quot;&gt;strftime documentation&lt;/a&gt; on how to construct date format strings.</string>
@@ -349,18 +369,12 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="2">
-         <spacer name="verticalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+        <item row="7" column="1">
+         <widget class="QLabel" name="date_format_warning">
+          <property name="text">
+           <string/>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>

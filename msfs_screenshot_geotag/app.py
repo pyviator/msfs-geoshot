@@ -42,6 +42,7 @@ def run():
         exif_service=exif_service,
         screenshot_service=screenshot_service,
         settings=app_settings,
+        file_name_composer=file_name_composer
     )
 
     keybinder.init()
