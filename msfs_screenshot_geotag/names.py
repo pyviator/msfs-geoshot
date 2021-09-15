@@ -2,7 +2,7 @@ from os import name
 import string
 import time
 from datetime import date, datetime
-from typing import Dict, NamedTuple, Optional, Tuple, cast
+from typing import Dict, List, NamedTuple, Optional, Tuple, cast
 
 from pathvalidate import ValidationError, validate_filename
 import tzlocal
@@ -13,18 +13,29 @@ from . import __app_name__
 from .exif import ExifData
 
 
-class _FileNameField(NamedTuple):
+class FileNameField(NamedTuple):
     name: str
     required: bool
+    description: str
+
+
+_file_name_fields: List[FileNameField] = [
+    FileNameField(
+        name="datetime",
+        required=True,
+        description="Date and time string (e.g. '2022-01-01'). Exact format is governed by date format below.",
+    ),
+    FileNameField(
+        name="geocode",
+        required=False,
+        description="""A human-readable description of the location the screenshot
+was taken at (e.g. <i>USA-New_York-New_York_City</i>), as returned by <a href='https://wiki.openstreetmap.org/wiki/Nominatim'>
+OSM Nominatim</a>.""",
+    ),
+]
 
 
 class FileNameComposer:
-
-    _file_name_fields = {
-        _FileNameField(name="datetime", required=True),
-        _FileNameField(name="geocode", required=False),
-    }
-
     def __init__(self, user_agent: str):
         self._user_agent = user_agent
 
@@ -68,7 +79,7 @@ class FileNameComposer:
         field_names = [name for text, name, spec, conv in items if name is not None]
 
         known_names = []
-        for file_name_field in self._file_name_fields:
+        for file_name_field in _file_name_fields:
             known_names.append(file_name_field.name)
             if file_name_field.required and file_name_field.name not in field_names:
                 return False, f"Missing required field: {{{file_name_field.name}}}."
@@ -82,7 +93,7 @@ class FileNameComposer:
     def is_date_format_valid(self, date_format: str) -> Tuple[bool, str]:
         if not date_format:
             return False, "Date format must not be empty."
-        
+
         try:
             mock_file_name = f"{date_format}.extension"
             validate_filename(mock_file_name)
@@ -102,6 +113,9 @@ class FileNameComposer:
             return False, "Date format does not contain any placeholders."
 
         return True, ""
+
+    def get_supported_fields(self) -> List[FileNameField]:
+        return _file_name_fields
 
     def _get_datetime_string(self, date_format: str) -> str:
         # TODO: Get from screenshot if available

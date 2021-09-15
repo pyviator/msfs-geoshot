@@ -60,6 +60,7 @@ class MainWindow(QMainWindow):
 
         self._load_ui_state_from_settings()
         self._setup_input_validators()
+        self._setup_format_field_description()
 
         self._setup_input_widget_connections()
         self._setup_button_connections()
@@ -104,6 +105,21 @@ class MainWindow(QMainWindow):
         self._set_last_opened_screenshot(path=screenshot, exif_data=exif_data)
 
         return True
+
+    def _setup_format_field_description(self):
+        supported_fields = self._file_name_composer.get_supported_fields()
+
+        lines = []
+
+        for field in supported_fields:
+            text = f"<b>{{{field.name}}}</b>: {field.description}"
+            if field.required:
+                text += " Required."
+            lines.append(text)
+
+        text = "<br>".join(lines)
+
+        self._form.available_fields.setText(text)
 
     def _setup_input_validators(self):
         self._file_name_format_validator = FileNameFormatValidator(
