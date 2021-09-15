@@ -241,8 +241,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(bool)
     def _on_open_last_screenshot(self, checked: bool):
-        if not self._last_screenshot:
-            return
+        if not self._last_screenshot or not self._last_screenshot.is_file():
+            self._notification_handler.notify(
+                "File no longer exists", color=NotificationColor.error
+            )
+            return False
         url = QUrl.fromLocalFile(str(self._last_screenshot))
         QDesktopServices.openUrl(url)
 
