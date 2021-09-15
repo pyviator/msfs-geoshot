@@ -22,7 +22,6 @@ mock_exif_data = ExifData(
     GPSSpeed=200,  # m/s to km/h
 )
 
-
 class MainWindow(QMainWindow):
 
     closed = pyqtSignal()
