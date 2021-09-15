@@ -1,3 +1,4 @@
+from os import name
 import string
 import time
 from datetime import date, datetime
@@ -48,23 +49,28 @@ class FileNameComposer:
         return name_format.format(**format_data)
 
     def is_name_format_valid(self, name_format: str) -> Tuple[bool, str]:
+        if not name_format:
+            return False, "Name format must not be empty."
+
         formatter = string.Formatter().parse(name_format)
         try:
             items = list(formatter)
         except ValueError:
             return False, "Format string is invalid."
 
-        field_names = [name for text, name, spec, conv in items]
+        print(items)
+        field_names = [name for text, name, spec, conv in items if name is not None]
+        print(field_names)
 
         known_names = []
         for file_name_field in self._file_name_fields:
             known_names.append(file_name_field.name)
             if file_name_field.required and file_name_field.name not in field_names:
-                return False, f"Missing required field: {file_name_field.name}"
+                return False, f"Missing required field: {{{file_name_field.name}}}."
 
         for field_name in field_names:
             if field_name not in known_names:
-                return False, f"Unrecognized field name {field_name}"
+                return False, f"Unrecognized field name: '{{{field_name}}}'"
 
         return True, ""
 
