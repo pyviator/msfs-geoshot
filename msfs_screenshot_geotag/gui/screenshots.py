@@ -57,25 +57,25 @@ class ScreenshotService:
         ),
     }
 
-    def __init__(self, target_folder: Path):
-        self._target_folder = target_folder
-
     def take_screenshot(
         self,
+        target_folder: Path,
         exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.tiff,
     ) -> Path:
-        out_path = self._get_new_screenshot_path(
+        screenshot_name = self._get_screenshot_name(
             image_format=image_format, exif_data=exif_data
         )
+
+        out_path = target_folder / screenshot_name
 
         self._grab_screenshot(out_path=out_path, image_format=image_format)
 
         return out_path
 
-    def _get_new_screenshot_path(
+    def _get_screenshot_name(
         self, image_format: ImageFormat, exif_data: Optional[ExifData]
-    ) -> Path:
+    ) -> str:
         capture_time = time.time()
 
         local_timezone = tzlocal.get_localzone()
@@ -87,7 +87,7 @@ class ScreenshotService:
         file_stem = self._file_stem_format.format(date=datetime_string)
         file_name = f"{file_stem}.{image_format_settings.extension}"
 
-        return self._target_folder / file_name
+        return file_name
 
     def _grab_screenshot(self, out_path: Path, image_format: ImageFormat):
         # TODO: identify actual window rather than using primary screen

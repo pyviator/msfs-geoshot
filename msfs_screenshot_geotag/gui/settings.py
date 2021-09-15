@@ -12,7 +12,7 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class _SettingsData:
-    screenshot_path: Path = Path(
+    screenshot_folder: Path = Path(
         QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)
     )
     image_format: ImageFormat = ImageFormat.tiff
@@ -34,16 +34,16 @@ class AppSettings(QObject):
         )
 
     @property
-    def screenshot_path(self) -> Path:
+    def screenshot_folder(self) -> Path:
         if (
-            value := self._settings.value("screenshot_path", defaultValue=None)
+            value := self._settings.value("screenshot_folder", defaultValue=None)
         ) is None:
-            return self._defaults.screenshot_path
+            return self._defaults.screenshot_folder
         return Path(value)
 
-    @screenshot_path.setter
-    def screenshot_path(self, value: Path):
-        self._settings.setValue("screenshot_path", str(value))
+    @screenshot_folder.setter
+    def screenshot_folder(self, value: Path):
+        self._settings.setValue("screenshot_folder", str(value))
 
     @property
     def image_format(self) -> ImageFormat:

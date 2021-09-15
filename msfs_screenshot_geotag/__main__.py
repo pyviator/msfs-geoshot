@@ -1,7 +1,6 @@
 # MSFS Screenshot GeoTag
 
 import sys
-from pathlib import Path
 
 from PyQt5.QtCore import QAbstractEventDispatcher, QAbstractNativeEventFilter
 from pyqtkeybind import keybinder
@@ -16,6 +15,7 @@ from msfs_screenshot_geotag.gui.hotkeys import (
 )
 from msfs_screenshot_geotag.gui.main_window import MainWindow
 from msfs_screenshot_geotag.gui.screenshots import ScreenshotService
+from msfs_screenshot_geotag.gui.settings import AppSettings
 from msfs_screenshot_geotag.sim import SimService
 
 
@@ -23,13 +23,14 @@ def run():
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
     sim_service = SimService()
     exif_service = ExifService()
-    screenshot_service = ScreenshotService(
-        target_folder=(Path.home() / "Pictures" / "MSFS")
-    )
+    screenshot_service = ScreenshotService()
+    app_settings = AppSettings(app)
+
     main_window = MainWindow(
         sim_service=sim_service,
         exif_service=exif_service,
         screenshot_service=screenshot_service,
+        settings=app_settings,
     )
 
     keybinder.init()
@@ -43,7 +44,11 @@ def run():
         keybinder=keybinder, window_id=main_window.winId()  # type: ignore
     )
     hotkey_service.set_hotkeys(
-        [Hotkey(key="Ctrl+Shift+S", callback=main_window.take_screenshot)]
+        [
+            Hotkey(
+                key=app_settings.screenshot_hotkey, callback=main_window.take_screenshot
+            )
+        ]
     )
 
     main_window.closed.connect(hotkey_service.remove_hotkeys)

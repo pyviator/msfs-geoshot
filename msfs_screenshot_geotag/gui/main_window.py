@@ -25,20 +25,16 @@ class MainWindow(QMainWindow):
         sim_service: SimService,
         exif_service: ExifService,
         screenshot_service: ScreenshotService,
+        settings: AppSettings,
     ):
         super().__init__()
 
         self._sim_service = sim_service
         self._exif_service = exif_service
         self._screenshot_service = screenshot_service
+        self._settings = settings
+
         self._notification_handler = NotificationHandler(parent=self)
-
-        settings = AppSettings(self)
-        settings.restore_defaults()
-
-        print(settings.screenshot_path, type(settings.screenshot_path))
-        print(settings.image_format, type(settings.image_format))
-        print(settings.screenshot_hotkey, type(settings.screenshot_hotkey))
 
         self._setup_ui()
 
@@ -62,7 +58,11 @@ class MainWindow(QMainWindow):
             exif_data = mock_exif_data  # DEBUG
             # return False
 
-        screenshot = self._screenshot_service.take_screenshot(exif_data=exif_data)
+        screenshot = self._screenshot_service.take_screenshot(
+            target_folder=self._settings.screenshot_folder,
+            exif_data=exif_data,
+            image_format=self._settings.image_format,
+        )
 
         if exif_data:
             if not self._exif_service.write_data(
