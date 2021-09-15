@@ -1,19 +1,13 @@
-import time
 from dataclasses import dataclass
-from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Dict, Optional
 
-from geopy.geocoders import Nominatim
-from geopy.location import Location
-import tzlocal
 from PyQt5.QtGui import QGuiApplication, QImageWriter
 
-from ..exif import ExifData, ExifService
-
 from .. import __app_name__
-from typing import cast
+from ..exif import ExifData
+from ..names import FileNameComposer
 
 
 class ImageFormat(Enum):
@@ -62,6 +56,9 @@ class ScreenshotService:
         ),
     }
 
+    def __init__(self, file_name_composer: FileNameComposer):
+        self._file_name_composer = file_name_composer
+
     def take_screenshot(
         self,
         target_folder: Path,
@@ -84,57 +81,17 @@ class ScreenshotService:
     def _get_screenshot_name(
         self, image_format: ImageFormat, exif_data: Optional[ExifData]
     ) -> str:
-        capture_time = time.time()
-
-        local_timezone = tzlocal.get_localzone()
-        capture_datetime = datetime.fromtimestamp(capture_time, tz=local_timezone)
-        datetime_string = capture_datetime.strftime(self._date_format)
-
-        image_format_settings = self._settings_by_image_format[image_format]
-
-        reverse_geocode = None
-        if exif_data and "{revgeocode}" in self._file_stem_format:
-            try:
-                reverse_geocode = self._get_reverse_geocode(exif_data)
-            except Exception as e:
-                print(e)
-                reverse_geocode = None
-
-        format_string = self._file_stem_format
-
-        if not reverse_geocode:
-            format_string = format_string.replace("_{revgeocode}", "")
-            format_string = format_string.replace("{revgeocode}", "")
-
-        file_stem = format_string.format(
-            date=datetime_string, revgeocode=reverse_geocode
+        file_stem = self._file_name_composer.compose_name(
+            name_format=self._file_stem_format,
+            date_format=self._date_format,
+            exif_data=exif_data,
         )
 
-        concatenated = file_stem[:250]
+        extension = self._settings_by_image_format[image_format].extension
+        truncated_file_stem = file_stem[:250]
+        file_name = f"{truncated_file_stem}.{extension}"
 
-        file_name = f"{concatenated}.{image_format_settings.extension}"
-        
         return file_name
-
-    def _get_reverse_geocode(self, exif_data: ExifData) -> Optional[str]:
-        geolocator = Nominatim(user_agent=__app_name__.replace(" ", "_"))
-        location: Location = cast(
-            Location,
-            geolocator.reverse(
-                (exif_data.GPSLatitude, exif_data.GPSLongitude),
-                language="en-US,en",
-                exactly_one=True,
-                zoom=10,
-            ),
-        )
-        if not location or not getattr(location, "address", None):
-            return None
-
-        location_str = "-".join(reversed(location.address.split(", "))).replace(
-            " ", "_"
-        )
-
-        return location_str
 
     def _grab_screenshot(self, out_path: Path, image_format: ImageFormat):
         # TODO: identify actual window rather than using primary screen

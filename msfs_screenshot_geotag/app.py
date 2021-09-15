@@ -1,3 +1,4 @@
+from msfs_screenshot_geotag.names import FileNameComposer
 import sys
 from typing import List
 
@@ -23,9 +24,13 @@ class Application(QApplication):
 
 def run():
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
+
+    user_agent = __app_name__.replace(" ", "_")
+
     sim_service = SimService()
     exif_service = ExifService()
-    screenshot_service = ScreenshotService()
+    file_name_composer = FileNameComposer(user_agent=user_agent)
+    screenshot_service = ScreenshotService(file_name_composer=file_name_composer)
     app_settings = AppSettings(app)
 
     screenshot_folder = app_settings.screenshot_folder
@@ -60,5 +65,5 @@ def run():
     main_window.closed.connect(hotkey_service.remove_hotkeys)
 
     main_window.show()
-    
+
     return app.exec()
