@@ -26,6 +26,10 @@ def run():
     screenshot_service = ScreenshotService()
     app_settings = AppSettings(app)
 
+    screenshot_folder = app_settings.screenshot_folder
+    if not screenshot_folder.is_dir():
+        screenshot_folder.mkdir(parents=True, exist_ok=True)
+
     main_window = MainWindow(
         sim_service=sim_service,
         exif_service=exif_service,
