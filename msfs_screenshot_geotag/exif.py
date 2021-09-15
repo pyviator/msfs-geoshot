@@ -63,7 +63,9 @@ class ExifService:
             print(command_line)
 
         try:
-            output = subprocess.check_output(command_line, text=True)
+            output = subprocess.check_output(
+                command_line, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
             if DEBUG:
                 print(output)
         except subprocess.CalledProcessError as e:
