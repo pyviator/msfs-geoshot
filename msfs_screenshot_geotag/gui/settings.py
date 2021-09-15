@@ -7,8 +7,21 @@ from PyQt5.QtCore import QObject, QSettings, QStandardPaths
 from .. import __app_name__, __author__
 from .screenshots import ImageFormat
 
+from dataclasses import dataclass, asdict
+
+
+@dataclass
+class _SettingsData:
+    screenshot_path: Path = Path(
+        QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)
+    )
+    image_format: ImageFormat = ImageFormat.tiff
+    screenshot_hotkey: str = "Ctrl+Shift+S"
+
 
 class AppSettings(QObject):
+    _defaults = _SettingsData()
+
     def __init__(self, parent: Optional[QObject]):
         super().__init__(parent)
 
@@ -22,14 +35,11 @@ class AppSettings(QObject):
 
     @property
     def screenshot_path(self) -> Path:
-        raw_value = self._settings.value(
-            "screenshot_path",
-            defaultValue=QStandardPaths.writableLocation(
-                QStandardPaths.PicturesLocation
-            ),
-        )
-
-        return Path(raw_value)
+        if (
+            value := self._settings.value("screenshot_path", defaultValue=None)
+        ) is None:
+            return self._defaults.screenshot_path
+        return Path(value)
 
     @screenshot_path.setter
     def screenshot_path(self, value: Path):
@@ -37,10 +47,9 @@ class AppSettings(QObject):
 
     @property
     def image_format(self) -> ImageFormat:
-        raw_value = self._settings.value(
-            "image_format", defaultValue=ImageFormat.tiff.name
-        )
-        return ImageFormat[raw_value]
+        if (value := self._settings.value("image_format", defaultValue=None)) is None:
+            return self._defaults.image_format
+        return ImageFormat[value]
 
     @image_format.setter
     def image_format(self, value: ImageFormat):
@@ -48,8 +57,16 @@ class AppSettings(QObject):
 
     @property
     def screenshot_hotkey(self) -> str:
-        return self._settings.value("screenshot_hotkey", defaultValue="Ctrl+Shift+S")
+        if (
+            value := self._settings.value("screenshot_hotkey", defaultValue=None)
+        ) is None:
+            return self._defaults.screenshot_hotkey
+        return value
 
     @screenshot_hotkey.setter
     def screenshot_hotkey(self, value: str):
         self._settings.setValue("screenshot_hotkey", value)
+
+    def restore_defaults(self):
+        for attribute, value in asdict(self._defaults).items():
+            setattr(self, attribute, value)

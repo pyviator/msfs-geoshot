@@ -34,6 +34,7 @@ class MainWindow(QMainWindow):
         self._notification_handler = NotificationHandler(parent=self)
 
         settings = AppSettings(self)
+        settings.restore_defaults()
 
         print(settings.screenshot_path, type(settings.screenshot_path))
         print(settings.image_format, type(settings.image_format))
