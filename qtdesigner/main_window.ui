@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>458</height>
+    <width>554</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -62,7 +62,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Create geotagged screenshots of your MSFS flights!</string>
+         <string>Create geotagged screenshots of your✈️ MSFS flights!</string>
         </property>
        </widget>
       </item>
@@ -116,7 +116,7 @@
      </layout>
     </item>
     <item>
-     <spacer name="verticalSpacer_3">
+     <spacer name="verticalSpacer_7">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -132,132 +132,242 @@
      </spacer>
     </item>
     <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="title">
-       <string>Settings</string>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetMinimumSize</enum>
-       </property>
-       <item row="0" column="1" colspan="3">
-        <widget class="QLineEdit" name="current_folder">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1" colspan="4">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image format guide:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JPG&lt;/span&gt;: Best geotag compatibility, smallest size, lossy quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt;: Great geotag compatibility, largest size, lossless quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PNG&lt;/span&gt;: Poor geotag compatibility, medium size, lossless quality&lt;/p&gt;&lt;p&gt;If in doubt, go with &lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt; for the best combination of quality and compatibility. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Folder</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QComboBox" name="select_format"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Image Format</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Minimum</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>2</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="select_folder">
-         <property name="text">
-          <string>Select</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>30</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Hotkey</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <spacer name="verticalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="8" column="3" colspan="2">
-        <widget class="QPushButton" name="restore_defaults">
-         <property name="text">
-          <string>Restore defaults</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <layout class="QHBoxLayout" name="layout_select_hotkey">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QWidget" name="General" native="true">
+       <attribute name="title">
+        <string>⚙️ General Settings</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item row="0" column="1" colspan="3">
+         <widget class="QLineEdit" name="current_folder">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1" colspan="4">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image format guide:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JPG&lt;/span&gt;: Best geotag compatibility, smallest size, lossy quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt;: Great geotag compatibility, largest size, lossless quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PNG&lt;/span&gt;: Poor geotag compatibility, medium size, lossless quality&lt;/p&gt;&lt;p&gt;If in doubt, go with &lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt; for the best combination of quality and compatibility. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Folder</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="select_format"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Image Format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>2</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="select_folder">
+          <property name="text">
+           <string>Select</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Hotkey</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <spacer name="verticalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="layout_select_hotkey">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+         </layout>
+        </item>
+        <item row="8" column="3" colspan="2">
+         <widget class="QPushButton" name="restore_defaults">
+          <property name="text">
+           <string>Restore Defaults</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>🔬 Advanced Settings</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="0">
+         <spacer name="verticalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="8" column="2">
+         <widget class="QPushButton" name="restore_defaults_advanced">
+          <property name="text">
+           <string>Restore Defaults</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1" colspan="2">
+         <widget class="QLineEdit" name="date_format">
+          <property name="placeholderText">
+           <string>The date format that should be used for the 'datetime' field</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QLineEdit" name="file_name_format">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>The naming format that screenshots should follow</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Date Format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>&lt;b&gt;Warning&lt;/b&gt;: The settings below are meant for advanced users. Please only modify them if you know what you are doing. Setting these up wrong could prevent the tool from working.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>The following fields are available for use:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="available_fields">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Please see the &lt;a href=&quot;https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior&quot;&gt;strftime documentation&lt;/a&gt; on how to construct date format strings.</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Filename Format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="2">
+         <spacer name="verticalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>
-     <spacer name="verticalSpacer_5">
+     <spacer name="verticalSpacer_3">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -266,8 +376,8 @@
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>10</height>
+        <width>0</width>
+        <height>1000</height>
        </size>
       </property>
      </spacer>
