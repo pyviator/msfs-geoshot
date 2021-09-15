@@ -12,9 +12,9 @@ from ..exif import ExifData, ExifService
 
 
 class ImageFormat(Enum):
-    PNG = "png"
     JPG = "jpg"
     TIFF = "tiff"
+    PNG = "png"
 
 
 @dataclass
@@ -61,7 +61,7 @@ class ScreenshotService:
         self,
         target_folder: Path,
         exif_data: Optional[ExifData] = None,
-        image_format: ImageFormat = ImageFormat.TIFF,
+        image_format: ImageFormat = ImageFormat.JPG,
     ) -> Path:
         if not target_folder.is_dir():
             target_folder.mkdir(parents=True, exist_ok=True)

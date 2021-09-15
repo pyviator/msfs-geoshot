@@ -1,13 +1,15 @@
 from pathlib import Path
+from typing import Optional
 from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QCloseEvent, QKeySequence
+from PyQt5.QtCore import QUrl, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
 from PyQt5.QtWidgets import (
     QFileDialog,
     QLabel,
     QMainWindow,
     QPushButton,
+    QUndoCommand,
     QVBoxLayout,
     QWidget,
 )
@@ -42,6 +44,8 @@ class MainWindow(QMainWindow):
         self._exif_service = exif_service
         self._screenshot_service = screenshot_service
         self._settings = settings
+
+        self._last_screenshot: Optional[Path] = None
 
         self._notification_handler = NotificationHandler(parent=self)
 
@@ -86,11 +90,15 @@ class MainWindow(QMainWindow):
             color=NotificationColor.success,
         )
 
+        self._set_last_opened_screenshot(screenshot)
+
         return True
 
     def _setup_button_connections(self):
         self._form.select_folder.clicked.connect(self._on_select_folder)
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
+        self._form.open_screenshots.clicked.connect(self._on_open_folder)
+        self._form.view_last_screenshot.clicked.connect(self._on_open_last_screenshot)
 
     def _setup_input_widget_connections(self):
         self._form.select_format.currentTextChanged.connect(
@@ -148,6 +156,22 @@ class MainWindow(QMainWindow):
             return
 
         self._settings.screenshot_hotkey = new_hotkey.toString()
+
+    @pyqtSlot(bool)
+    def _on_open_folder(self, checked: bool):
+        url = QUrl.fromLocalFile(str(self._settings.screenshot_folder))
+        QDesktopServices.openUrl(url)
+    
+    def _set_last_opened_screenshot(self, path: Path):
+        self._form.view_last_screenshot.setEnabled(True)
+        self._last_screenshot = path
+
+    @pyqtSlot(bool)
+    def _on_open_last_screenshot(self, checked: bool):
+        if not self._last_screenshot:
+            return
+        url = QUrl.fromLocalFile(str(self._last_screenshot))
+        QDesktopServices.openUrl(url)
 
     def closeEvent(self, close_event: QCloseEvent) -> None:
         self.closed.emit()
