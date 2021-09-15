@@ -1,6 +1,6 @@
 import string
 import time
-from datetime import datetime
+from datetime import date, datetime
 from typing import Dict, NamedTuple, Optional, Tuple, cast
 
 import tzlocal
@@ -26,6 +26,27 @@ class FileNameComposer:
     def __init__(self, user_agent: str):
         self._user_agent = user_agent
 
+    def compose_name(
+        self, name_format: str, date_format: str, exif_data: Optional[ExifData] = None
+    ):
+        is_valid_name_format, error = self.is_name_format_valid(name_format)
+        if not is_valid_name_format:
+            raise ValueError(f"Invalid format string provided: {error}")
+
+        is_valid_date_format, error = self.is_date_format_valid(name_format)
+        if not is_valid_date_format:
+            raise ValueError(f"Invalid format string provided: {error}")
+
+        format_data: Dict[str, Optional[str]] = {
+            "datetime": self._get_datetime_string(date_format),
+            "geocode": (
+                self._maybe_get_geocode_string(exif_data) if exif_data else None
+            )
+            or "no-geocode-found",
+        }
+
+        return name_format.format(**format_data)
+
     def is_name_format_valid(self, name_format: str) -> Tuple[bool, str]:
         formatter = string.Formatter().parse(name_format)
         try:
@@ -47,34 +68,19 @@ class FileNameComposer:
 
         return True, ""
 
-    def is_date_format_valid(self, date_format: str) -> bool:
+    def is_date_format_valid(self, date_format: str) -> Tuple[bool, str]:
         if not date_format:
-            return False
+            return False, "Date format must not be empty."
         test_time = datetime.fromtimestamp(1631728655)
         try:
             formatted = test_time.strftime(date_format)
         except Exception:
-            return False
+            return False, "Date format could not be parsed."
 
-        return formatted != ""
+        if formatted == "":
+            return False, "Date format would result in empty string."
 
-    def compose_name(
-        self, name_format: str, date_format: str, exif_data: Optional[ExifData] = None
-    ):
-        is_valid_name_format, error = self.is_name_format_valid(name_format)
-
-        if not is_valid_name_format:
-            raise ValueError(f"Invalid format string provided: {error}")
-
-        format_data: Dict[str, Optional[str]] = {
-            "datetime": self._get_datetime_string(date_format),
-            "geocode": (
-                self._maybe_get_geocode_string(exif_data) if exif_data else None
-            )
-            or "no-geocode-found",
-        }
-
-        return name_format.format(**format_data)
+        return True, ""
 
     def _get_datetime_string(self, date_format: str) -> str:
         # TODO: Get from screenshot if available
