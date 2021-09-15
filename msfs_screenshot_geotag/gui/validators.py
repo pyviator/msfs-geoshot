@@ -44,14 +44,17 @@ class _BaseValidator(QValidator):
                 self._warning_label.hide()
                 self._line_edit.setPalette(self._valid_palette)
                 self._save_button.setEnabled(True)
-            self._last_input = input
-            return QValidator.State.Acceptable, input, position
+            state = QValidator.State.Acceptable
         else:
             self._warning_label.setText(f"<b>Error</b>: {error}")
             self._warning_label.show()
             self._line_edit.setPalette(self._invalid_palette)
             self._save_button.setDisabled(True)
-            return QValidator.State.Intermediate, input, position
+            state = QValidator.State.Intermediate
+        
+        self._last_input = input
+
+        return state, input, position
 
     @abstractmethod
     def _validate(self, input: str) -> Tuple[bool, str]:
