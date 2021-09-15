@@ -48,49 +48,10 @@ class MainWindow(QMainWindow):
         self._form = Ui_MainWindow()
         self._form.setupUi(self)
 
-        self._finalize_ui()
+        self._load_ui_state_from_settings()
 
-    def _finalize_ui(self):
-        self._form.current_folder.setText(str(self._settings.screenshot_folder))
-        self._form.select_hotkey.setKeySequence(
-            QKeySequence(self._settings.screenshot_hotkey)
-        )
-        self._form.select_format.addItems(format.name for format in ImageFormat)
-        self._form.select_format.setCurrentText(self._settings.image_format.name)
-
-        self._form.select_folder.clicked.connect(self._on_select_folder)
-        self._form.select_format.currentTextChanged.connect(
-            self._on_format_selection_changed
-        )
-        self._form.select_hotkey.keySequenceChanged.connect(self._on_hotkey_changed)
-
-    @pyqtSlot(bool)
-    def _on_select_folder(self, checked: bool):
-        screenshot_folder = QFileDialog.getExistingDirectory(
-            self,
-            "Choose where to save MSFS screenshots",
-            str(self._settings.screenshot_folder),
-        )
-        if not screenshot_folder:
-            return
-
-        self._form.current_folder.setText(screenshot_folder)
-        self._settings.screenshot_folder = Path(screenshot_folder)
-
-    @pyqtSlot(str)
-    def _on_format_selection_changed(self, new_name: str):
-        format = ImageFormat[new_name]
-        self._settings.image_format = format
-
-    @pyqtSlot(QKeySequence)
-    def _on_hotkey_changed(self, new_hotkey: QKeySequence):
-        if not new_hotkey or not new_hotkey.toString():
-            self._form.select_hotkey.setKeySequence(
-                QKeySequence(self._settings.screenshot_hotkey)
-            )
-            return
-
-        self._settings.screenshot_hotkey = new_hotkey.toString()
+        self._setup_input_widget_connections()
+        self._setup_button_connections()
 
     def take_screenshot(self) -> bool:
         try:
@@ -126,6 +87,67 @@ class MainWindow(QMainWindow):
         )
 
         return True
+
+    def _setup_button_connections(self):
+        self._form.select_folder.clicked.connect(self._on_select_folder)
+        self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
+
+    def _setup_input_widget_connections(self):
+        self._form.select_format.currentTextChanged.connect(
+            self._on_format_selection_changed
+        )
+        self._form.select_hotkey.keySequenceChanged.connect(self._on_hotkey_changed)
+
+    def _tear_down_input_widget_connections(self):
+        self._form.select_format.currentTextChanged.disconnect(
+            self._on_format_selection_changed
+        )
+        self._form.select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
+
+    def _load_ui_state_from_settings(self):
+        self._form.current_folder.setText(str(self._settings.screenshot_folder))
+        self._form.select_hotkey.setKeySequence(
+            QKeySequence(self._settings.screenshot_hotkey)
+        )
+        self._form.select_format.clear()
+        self._form.select_format.addItems(format.name for format in ImageFormat)
+        self._form.select_format.setCurrentText(self._settings.image_format.name)
+
+    @pyqtSlot(bool)
+    def _on_restore_defaults(self, checked: bool):
+        self._settings.restore_defaults()
+        # Avoid loops by temporarily disenganging connections
+        self._tear_down_input_widget_connections()
+        self._load_ui_state_from_settings()
+        self._setup_input_widget_connections()
+
+    @pyqtSlot(bool)
+    def _on_select_folder(self, checked: bool):
+        screenshot_folder = QFileDialog.getExistingDirectory(
+            self,
+            "Choose where to save MSFS screenshots",
+            str(self._settings.screenshot_folder),
+        )
+        if not screenshot_folder:
+            return
+
+        self._form.current_folder.setText(screenshot_folder)
+        self._settings.screenshot_folder = Path(screenshot_folder)
+
+    @pyqtSlot(str)
+    def _on_format_selection_changed(self, new_name: str):
+        format = ImageFormat[new_name]
+        self._settings.image_format = format
+
+    @pyqtSlot(QKeySequence)
+    def _on_hotkey_changed(self, new_hotkey: QKeySequence):
+        if not new_hotkey or not new_hotkey.toString():
+            self._form.select_hotkey.setKeySequence(
+                QKeySequence(self._settings.screenshot_hotkey)
+            )
+            return
+
+        self._settings.screenshot_hotkey = new_hotkey.toString()
 
     def closeEvent(self, close_event: QCloseEvent) -> None:
         self.closed.emit()
