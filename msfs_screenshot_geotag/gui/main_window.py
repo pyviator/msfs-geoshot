@@ -1,23 +1,19 @@
 from pathlib import Path
 from typing import Optional
+
 from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from PyQt5.QtCore import QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
-from PyQt5.QtWidgets import (
-    QFileDialog,
-    QLabel,
-    QMainWindow,
-    QPushButton,
-    QUndoCommand,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QFileDialog, QMainWindow
 
+from .forms.main_window import Ui_MainWindow
 from .notification import NotificationColor, NotificationHandler
 from .screenshots import ImageFormat, ScreenshotService
 from .settings import AppSettings
-from .forms.main_window import Ui_MainWindow
+from .keyedit import CustomKeySequenceEdit
+
+from .. import __app_name__
 
 mock_exif_data = ExifData(
     GPSLatitude=60,
@@ -52,10 +48,15 @@ class MainWindow(QMainWindow):
         self._form = Ui_MainWindow()
         self._form.setupUi(self)
 
+        self._select_hotkey = CustomKeySequenceEdit(parent=self)
+        self._form.layout_select_hotkey.addWidget(self._select_hotkey)
+
         self._load_ui_state_from_settings()
 
         self._setup_input_widget_connections()
         self._setup_button_connections()
+
+        self.setWindowTitle(__app_name__)
 
     def take_screenshot(self) -> bool:
         try:
@@ -104,17 +105,17 @@ class MainWindow(QMainWindow):
         self._form.select_format.currentTextChanged.connect(
             self._on_format_selection_changed
         )
-        self._form.select_hotkey.keySequenceChanged.connect(self._on_hotkey_changed)
+        self._select_hotkey.keySequenceChanged.connect(self._on_hotkey_changed)
 
     def _tear_down_input_widget_connections(self):
         self._form.select_format.currentTextChanged.disconnect(
             self._on_format_selection_changed
         )
-        self._form.select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
+        self._select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
 
     def _load_ui_state_from_settings(self):
         self._form.current_folder.setText(str(self._settings.screenshot_folder))
-        self._form.select_hotkey.setKeySequence(
+        self._select_hotkey.setKeySequence(
             QKeySequence(self._settings.screenshot_hotkey)
         )
         self._form.select_format.clear()
@@ -150,9 +151,6 @@ class MainWindow(QMainWindow):
     @pyqtSlot(QKeySequence)
     def _on_hotkey_changed(self, new_hotkey: QKeySequence):
         if not new_hotkey or not new_hotkey.toString():
-            self._form.select_hotkey.setKeySequence(
-                QKeySequence(self._settings.screenshot_hotkey)
-            )
             return
 
         self._settings.screenshot_hotkey = new_hotkey.toString()
@@ -161,7 +159,7 @@ class MainWindow(QMainWindow):
     def _on_open_folder(self, checked: bool):
         url = QUrl.fromLocalFile(str(self._settings.screenshot_folder))
         QDesktopServices.openUrl(url)
-    
+
     def _set_last_opened_screenshot(self, path: Path):
         self._form.view_last_screenshot.setEnabled(True)
         self._last_screenshot = path
