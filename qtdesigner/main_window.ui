@@ -293,20 +293,6 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="file_name_format_warning">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="date_format_warning">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
         <item row="8" column="1" colspan="2">
          <widget class="QLabel" name="label_10">
           <property name="text">
@@ -382,6 +368,26 @@
          <widget class="QLabel" name="label_2">
           <property name="text">
            <string>Filename Format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QLabel" name="file_name_format_warning">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1" colspan="2">
+         <widget class="QLabel" name="date_format_warning">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
