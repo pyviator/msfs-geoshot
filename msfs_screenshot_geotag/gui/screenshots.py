@@ -63,6 +63,9 @@ class ScreenshotService:
         exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.tiff,
     ) -> Path:
+        if not target_folder.is_dir():
+            target_folder.mkdir(parents=True, exist_ok=True)
+
         screenshot_name = self._get_screenshot_name(
             image_format=image_format, exif_data=exif_data
         )

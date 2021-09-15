@@ -12,8 +12,8 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class _SettingsData:
-    screenshot_folder: Path = Path(
-        QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)
+    screenshot_folder: Path = (
+        Path(QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)) / "MSFS"
     )
     image_format: ImageFormat = ImageFormat.tiff
     screenshot_hotkey: str = "Ctrl+Shift+S"
