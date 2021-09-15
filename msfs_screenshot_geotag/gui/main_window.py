@@ -16,8 +16,8 @@ from .keyedit import CustomKeySequenceEdit
 from .. import __app_name__
 
 mock_exif_data = ExifData(
-    GPSLatitude=60,
-    GPSLongitude=60,
+    GPSLatitude=30,
+    GPSLongitude=30,
     GPSAltitude=100,
     GPSSpeed=200,  # m/s to km/h
 )
@@ -52,6 +52,7 @@ class MainWindow(QMainWindow):
 
         self._select_hotkey = CustomKeySequenceEdit(parent=self)
         self._form.layout_select_hotkey.addWidget(self._select_hotkey)
+        self._form.open_screenshots.setFocus()  # prevent focus steal by hotkey
 
         self._load_ui_state_from_settings()
 
@@ -74,6 +75,8 @@ class MainWindow(QMainWindow):
 
         screenshot = self._screenshot_service.take_screenshot(
             target_folder=self._settings.screenshot_folder,
+            file_name_format=self._settings.file_name_format,
+            date_format=self._settings.date_format,
             exif_data=exif_data,
             image_format=self._settings.image_format,
         )

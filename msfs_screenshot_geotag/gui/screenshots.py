@@ -27,9 +27,6 @@ class _ImageFormatSettings:
 
 class ScreenshotService:
 
-    _date_format = "%Y-%m-%d-%H%M%S"
-    _file_stem_format = "MSFS_{date}_{revgeocode}"
-
     _settings_by_image_format: Dict[ImageFormat, _ImageFormatSettings] = {
         # compression is in range 0,100, quality just maps to compression in reverse
         ImageFormat.PNG: _ImageFormatSettings(
@@ -62,6 +59,8 @@ class ScreenshotService:
     def take_screenshot(
         self,
         target_folder: Path,
+        file_name_format: str,
+        date_format: str,
         exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.JPG,
     ) -> Path:
@@ -69,7 +68,10 @@ class ScreenshotService:
             target_folder.mkdir(parents=True, exist_ok=True)
 
         screenshot_name = self._get_screenshot_name(
-            image_format=image_format, exif_data=exif_data
+            file_name_format=file_name_format,
+            date_format=date_format,
+            image_format=image_format,
+            exif_data=exif_data,
         )
 
         out_path = target_folder / screenshot_name
@@ -79,11 +81,15 @@ class ScreenshotService:
         return out_path
 
     def _get_screenshot_name(
-        self, image_format: ImageFormat, exif_data: Optional[ExifData]
+        self,
+        file_name_format: str,
+        date_format: str,
+        image_format: ImageFormat,
+        exif_data: Optional[ExifData],
     ) -> str:
         file_stem = self._file_name_composer.compose_name(
-            name_format=self._file_stem_format,
-            date_format=self._date_format,
+            name_format=file_name_format,
+            date_format=date_format,
             exif_data=exif_data,
         )
 

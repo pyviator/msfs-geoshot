@@ -33,7 +33,7 @@ class FileNameComposer:
         if not is_valid_name_format:
             raise ValueError(f"Invalid format string provided: {error}")
 
-        is_valid_date_format, error = self.is_date_format_valid(name_format)
+        is_valid_date_format, error = self.is_date_format_valid(date_format)
         if not is_valid_date_format:
             raise ValueError(f"Invalid format string provided: {error}")
 
@@ -71,6 +71,7 @@ class FileNameComposer:
     def is_date_format_valid(self, date_format: str) -> Tuple[bool, str]:
         if not date_format:
             return False, "Date format must not be empty."
+        
         test_time = datetime.fromtimestamp(1631728655)
         try:
             formatted = test_time.strftime(date_format)
@@ -79,6 +80,9 @@ class FileNameComposer:
 
         if formatted == "":
             return False, "Date format would result in empty string."
+
+        if formatted == date_format:
+            return False, "Date format does not contain any placeholders."
 
         return True, ""
 
@@ -98,7 +102,7 @@ class FileNameComposer:
                     (exif_data.GPSLatitude, exif_data.GPSLongitude),
                     language="en-US,en",
                     exactly_one=True,
-                    zoom=10,
+                    zoom=10,  # limit to city region
                 ),
             )
         except Exception as e:

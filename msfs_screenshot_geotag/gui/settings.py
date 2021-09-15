@@ -17,6 +17,8 @@ class _SettingsData:
     )
     image_format: ImageFormat = ImageFormat.TIFF
     screenshot_hotkey: str = "Ctrl+Shift+S"
+    file_name_format: str = "MSFS_{datetime}_{geocode}"
+    date_format: str = "%Y-%m-%d-%H%M%S"
 
 
 class AppSettings(QObject):
@@ -66,6 +68,28 @@ class AppSettings(QObject):
     @screenshot_hotkey.setter
     def screenshot_hotkey(self, value: str):
         self._settings.setValue("screenshot_hotkey", value)
+
+    @property
+    def file_name_format(self) -> str:
+        if (
+            value := self._settings.value("file_name_format", defaultValue=None)
+        ) is None:
+            return self._defaults.file_name_format
+        return value
+
+    @file_name_format.setter
+    def file_name_format(self, value: str):
+        self._settings.setValue("file_name_format", value)
+
+    @property
+    def date_format(self) -> str:
+        if (value := self._settings.value("date_format", defaultValue=None)) is None:
+            return self._defaults.date_format
+        return value
+
+    @date_format.setter
+    def date_format(self, value: str):
+        self._settings.setValue("date_format", value)
 
     def restore_defaults(self):
         for attribute, value in asdict(self._defaults).items():
