@@ -1,8 +1,16 @@
+from pathlib import Path
 from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QKeySequence
-from PyQt5.QtWidgets import QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QLabel,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from .notification import NotificationColor, NotificationHandler
 from .screenshots import ImageFormat, ScreenshotService
@@ -44,9 +52,45 @@ class MainWindow(QMainWindow):
 
     def _finalize_ui(self):
         self._form.current_folder.setText(str(self._settings.screenshot_folder))
-        self._form.select_hotkey.setKeySequence(QKeySequence(self._settings.screenshot_hotkey))
+        self._form.select_hotkey.setKeySequence(
+            QKeySequence(self._settings.screenshot_hotkey)
+        )
         self._form.select_format.addItems(format.name for format in ImageFormat)
         self._form.select_format.setCurrentText(self._settings.image_format.name)
+
+        self._form.select_folder.clicked.connect(self._on_select_folder)
+        self._form.select_format.currentTextChanged.connect(
+            self._on_format_selection_changed
+        )
+        self._form.select_hotkey.keySequenceChanged.connect(self._on_hotkey_changed)
+
+    @pyqtSlot(bool)
+    def _on_select_folder(self, checked: bool):
+        screenshot_folder = QFileDialog.getExistingDirectory(
+            self,
+            "Choose where to save MSFS screenshots",
+            str(self._settings.screenshot_folder),
+        )
+        if not screenshot_folder:
+            return
+
+        self._form.current_folder.setText(screenshot_folder)
+        self._settings.screenshot_folder = Path(screenshot_folder)
+
+    @pyqtSlot(str)
+    def _on_format_selection_changed(self, new_name: str):
+        format = ImageFormat[new_name]
+        self._settings.image_format = format
+
+    @pyqtSlot(QKeySequence)
+    def _on_hotkey_changed(self, new_hotkey: QKeySequence):
+        if not new_hotkey or not new_hotkey.toString():
+            self._form.select_hotkey.setKeySequence(
+                QKeySequence(self._settings.screenshot_hotkey)
+            )
+            return
+
+        self._settings.screenshot_hotkey = new_hotkey.toString()
 
     def take_screenshot(self) -> bool:
         try:

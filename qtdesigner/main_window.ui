@@ -79,7 +79,7 @@
       <item>
        <widget class="QPushButton" name="open_screenshots">
         <property name="text">
-         <string>Open Screenshots Folder</string>
+         <string>📂 Open Screenshots Folder</string>
         </property>
        </widget>
       </item>
@@ -89,7 +89,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>View Last Screenshot</string>
+         <string>🖼️ View Last Screenshot</string>
         </property>
        </widget>
       </item>
@@ -120,10 +120,13 @@
        <property name="sizeConstraint">
         <enum>QLayout::SetMinimumSize</enum>
        </property>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="select_folder">
-         <property name="text">
-          <string>Select</string>
+       <item row="0" column="1" colspan="3">
+        <widget class="QLineEdit" name="current_folder">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -134,9 +137,15 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1" colspan="3">
-        <widget class="QLineEdit" name="current_folder">
-         <property name="readOnly">
+       <item row="4" column="1">
+        <widget class="QComboBox" name="select_format"/>
+       </item>
+       <item row="5" column="1" colspan="4">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image format guide:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JPG&lt;/span&gt;: Best geotag compatibility, smallest size, lossy quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt;: Very good geotag compatibility, largest size, lossless quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PNG&lt;/span&gt;: Poor geotag compatibility, medium size, lossless quality&lt;/p&gt;&lt;p&gt;If in doubt, go with &lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt; for the best combination of quality and compatibility. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="wordWrap">
           <bool>true</bool>
          </property>
         </widget>
@@ -164,21 +173,15 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="1">
-        <widget class="QComboBox" name="select_format"/>
-       </item>
-       <item row="5" column="1" colspan="4">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image format guide:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JPG&lt;/span&gt;: Best geotag compatibility, smallest size, lossy quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt;: Very good geotag compatibility, largest size, lossless quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PNG&lt;/span&gt;: Poor geotag compatibility, medium size, lossless quality&lt;/p&gt;&lt;p&gt;If in doubt, go with &lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt; for the best combination of quality and compatibility. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
         <widget class="QKeySequenceEdit" name="select_hotkey"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Hotkey</string>
+         </property>
+        </widget>
        </item>
        <item row="2" column="2">
         <spacer name="horizontalSpacer_2">
@@ -196,10 +199,10 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
+       <item row="0" column="4">
+        <widget class="QPushButton" name="select_folder">
          <property name="text">
-          <string>Hotkey</string>
+          <string>Select</string>
          </property>
         </widget>
        </item>
