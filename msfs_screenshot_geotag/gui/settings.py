@@ -15,7 +15,7 @@ class _SettingsData:
     screenshot_folder: Path = (
         Path(QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)) / "MSFS"
     )
-    image_format: ImageFormat = ImageFormat.TIFF
+    image_format: ImageFormat = ImageFormat.JPG
     screenshot_hotkey: str = "Ctrl+Shift+S"
     file_name_format: str = "MSFS_{datetime}_{geocode}"
     date_format: str = "%Y-%m-%d-%H%M%S"
