@@ -167,7 +167,7 @@
         <item row="5" column="1" colspan="4">
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image format guide:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JPG&lt;/span&gt;: Best geotag compatibility, smallest size, lossy quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt;: Great geotag compatibility, largest size, lossless quality&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PNG&lt;/span&gt;: Poor geotag compatibility, medium size, lossless quality&lt;/p&gt;&lt;p&gt;If in doubt, go with &lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt; for the best combination of quality and compatibility. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image format guide:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JPG&lt;/span&gt;: Best geotag support, lossy quality, smallest size, small delay&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt;: Great geotag support, lossless quality, largest size, small delay&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PNG&lt;/span&gt;: Poor geotag support, lossless quality, moderate size, large delay&lt;/p&gt;&lt;p&gt;If in doubt, go with &lt;span style=&quot; font-weight:600;&quot;&gt;TIFF&lt;/span&gt; for the best combination of quality, support, and speed. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
