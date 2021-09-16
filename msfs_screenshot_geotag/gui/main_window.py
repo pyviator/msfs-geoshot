@@ -8,11 +8,11 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 from .. import __app_name__
 from ..exif import ExifData, ExifService
 from ..names import FileNameComposer
+from ..screenshots import ImageFormat, ScreenshotService
 from ..sim import SimService, SimServiceError
 from .forms.main_window import Ui_MainWindow
 from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
-from .screenshots import ImageFormat, ScreenshotService
 from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
 

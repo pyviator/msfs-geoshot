@@ -1,4 +1,3 @@
-from msfs_screenshot_geotag.names import FileNameComposer
 import sys
 from typing import List
 
@@ -6,13 +5,15 @@ from PyQt5.QtCore import QAbstractEventDispatcher
 from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
 
+from msfs_screenshot_geotag.names import FileNameComposer
+
 from . import __app_name__, __version__
 from .exif import ExifService
 from .gui.hotkeys import GlobalHotkeyService, Hotkey, WindowsEventFilter
 from .gui.main_window import MainWindow
-from .gui.screenshots import ScreenshotService
 from .gui.settings import AppSettings
 from .gui.tray_icon import AppTrayIcon
+from .screenshots import ScreenshotService
 from .sim import SimService
 
 
@@ -43,7 +44,7 @@ def run():
         exif_service=exif_service,
         screenshot_service=screenshot_service,
         settings=app_settings,
-        file_name_composer=file_name_composer
+        file_name_composer=file_name_composer,
     )
 
     pixmap = QStyle.StandardPixmap.SP_BrowserReload

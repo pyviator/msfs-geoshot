@@ -5,11 +5,10 @@ from typing import Dict, Optional
 
 import win32gui
 from PIL import ImageGrab
-from PyQt5.QtGui import QGuiApplication, QImageWriter
 
-from .. import __app_name__
-from ..exif import ExifData
-from ..names import FileNameComposer
+from . import __app_name__
+from .exif import ExifData
+from .names import FileNameComposer
 
 
 class ImageFormat(Enum):

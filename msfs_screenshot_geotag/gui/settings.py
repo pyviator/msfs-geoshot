@@ -5,7 +5,7 @@ from typing import Optional
 from PyQt5.QtCore import QObject, QSettings, QStandardPaths
 
 from .. import __app_name__, __author__
-from .screenshots import ImageFormat
+from ..screenshots import ImageFormat
 
 from dataclasses import dataclass, asdict
 
