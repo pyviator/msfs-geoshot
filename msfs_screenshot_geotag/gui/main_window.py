@@ -104,6 +104,7 @@ class MainWindow(QMainWindow):
         self._notification_handler.notify(
             message=f"<b>Screenshot saved</b>: {screenshot.name}",
             color=NotificationColor.success,
+            onclick=self._on_open_last_screenshot  # type: ignore
         )
 
         self._set_last_opened_screenshot(path=screenshot, exif_data=exif_data)

@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import Optional
+from typing import Callable, Optional
 
-from PyQt5.QtCore import QObject, QPoint, Qt, QTimer
+from PyQt5.QtCore import QObject, QPoint, Qt, QTimer, pyqtSignal
+from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QLabel, QWidget
 
 
@@ -23,12 +24,15 @@ class NotificationHandler(QObject):
         message: str,
         color: NotificationColor = NotificationColor.success,
         timeout: int = 2000,
+        onclick: Optional[Callable] = None,
     ):
         self.close_notification()
 
-        self._notification = Notification(
-            message=message, color=color.value
-        )
+        self._notification = Notification(message=message, color=color.value)
+
+        if onclick:
+            self._notification.clicked.connect(onclick)
+
         self._timer = QTimer.singleShot(timeout, self.close_notification)
         self._notification.show()
 
@@ -43,7 +47,14 @@ class NotificationHandler(QObject):
 
 
 class Notification(QLabel):
-    def __init__(self, message: str, color: str, parent: Optional[QWidget] = None):
+    clicked = pyqtSignal()
+
+    def __init__(
+        self,
+        message: str,
+        color: str,
+        parent: Optional[QWidget] = None,
+    ):
         super().__init__(parent=parent)
         self.setWindowFlags(Qt.WindowType.ToolTip)
         self.setStyleSheet(
@@ -57,3 +68,8 @@ QLabel {{
         )
         self.setText(message)
         self.move(QPoint(0, 0))
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        event.accept()
+        self.clicked.emit()
+        self.close()
