@@ -186,7 +186,7 @@ class MainWindow(QMainWindow):
         )
         self._form.select_format.clear()
         self._form.select_format.addItems(
-            format.value.upper() for format in ImageFormat
+            format.name for format in ImageFormat
         )
         self._form.select_format.setCurrentText(self._settings.image_format.name)
         self._form.file_name_format.setText(self._settings.file_name_format)
