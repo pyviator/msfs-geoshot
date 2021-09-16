@@ -15,6 +15,7 @@ from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
 from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
+from ..windows import raise_window_to_foreground, get_window_rectangle
 
 mock_exif_data = ExifData(
     GPSLatitude=30,
@@ -81,9 +82,11 @@ class MainWindow(QMainWindow):
             # return False
 
         window_id = self._sim_service.get_simulator_main_window_id()
+        raise_window_to_foreground(window_id)
+        window_rectangle = get_window_rectangle(window_id)
 
         screenshot = self._screenshot_service.take_screenshot(
-            window_id=window_id,
+            window_rectangle=window_rectangle,
             target_folder=self._settings.screenshot_folder,
             file_name_format=self._settings.file_name_format,
             date_format=self._settings.date_format,
@@ -104,7 +107,7 @@ class MainWindow(QMainWindow):
         self._notification_handler.notify(
             message=f"<b>Screenshot saved</b>: {screenshot.name}",
             color=NotificationColor.success,
-            onclick=self._on_open_last_screenshot  # type: ignore
+            onclick=self._on_open_last_screenshot,  # type: ignore
         )
 
         self._set_last_opened_screenshot(path=screenshot, exif_data=exif_data)
@@ -186,9 +189,7 @@ class MainWindow(QMainWindow):
             QKeySequence(self._settings.screenshot_hotkey)
         )
         self._form.select_format.clear()
-        self._form.select_format.addItems(
-            format.name for format in ImageFormat
-        )
+        self._form.select_format.addItems(format.name for format in ImageFormat)
         self._form.select_format.setCurrentText(self._settings.image_format.name)
         self._form.file_name_format.setText(self._settings.file_name_format)
         self._form.date_format.setText(self._settings.date_format)

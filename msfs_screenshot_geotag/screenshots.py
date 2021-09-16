@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass
 from enum import Enum
+from msfs_screenshot_geotag.windows import WindowRectangle
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -36,7 +37,7 @@ class ScreenshotService:
         ImageFormat.JPEG: _ImageFormatSettings(
             quality=100,
             optimize=True,
-            progressive=True,  
+            progressive=True,
         ),
         ImageFormat.TIFF: _ImageFormatSettings(
             compression="tiff_adobe_deflate",  # equivalent to ZIP. alternative: lzwa
@@ -51,7 +52,7 @@ class ScreenshotService:
         target_folder: Path,
         file_name_format: str,
         date_format: str,
-        window_id: int = 0,
+        window_rectangle: Optional[WindowRectangle] = None,
         exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.JPEG,
     ) -> Path:
@@ -68,7 +69,9 @@ class ScreenshotService:
         out_path = target_folder / screenshot_name
 
         self._grab_screenshot(
-            window_id=window_id, out_path=out_path, image_format=image_format
+            window_rectangle=window_rectangle,
+            out_path=out_path,
+            image_format=image_format,
         )
 
         return out_path
@@ -93,12 +96,16 @@ class ScreenshotService:
         return file_name
 
     def _grab_screenshot(
-        self, window_id: int, out_path: Path, image_format: ImageFormat
+        self,
+        window_rectangle: Optional[WindowRectangle],
+        out_path: Path,
+        image_format: ImageFormat,
     ):
-        win32gui.SetForegroundWindow(window_id)  # type: ignore
-        bounding_box = win32gui.GetWindowRect(window_id)  # type: ignore
-        image = ImageGrab.grab(bounding_box, all_screens=True)
-        
+        if window_rectangle:
+            image = ImageGrab.grab(bbox=window_rectangle, all_screens=True)
+        else:
+            image = ImageGrab.grab()  # full screen
+
         image_format_settings = self._settings_by_image_format[image_format]
         image_format_settings_dict = asdict(image_format_settings)
         keyword_arguments = {

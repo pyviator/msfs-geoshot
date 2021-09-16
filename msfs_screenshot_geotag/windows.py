@@ -1,8 +1,15 @@
-from typing import List, Optional
+from typing import List, NamedTuple, Optional
 
 import psutil
 import win32gui
 import win32process
+
+
+class WindowRectangle(NamedTuple):
+    left: int
+    top: int
+    right: int
+    bottom: int
 
 
 def get_window_ids_by_process_name(process_name: str) -> List[int]:
@@ -34,3 +41,11 @@ def get_window_ids_by_process_name(process_name: str) -> List[int]:
 
 def get_window_title_by_window_id(window_id: int) -> str:
     return win32gui.GetWindowText(window_id)  # type: ignore
+
+
+def raise_window_to_foreground(window_id: int):
+    win32gui.SetForegroundWindow(window_id)  # type: ignore
+
+
+def get_window_rectangle(window_id: int) -> WindowRectangle:
+    return WindowRectangle(*win32gui.GetWindowRect(window_id))  # type: ignore
