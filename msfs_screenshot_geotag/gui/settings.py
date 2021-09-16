@@ -39,7 +39,9 @@ class AppSettings(QObject):
     @property
     def screenshot_folder(self) -> Path:
         if (
-            value := self._settings.value("screenshot_folder", defaultValue=None)
+            value := self._settings.value(
+                "screenshot_folder", defaultValue=None, type=str
+            )
         ) is None:
             return self._defaults.screenshot_folder
         return Path(value)
@@ -50,7 +52,9 @@ class AppSettings(QObject):
 
     @property
     def image_format(self) -> ImageFormat:
-        if (value := self._settings.value("image_format", defaultValue=None)) is None:
+        if (
+            value := self._settings.value("image_format", defaultValue=None, type=str)
+        ) is None:
             return self._defaults.image_format
         return ImageFormat[value]
 
@@ -61,7 +65,9 @@ class AppSettings(QObject):
     @property
     def screenshot_hotkey(self) -> str:
         if (
-            value := self._settings.value("screenshot_hotkey", defaultValue=None)
+            value := self._settings.value(
+                "screenshot_hotkey", defaultValue=None, type=str
+            )
         ) is None:
             return self._defaults.screenshot_hotkey
         return value
@@ -73,7 +79,9 @@ class AppSettings(QObject):
     @property
     def file_name_format(self) -> str:
         if (
-            value := self._settings.value("file_name_format", defaultValue=None)
+            value := self._settings.value(
+                "file_name_format", defaultValue=None, type=str
+            )
         ) is None:
             return self._defaults.file_name_format
         return value
@@ -84,7 +92,9 @@ class AppSettings(QObject):
 
     @property
     def date_format(self) -> str:
-        if (value := self._settings.value("date_format", defaultValue=None)) is None:
+        if (
+            value := self._settings.value("date_format", defaultValue=None, type=str)
+        ) is None:
             return self._defaults.date_format
         return value
 
