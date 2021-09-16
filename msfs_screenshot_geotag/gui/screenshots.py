@@ -22,6 +22,7 @@ class ImageFormat(Enum):
 class _ImageFormatSettings:
     quality: Optional[int] = None
     compression: Optional[str] = None
+    compress_level: Optional[int] = None
     optimize: Optional[bool] = None
     progressive: Optional[bool] = None
 
@@ -29,17 +30,17 @@ class _ImageFormatSettings:
 class ScreenshotService:
 
     _settings_by_image_format: Dict[ImageFormat, _ImageFormatSettings] = {
-        # optimize implies compress_level=9
         ImageFormat.PNG: _ImageFormatSettings(
-            optimize=True,
+            # optimize would imply compress_level=9
+            compress_level=6,
         ),
         ImageFormat.JPEG: _ImageFormatSettings(
             quality=100,
             optimize=True,
-            progressive=True,
+            progressive=True,  
         ),
         ImageFormat.TIFF: _ImageFormatSettings(
-            compression="tiff_lzw",
+            compression="tiff_adobe_deflate",  # equivalent to ZIP. alternative: lzwa
         ),
     }
 
@@ -107,4 +108,4 @@ class ScreenshotService:
             if value is not None
         }
 
-        image.save(out_path, format=image_format.name, **keyword_arguments)
+        image.save(str(out_path), format=image_format.name, **keyword_arguments)
