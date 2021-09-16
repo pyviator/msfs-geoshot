@@ -1,8 +1,10 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Dict, Optional
 
+import win32gui
+from PIL import ImageGrab
 from PyQt5.QtGui import QGuiApplication, QImageWriter
 
 from .. import __app_name__
@@ -11,45 +13,33 @@ from ..names import FileNameComposer
 
 
 class ImageFormat(Enum):
-    JPG = "jpg"
+    JPEG = "jpg"
     TIFF = "tiff"
     PNG = "png"
 
 
 @dataclass
 class _ImageFormatSettings:
-    extension: str
-    quality: Optional[int]
-    compression: Optional[int]
-    optimized_write: Optional[bool]
-    progressive_scan_write: Optional[bool]
+    quality: Optional[int] = None
+    compression: Optional[str] = None
+    optimize: Optional[bool] = None
+    progressive: Optional[bool] = None
 
 
 class ScreenshotService:
 
     _settings_by_image_format: Dict[ImageFormat, _ImageFormatSettings] = {
-        # compression is in range 0,100, quality just maps to compression in reverse
+        # optimize implies compress_level=9
         ImageFormat.PNG: _ImageFormatSettings(
-            extension="png",
-            quality=None,
-            compression=100,
-            optimized_write=True,
-            progressive_scan_write=True,
+            optimize=True,
         ),
-        ImageFormat.JPG: _ImageFormatSettings(
-            extension="jpg",
+        ImageFormat.JPEG: _ImageFormatSettings(
             quality=100,
-            compression=None,
-            optimized_write=None,
-            progressive_scan_write=None,
+            optimize=True,
+            progressive=True,
         ),
-        # compression is binary 0/1, quality is ignored
         ImageFormat.TIFF: _ImageFormatSettings(
-            extension="tiff",
-            quality=None,
-            compression=1,
-            optimized_write=None,
-            progressive_scan_write=None,
+            compression="tiff_lzw",
         ),
     }
 
@@ -63,7 +53,7 @@ class ScreenshotService:
         date_format: str,
         window_id: int = 0,
         exif_data: Optional[ExifData] = None,
-        image_format: ImageFormat = ImageFormat.JPG,
+        image_format: ImageFormat = ImageFormat.JPEG,
     ) -> Path:
         if not target_folder.is_dir():
             target_folder.mkdir(parents=True, exist_ok=True)
@@ -77,7 +67,9 @@ class ScreenshotService:
 
         out_path = target_folder / screenshot_name
 
-        self._grab_screenshot(window_id=window_id, out_path=out_path, image_format=image_format)
+        self._grab_screenshot(
+            window_id=window_id, out_path=out_path, image_format=image_format
+        )
 
         return out_path
 
@@ -94,32 +86,25 @@ class ScreenshotService:
             exif_data=exif_data,
         )
 
-        extension = self._settings_by_image_format[image_format].extension
+        extension = image_format.value
         truncated_file_stem = file_stem[:250]
         file_name = f"{truncated_file_stem}.{extension}"
 
         return file_name
 
-    def _grab_screenshot(self, window_id: int, out_path: Path, image_format: ImageFormat):
-        active_screen = QGuiApplication.primaryScreen()
-        root_window_pixmap = active_screen.grabWindow(window_id)  # type: ignore
-        image = root_window_pixmap.toImage()
-
+    def _grab_screenshot(
+        self, window_id: int, out_path: Path, image_format: ImageFormat
+    ):
+        win32gui.SetForegroundWindow(window_id)  # type: ignore
+        bounding_box = win32gui.GetWindowRect(window_id)  # type: ignore
+        image = ImageGrab.grab(bounding_box, all_screens=True)
+        
         image_format_settings = self._settings_by_image_format[image_format]
+        image_format_settings_dict = asdict(image_format_settings)
+        keyword_arguments = {
+            key: value
+            for key, value in image_format_settings_dict.items()
+            if value is not None
+        }
 
-        image_writer = QImageWriter()
-        image_writer.setFileName(str(out_path))
-        image_writer.setFormat(image_format.value.encode())
-
-        if (compression := image_format_settings.compression) is not None:
-            image_writer.setCompression(compression)
-        if (quality := image_format_settings.quality) is not None:
-            image_writer.setQuality(quality)
-        if (optimized_write := image_format_settings.optimized_write) is not None:
-            image_writer.setOptimizedWrite(optimized_write)
-        if (
-            progressive_scan_write := image_format_settings.progressive_scan_write
-        ) is not None:
-            image_writer.setProgressiveScanWrite(progressive_scan_write)
-
-        image_writer.write(image)
+        image.save(out_path, format=image_format.name, **keyword_arguments)
