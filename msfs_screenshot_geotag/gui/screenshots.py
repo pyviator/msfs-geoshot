@@ -61,6 +61,7 @@ class ScreenshotService:
         target_folder: Path,
         file_name_format: str,
         date_format: str,
+        window_id: int = 0,
         exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.JPG,
     ) -> Path:
@@ -76,7 +77,7 @@ class ScreenshotService:
 
         out_path = target_folder / screenshot_name
 
-        self._grab_screenshot(out_path=out_path, image_format=image_format)
+        self._grab_screenshot(window_id=window_id, out_path=out_path, image_format=image_format)
 
         return out_path
 
@@ -99,10 +100,9 @@ class ScreenshotService:
 
         return file_name
 
-    def _grab_screenshot(self, out_path: Path, image_format: ImageFormat):
-        # TODO: identify actual window rather than using primary screen
+    def _grab_screenshot(self, window_id: int, out_path: Path, image_format: ImageFormat):
         active_screen = QGuiApplication.primaryScreen()
-        root_window_pixmap = active_screen.grabWindow(0)  # type: ignore
+        root_window_pixmap = active_screen.grabWindow(window_id)  # type: ignore
         image = root_window_pixmap.toImage()
 
         image_format_settings = self._settings_by_image_format[image_format]

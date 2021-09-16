@@ -10,12 +10,13 @@ import time
 import traceback
 import warnings
 from dataclasses import asdict, dataclass
-from typing import Optional
+from typing import List, Optional
 
 import psutil
 from SimConnect import AircraftRequests, SimConnect
 
 from .exif import ExifData
+from .windows import get_window_ids_by_process_name, get_window_title_by_window_id
 
 
 class SimServiceError(Exception):
@@ -42,6 +43,7 @@ class SimLocationData:
 class SimService:
 
     _sim_executable = "FlightSimulator.exe"
+    _sim_window_title = "Microsoft Flight Simulator"
 
     def _is_sim_running(self) -> bool:
         return self._sim_executable in (p.name() for p in psutil.process_iter())
@@ -52,6 +54,18 @@ class SimService:
             and sim_location_data.longitude >= 0.1
             and sim_location_data.speed >= 0.1
         )
+
+    def get_simulator_main_window_id(self) -> int:
+        window_ids = get_window_ids_by_process_name(self._sim_executable)
+        results: List[int] = []
+        for window_id in window_ids:
+            if self._sim_window_title in get_window_title_by_window_id(window_id):
+                results.append(window_id)
+        if len(results) > 1:
+            raise SimServiceError("Could not uniquely identify main simulator window.")
+        elif not results:
+            raise SimServiceError("Could not find simulator window.")
+        return results[0]
 
     def get_flight_data(self) -> Optional[ExifData]:
         if not self._is_sim_running():

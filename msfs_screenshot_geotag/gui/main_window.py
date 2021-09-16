@@ -1,14 +1,14 @@
 from pathlib import Path
 from typing import Optional
 
-from msfs_screenshot_geotag.exif import ExifData, ExifService
-from msfs_screenshot_geotag.names import FileNameComposer
-from msfs_screenshot_geotag.sim import SimService, SimServiceError
 from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
 from .. import __app_name__
+from ..exif import ExifData, ExifService
+from ..names import FileNameComposer
+from ..sim import SimService, SimServiceError
 from .forms.main_window import Ui_MainWindow
 from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
@@ -80,7 +80,10 @@ class MainWindow(QMainWindow):
             exif_data = mock_exif_data  # DEBUG
             # return False
 
+        window_id = self._sim_service.get_simulator_main_window_id()
+
         screenshot = self._screenshot_service.take_screenshot(
+            window_id=window_id,
             target_folder=self._settings.screenshot_folder,
             file_name_format=self._settings.file_name_format,
             date_format=self._settings.date_format,

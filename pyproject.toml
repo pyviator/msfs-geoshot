@@ -13,6 +13,7 @@ pyqtkeybind = "^0.0.8"
 tzlocal = "^3.0"
 geopy = "^2.2.0"
 pathvalidate = "^2.4.1"
+pywin32 = "^301"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -28,3 +29,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
 namespace_packages = true
+
+[[tool.mypy.overrides]]
+module = [
+    "win32gui",
+    "win32process"
+]
+ignore_errors = true
