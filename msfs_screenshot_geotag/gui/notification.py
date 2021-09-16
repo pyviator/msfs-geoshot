@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QLabel, QWidget
 class NotificationColor(Enum):
     success = "#90ee90"
     error = "#ffcccb"
+    neutral = "#e6e6e6"
 
 
 class NotificationHandler(QObject):
