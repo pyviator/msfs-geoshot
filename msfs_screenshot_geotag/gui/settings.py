@@ -91,10 +91,14 @@ class AppSettings(QObject):
     @date_format.setter
     def date_format(self, value: str):
         self._settings.setValue("date_format", value)
-    
+
     @property
     def minimize_to_tray(self) -> bool:
-        if (value := self._settings.value("minimize_to_tray", defaultValue=None)) is None:
+        if (
+            value := self._settings.value(
+                "minimize_to_tray", defaultValue=None, type=bool
+            )
+        ) is None:
             return self._defaults.minimize_to_tray
         return value
 
