@@ -136,7 +136,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="General" native="true">
+      <widget class="QWidget" name="General">
        <attribute name="title">
         <string>⚙️ General Settings</string>
        </attribute>
@@ -483,22 +483,5 @@
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>quit_button</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>432</x>
-     <y>391</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>239</x>
-     <y>206</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

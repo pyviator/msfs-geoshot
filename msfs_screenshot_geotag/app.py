@@ -68,6 +68,7 @@ def run():
         ]
     )
 
+    main_window.closed.connect(tray_icon.hide)
     main_window.closed.connect(hotkey_service.remove_hotkeys)
 
     tray_icon.show()

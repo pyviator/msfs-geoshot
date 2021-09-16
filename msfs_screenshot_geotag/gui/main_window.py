@@ -4,9 +4,9 @@ from typing import Optional
 from msfs_screenshot_geotag.exif import ExifData, ExifService
 from msfs_screenshot_geotag.names import FileNameComposer
 from msfs_screenshot_geotag.sim import SimService, SimServiceError
-from PyQt5.QtCore import QEvent, QTimer, QUrl, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
-from PyQt5.QtWidgets import QFileDialog, QLineEdit, QMainWindow
+from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
 from .. import __app_name__
 from .forms.main_window import Ui_MainWindow
@@ -140,6 +140,7 @@ class MainWindow(QMainWindow):
         self._form.date_format.setValidator(self._date_format_validator)
 
     def _setup_button_connections(self):
+        self._form.quit_button.clicked.connect(self._on_quit_button, Qt.ConnectionType.QueuedConnection)
         self._form.select_folder.clicked.connect(self._on_select_folder)
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
         self._form.open_screenshots.clicked.connect(self._on_open_folder)
@@ -264,9 +265,18 @@ class MainWindow(QMainWindow):
         url = QUrl(url_str)
         QDesktopServices.openUrl(url)
 
-    def closeEvent(self, close_event: QCloseEvent) -> None:
+    @pyqtSlot(bool)
+    def _on_quit_button(self, _):
         self.closed.emit()
-        return super().closeEvent(close_event)
+        QApplication.quit()
+
+    def closeEvent(self, close_event: QCloseEvent) -> None:
+        if self._settings.minimize_to_tray:
+            self.showMinimized()
+            close_event.ignore()
+        else:
+            self.closed.emit()
+            return super().closeEvent(close_event)
 
     def changeEvent(self, event: QEvent):
         if event.type() != QEvent.Type.WindowStateChange:
