@@ -19,7 +19,7 @@ class _SettingsData:
     screenshot_hotkey: str = "Ctrl+Shift+S"
     file_name_format: str = "MSFS_{datetime}_{geocode}"
     date_format: str = "%Y-%m-%d-%H%M%S"
-    minimize_to_tray: bool = True
+    minimize_to_tray: bool = False
 
 
 class AppSettings(QObject):
