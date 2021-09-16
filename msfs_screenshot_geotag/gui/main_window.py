@@ -68,7 +68,6 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle(__app_name__)
 
-    @pyqtSlot()
     def take_screenshot(self) -> bool:
         try:
             exif_data = self._sim_service.get_flight_data()
@@ -187,24 +186,24 @@ class MainWindow(QMainWindow):
         self._form.date_format.setText(self._settings.date_format)
         self._form.minimize_to_tray.setChecked(self._settings.minimize_to_tray)
 
-    @pyqtSlot(bool)
-    def _on_file_name_format_save(self, checked: bool):
+    @pyqtSlot()
+    def _on_file_name_format_save(self):
         if not self._form.file_name_format.hasAcceptableInput():
             return  # should not happen
         self._settings.file_name_format = self._form.file_name_format.text()
         self._form.file_name_format.setPalette(QLineEdit().palette())
         self._form.file_name_format_save.setDisabled(True)
 
-    @pyqtSlot(bool)
-    def _on_date_format_save(self, checked: bool):
+    @pyqtSlot()
+    def _on_date_format_save(self):
         if not self._form.date_format.hasAcceptableInput():
             return  # should not happen
         self._settings.date_format = self._form.date_format.text()
         self._form.date_format.setPalette(QLineEdit().palette())
         self._form.date_format_save.setDisabled(True)
 
-    @pyqtSlot(bool)
-    def _on_restore_defaults(self, checked: bool):
+    @pyqtSlot()
+    def _on_restore_defaults(self):
         self._settings.restore_defaults()
         # Avoid loops by temporarily disenganging connections
         self._tear_down_input_widget_connections()
@@ -212,8 +211,8 @@ class MainWindow(QMainWindow):
         self._setup_input_widget_connections()
         self._setup_button_labels()
 
-    @pyqtSlot(bool)
-    def _on_select_folder(self, checked: bool):
+    @pyqtSlot()
+    def _on_select_folder(self):
         screenshot_folder = QFileDialog.getExistingDirectory(
             self,
             "Choose where to save MSFS screenshots",
@@ -242,8 +241,8 @@ class MainWindow(QMainWindow):
     def _on_minimize_to_tray_changed(self, state: int):
         self._settings.minimize_to_tray = state == Qt.CheckState.Checked
 
-    @pyqtSlot(bool)
-    def _on_open_folder(self, checked: bool):
+    @pyqtSlot()
+    def _on_open_folder(self):
         url = QUrl.fromLocalFile(str(self._settings.screenshot_folder))
         QDesktopServices.openUrl(url)
 
@@ -261,8 +260,8 @@ class MainWindow(QMainWindow):
             self._form.view_last_location.setEnabled(True)
         self._last_exif_data = exif_data
 
-    @pyqtSlot(bool)
-    def _on_open_last_screenshot(self, checked: bool):
+    @pyqtSlot()
+    def _on_open_last_screenshot(self):
         if not self._last_screenshot or not self._last_screenshot.is_file():
             self._notification_handler.notify(
                 "File no longer exists", color=NotificationColor.error
@@ -271,8 +270,8 @@ class MainWindow(QMainWindow):
         url = QUrl.fromLocalFile(str(self._last_screenshot))
         QDesktopServices.openUrl(url)
 
-    @pyqtSlot(bool)
-    def _on_open_last_location(self, checked: bool):
+    @pyqtSlot()
+    def _on_open_last_location(self):
         if not self._last_exif_data:
             return
         latitude = self._last_exif_data.GPSLatitude
@@ -286,8 +285,8 @@ class MainWindow(QMainWindow):
         url = QUrl(url_str)
         QDesktopServices.openUrl(url)
 
-    @pyqtSlot(bool)
-    def _on_quit_button(self, _):
+    @pyqtSlot()
+    def _on_quit_button(self):
         self.closed.emit()
         QApplication.quit()
 
