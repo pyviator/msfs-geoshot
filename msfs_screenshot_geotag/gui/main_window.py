@@ -140,7 +140,9 @@ class MainWindow(QMainWindow):
         self._form.date_format.setValidator(self._date_format_validator)
 
     def _setup_button_connections(self):
-        self._form.quit_button.clicked.connect(self._on_quit_button, Qt.ConnectionType.QueuedConnection)
+        self._form.quit_button.clicked.connect(
+            self._on_quit_button, Qt.ConnectionType.QueuedConnection
+        )  # queued connection recommended on slots that close QApplication
         self._form.select_folder.clicked.connect(self._on_select_folder)
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
         self._form.open_screenshots.clicked.connect(self._on_open_folder)
@@ -154,12 +156,18 @@ class MainWindow(QMainWindow):
             self._on_format_selection_changed
         )
         self._select_hotkey.keySequenceChanged.connect(self._on_hotkey_changed)
+        self._form.minimize_to_tray.stateChanged.connect(
+            self._on_minimize_to_tray_changed
+        )
 
     def _tear_down_input_widget_connections(self):
         self._form.select_format.currentTextChanged.disconnect(
             self._on_format_selection_changed
         )
         self._select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
+        self._form.minimize_to_tray.stateChanged.disconnect(
+            self._on_minimize_to_tray_changed
+        )
 
     def _load_ui_state_from_settings(self):
         self._form.current_folder.setText(str(self._settings.screenshot_folder))
@@ -171,6 +179,7 @@ class MainWindow(QMainWindow):
         self._form.select_format.setCurrentText(self._settings.image_format.name)
         self._form.file_name_format.setText(self._settings.file_name_format)
         self._form.date_format.setText(self._settings.date_format)
+        self._form.minimize_to_tray.setChecked(self._settings.minimize_to_tray)
 
     @pyqtSlot(bool)
     def _on_file_name_format_save(self, checked: bool):
@@ -220,6 +229,10 @@ class MainWindow(QMainWindow):
             return
 
         self._settings.screenshot_hotkey = new_hotkey.toString()
+
+    @pyqtSlot(int)
+    def _on_minimize_to_tray_changed(self, state: int):
+        self._settings.minimize_to_tray = state == Qt.CheckState.Checked
 
     @pyqtSlot(bool)
     def _on_open_folder(self, checked: bool):
@@ -284,4 +297,3 @@ class MainWindow(QMainWindow):
         if self.isMinimized() and self._settings.minimize_to_tray:
             event.ignore()
             QTimer.singleShot(0, self.hide)
-        
