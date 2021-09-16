@@ -61,12 +61,14 @@ class MainWindow(QMainWindow):
         self._load_ui_state_from_settings()
         self._setup_input_validators()
         self._setup_format_field_description()
+        self._setup_button_labels()
 
         self._setup_input_widget_connections()
         self._setup_button_connections()
 
         self.setWindowTitle(__app_name__)
 
+    @pyqtSlot()
     def take_screenshot(self) -> bool:
         try:
             exif_data = self._sim_service.get_flight_data()
@@ -140,6 +142,7 @@ class MainWindow(QMainWindow):
         self._form.date_format.setValidator(self._date_format_validator)
 
     def _setup_button_connections(self):
+        self._form.take_screenshot.clicked.connect(self.take_screenshot)
         self._form.quit_button.clicked.connect(
             self._on_quit_button, Qt.ConnectionType.QueuedConnection
         )  # queued connection recommended on slots that close QApplication
@@ -150,6 +153,9 @@ class MainWindow(QMainWindow):
         self._form.view_last_location.clicked.connect(self._on_open_last_location)
         self._form.file_name_format_save.clicked.connect(self._on_file_name_format_save)
         self._form.date_format_save.clicked.connect(self._on_date_format_save)
+
+    def _setup_button_labels(self):
+        self._form.take_screenshot.setText(f"📷 Screenshot ({self._settings.screenshot_hotkey})")
 
     def _setup_input_widget_connections(self):
         self._form.select_format.currentTextChanged.connect(
@@ -204,6 +210,7 @@ class MainWindow(QMainWindow):
         self._tear_down_input_widget_connections()
         self._load_ui_state_from_settings()
         self._setup_input_widget_connections()
+        self._setup_button_labels()
 
     @pyqtSlot(bool)
     def _on_select_folder(self, checked: bool):
@@ -229,6 +236,7 @@ class MainWindow(QMainWindow):
             return
 
         self._settings.screenshot_hotkey = new_hotkey.toString()
+        self._setup_button_labels()
 
     @pyqtSlot(int)
     def _on_minimize_to_tray_changed(self, state: int):

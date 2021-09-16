@@ -83,14 +83,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="open_screenshots">
-        <property name="text">
-         <string>📂 Open Screenshots Folder</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="take_screenshot">
+          <property name="text">
+           <string>📷 Take Screenshot</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QPushButton" name="view_last_screenshot">
           <property name="enabled">
@@ -112,6 +112,13 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="open_screenshots">
+        <property name="text">
+         <string>📂 Open Screenshots Folder</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
