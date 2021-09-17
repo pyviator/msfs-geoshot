@@ -44,7 +44,11 @@ def get_window_title_by_window_id(window_id: int) -> str:
 
 
 def raise_window_to_foreground(window_id: int):
-    win32gui.SetForegroundWindow(window_id)  # type: ignore
+    try:
+        win32gui.SetForegroundWindow(window_id)  # type: ignore
+    except Exception as e:
+        print(e)
+        pass
 
 
 def get_window_rectangle(window_id: int) -> WindowRectangle:
