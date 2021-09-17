@@ -49,10 +49,10 @@ class SimService:
         return self._sim_executable in (p.name() for p in psutil.process_iter())
 
     def _is_user_in_flight(self, sim_location_data: SimLocationData) -> bool:
-        return (
-            abs(sim_location_data.latitude) >= 0.1
-            and abs(sim_location_data.longitude) >= 0.1
-            and abs(sim_location_data.speed) >= 0.1
+        return not(
+            abs(sim_location_data.latitude) < 0.1
+            and abs(sim_location_data.longitude) < 0.1
+            and abs(sim_location_data.speed) < 0.1
         )
 
     def get_simulator_main_window_id(self) -> int:
