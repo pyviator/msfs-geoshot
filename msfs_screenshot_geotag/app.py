@@ -2,17 +2,17 @@ import sys
 from typing import List
 
 from PyQt5.QtCore import QAbstractEventDispatcher
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
 
-from msfs_screenshot_geotag.names import FileNameComposer
-
-from . import __app_name__, __version__
+from . import RESOURCES_PATH, __app_name__, __version__
 from .exif import ExifService
 from .gui.hotkeys import GlobalHotkeyService, Hotkey, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.settings import AppSettings
 from .gui.tray_icon import AppTrayIcon
+from .names import FileNameComposer
 from .screenshots import ScreenshotService
 from .sim import SimService
 
@@ -25,7 +25,11 @@ class Application(QApplication):
 
 
 def run():
-    app = Application(argv=sys.argv, name=__app_name__, version=__version__)
+    app = Application(
+        argv=sys.argv, name=__app_name__, version=__version__
+    )
+    app_icon = QIcon(str(RESOURCES_PATH / "app-icon.ico"))
+    app.setWindowIcon(app_icon)
 
     user_agent = __app_name__.replace(" ", "_")
 
@@ -46,10 +50,9 @@ def run():
         settings=app_settings,
         file_name_composer=file_name_composer,
     )
+    main_window.setWindowIcon(app_icon)
 
-    pixmap = QStyle.StandardPixmap.SP_BrowserReload
-    icon = app.style().standardIcon(pixmap)
-    tray_icon = AppTrayIcon(icon, main_window)
+    tray_icon = AppTrayIcon(app_icon, main_window)
 
     keybinder.init()
 
