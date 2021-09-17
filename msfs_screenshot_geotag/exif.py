@@ -11,7 +11,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Literal
 
-from . import DEBUG
+from . import DEBUG, BINARY_PATH
 
 
 @dataclass
@@ -38,7 +38,7 @@ class ExifData:
 
 class ExifService:
 
-    _exiftool = Path(__file__).parent / "_bin" / "exiftool.exe"
+    _exiftool = BINARY_PATH / "exiftool.exe"
 
     def write_data(
         self,

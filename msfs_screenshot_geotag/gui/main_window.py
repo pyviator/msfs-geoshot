@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
 from PyQt5.QtMultimedia import QSound
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
-from .. import __app_name__
+from .. import __app_name__, RESOURCES_PATH
 from ..exif import ExifData, ExifService
 from ..names import FileNameComposer
 from ..screenshots import ImageFormat, ScreenshotService
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
     closed = pyqtSignal()
 
     _maps_url = "https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"
-    _shutter_sound_path = str(Path(__file__).parent / "_resources" / "shutter.wav")
+    _shutter_sound_path = str(RESOURCES_PATH / "shutter.wav")
 
     def __init__(
         self,
