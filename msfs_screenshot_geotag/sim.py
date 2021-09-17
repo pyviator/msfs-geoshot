@@ -50,9 +50,9 @@ class SimService:
 
     def _is_user_in_flight(self, sim_location_data: SimLocationData) -> bool:
         return (
-            sim_location_data.latitude >= 0.1
-            and sim_location_data.longitude >= 0.1
-            and sim_location_data.speed >= 0.1
+            abs(sim_location_data.latitude) >= 0.1
+            and abs(sim_location_data.longitude) >= 0.1
+            and abs(sim_location_data.speed) >= 0.1
         )
 
     def get_simulator_main_window_id(self) -> int:
@@ -85,6 +85,7 @@ class SimService:
             altitude=aircraft_requests.get("GPS_POSITION_ALT"),
             speed=aircraft_requests.get("GPS_GROUND_SPEED"),
         )
+        print(raw_sim_location_data)
 
         sim_connect.exit()
 
@@ -102,6 +103,7 @@ class SimService:
         sim_location_data = SimLocationData(
             **asdict(raw_sim_location_data), time=time.time()
         )
+        print(sim_location_data)
 
         if not self._is_user_in_flight(sim_location_data):
             warnings.warn("User is not currently in flight.")
