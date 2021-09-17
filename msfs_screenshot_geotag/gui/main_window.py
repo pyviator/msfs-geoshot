@@ -164,6 +164,9 @@ class MainWindow(QMainWindow):
         )  # queued connection recommended on slots that close QApplication
         self._form.select_folder.clicked.connect(self._on_select_folder)
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
+        self._form.restore_defaults_advanced.clicked.connect(
+            self._on_restore_defaults_advanced
+        )
         self._form.open_screenshots.clicked.connect(self._on_open_folder)
         self._form.view_last_screenshot.clicked.connect(self._on_open_last_screenshot)
         self._form.view_last_location.clicked.connect(self._on_open_last_location)
@@ -183,18 +186,17 @@ class MainWindow(QMainWindow):
         self._form.minimize_to_tray.stateChanged.connect(
             self._on_minimize_to_tray_changed
         )
-        self._form.play_sound.stateChanged.connect(
-            self._on_play_sound_changed
-        )
+        self._form.play_sound.stateChanged.connect(self._on_play_sound_changed)
 
     def _tear_down_input_widget_connections(self):
         self._form.select_format.currentTextChanged.disconnect(
             self._on_format_selection_changed
         )
         self._select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
-        self._form.play_sound.stateChanged.disconnect(
-            self._on_play_sound_changed
+        self._form.minimize_to_tray.stateChanged.disconnect(
+            self._on_minimize_to_tray_changed
         )
+        self._form.play_sound.stateChanged.disconnect(self._on_play_sound_changed)
 
     def _load_ui_state_from_settings(self):
         self._form.current_folder.setText(str(self._settings.screenshot_folder))
@@ -235,6 +237,13 @@ class MainWindow(QMainWindow):
         self._setup_button_labels()
 
     @pyqtSlot()
+    def _on_restore_defaults_advanced(self):
+        self._form.file_name_format.setText(self._settings.defaults.file_name_format)
+        self._form.date_format.setText(self._settings.defaults.date_format)
+        self._form.file_name_format_save.click()
+        self._form.date_format_save.click()
+
+    @pyqtSlot()
     def _on_select_folder(self):
         screenshot_folder = QFileDialog.getExistingDirectory(
             self,
@@ -263,7 +272,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot(int)
     def _on_minimize_to_tray_changed(self, state: int):
         self._settings.minimize_to_tray = state == Qt.CheckState.Checked
-    
+
     @pyqtSlot(int)
     def _on_play_sound_changed(self, state: int):
         self._settings.play_sound = state == Qt.CheckState.Checked

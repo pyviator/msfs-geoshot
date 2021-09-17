@@ -131,6 +131,10 @@ class AppSettings(QObject):
     def play_sound(self, value: bool):
         self._settings.setValue("play_sound", value)
 
+    @property
+    def defaults(self):
+        return self._defaults
+
     def restore_defaults(self):
         for attribute, value in asdict(self._defaults).items():
             setattr(self, attribute, value)
