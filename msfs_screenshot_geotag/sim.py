@@ -85,7 +85,6 @@ class SimService:
             altitude=aircraft_requests.get("GPS_POSITION_ALT"),
             speed=aircraft_requests.get("GPS_GROUND_SPEED"),
         )
-        print(raw_sim_location_data)
 
         sim_connect.exit()
 
@@ -103,7 +102,6 @@ class SimService:
         sim_location_data = SimLocationData(
             **asdict(raw_sim_location_data), time=time.time()
         )
-        print(sim_location_data)
 
         if not self._is_user_in_flight(sim_location_data):
             warnings.warn("User is not currently in flight.")
