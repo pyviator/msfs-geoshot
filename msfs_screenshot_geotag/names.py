@@ -4,7 +4,7 @@ import time
 from datetime import date, datetime
 from typing import Dict, List, NamedTuple, Optional, Tuple, cast
 
-from pathvalidate import ValidationError, validate_filename
+from pathvalidate import ValidationError, validate_filename  # type: ignore
 import tzlocal
 from geopy.geocoders import Nominatim
 from geopy.location import Location
