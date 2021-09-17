@@ -20,6 +20,7 @@ class _SettingsData:
     file_name_format: str = "MSFS_{datetime}_{geocode}"
     date_format: str = "%Y-%m-%d-%H%M%S"
     minimize_to_tray: bool = False
+    play_sound: bool = True
 
 
 class AppSettings(QObject):
@@ -115,6 +116,20 @@ class AppSettings(QObject):
     @minimize_to_tray.setter
     def minimize_to_tray(self, value: bool):
         self._settings.setValue("minimize_to_tray", value)
+    
+    @property
+    def play_sound(self) -> bool:
+        if (
+            value := self._settings.value(
+                "play_sound", defaultValue=None, type=bool
+            )
+        ) is None:
+            return self._defaults.play_sound
+        return value
+
+    @play_sound.setter
+    def play_sound(self, value: bool):
+        self._settings.setValue("play_sound", value)
 
     def restore_defaults(self):
         for attribute, value in asdict(self._defaults).items():

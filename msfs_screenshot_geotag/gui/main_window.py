@@ -1,8 +1,10 @@
+import winsound
 from pathlib import Path
 from typing import Optional
 
 from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
+from PyQt5.QtMultimedia import QSound
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
 from .. import __app_name__
@@ -10,12 +12,12 @@ from ..exif import ExifData, ExifService
 from ..names import FileNameComposer
 from ..screenshots import ImageFormat, ScreenshotService
 from ..sim import SimService, SimServiceError
+from ..windows import get_window_rectangle, raise_window_to_foreground
 from .forms.main_window import Ui_MainWindow
 from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
 from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
-from ..windows import raise_window_to_foreground, get_window_rectangle
 
 mock_exif_data = ExifData(
     GPSLatitude=30,
@@ -30,6 +32,7 @@ class MainWindow(QMainWindow):
     closed = pyqtSignal()
 
     _maps_url = "https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"
+    _shutter_sound_path = str(Path(__file__).parent / "_resources" / "shutter.wav")
 
     def __init__(
         self,
@@ -84,6 +87,13 @@ class MainWindow(QMainWindow):
         window_id = self._sim_service.get_simulator_main_window_id()
         raise_window_to_foreground(window_id)
         window_rectangle = get_window_rectangle(window_id)
+
+        # window_rectangle = (0, 0, 1920, 1200)
+
+        if self._settings.play_sound:
+            winsound.PlaySound(
+                self._shutter_sound_path, winsound.SND_FILENAME | winsound.SND_ASYNC
+            )
 
         screenshot = self._screenshot_service.take_screenshot(
             window_rectangle=window_rectangle,
@@ -173,14 +183,17 @@ class MainWindow(QMainWindow):
         self._form.minimize_to_tray.stateChanged.connect(
             self._on_minimize_to_tray_changed
         )
+        self._form.play_sound.stateChanged.connect(
+            self._on_play_sound_changed
+        )
 
     def _tear_down_input_widget_connections(self):
         self._form.select_format.currentTextChanged.disconnect(
             self._on_format_selection_changed
         )
         self._select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
-        self._form.minimize_to_tray.stateChanged.disconnect(
-            self._on_minimize_to_tray_changed
+        self._form.play_sound.stateChanged.disconnect(
+            self._on_play_sound_changed
         )
 
     def _load_ui_state_from_settings(self):
@@ -194,6 +207,7 @@ class MainWindow(QMainWindow):
         self._form.file_name_format.setText(self._settings.file_name_format)
         self._form.date_format.setText(self._settings.date_format)
         self._form.minimize_to_tray.setChecked(self._settings.minimize_to_tray)
+        self._form.play_sound.setChecked(self._settings.play_sound)
 
     @pyqtSlot()
     def _on_file_name_format_save(self):
@@ -249,6 +263,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot(int)
     def _on_minimize_to_tray_changed(self, state: int):
         self._settings.minimize_to_tray = state == Qt.CheckState.Checked
+    
+    @pyqtSlot(int)
+    def _on_play_sound_changed(self, state: int):
+        self._settings.play_sound = state == Qt.CheckState.Checked
 
     @pyqtSlot()
     def _on_open_folder(self):
