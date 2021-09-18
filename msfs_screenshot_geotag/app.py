@@ -28,8 +28,8 @@ def run():
     app = Application(
         argv=sys.argv, name=__app_name__, version=__version__
     )
-    app_icon = QIcon(str(RESOURCES_PATH / "app-icon.ico"))
-    app.setWindowIcon(app_icon)
+    window_image = QIcon(str(RESOURCES_PATH / "main.ico"))
+    tray_image = QIcon(str(RESOURCES_PATH / "tray.png"))
 
     user_agent = __app_name__.replace(" ", "_")
 
@@ -50,9 +50,9 @@ def run():
         settings=app_settings,
         file_name_composer=file_name_composer,
     )
-    main_window.setWindowIcon(app_icon)
+    main_window.setWindowIcon(window_image)
 
-    tray_icon = AppTrayIcon(app_icon, main_window)
+    tray_icon = AppTrayIcon(tray_image, main_window)
 
     keybinder.init()
 
