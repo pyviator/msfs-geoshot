@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
 from PyQt5.QtMultimedia import QSound
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
-from .. import __app_name__, RESOURCES_PATH
+from .. import RESOURCES_PATH, __app_name__, __author__, __version__
 from ..exif import ExifData, ExifService
 from ..names import FileNameComposer
 from ..screenshots import ImageFormat, ScreenshotService
@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
         self._setup_input_widget_connections()
         self._setup_button_connections()
 
+        self._form.title.setText(f"<b>{__app_name__}</b> v{__version__} by {__author__}")
         self.setWindowTitle(__app_name__)
 
     def take_screenshot(self) -> bool:

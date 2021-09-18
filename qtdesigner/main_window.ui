@@ -39,7 +39,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;b&gt;MSFS GeoShot&lt;/b&gt; v0.1.0 by pyviator</string>
+         <string>TITLE</string>
         </property>
        </widget>
       </item>
