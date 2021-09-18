@@ -6,7 +6,7 @@ from pathlib import Path
 
 __version__ = "0.1.0"
 __author__ = "pyviator"
-__app_name__ = "GeoShot"
+__app_name__ = "MSFS GeoShot"
 
 
 def _resource_path(relative_path):
