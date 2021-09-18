@@ -39,13 +39,10 @@ class AppSettings(QObject):
 
     @property
     def screenshot_folder(self) -> Path:
-        if (
-            value := self._settings.value(
-                "screenshot_folder", defaultValue=None, type=str
-            )
-        ) is None:
+        key = "screenshot_folder"
+        if not self._settings.contains(key):
             return self._defaults.screenshot_folder
-        return Path(value)
+        return Path(self._settings.value(key, type=str))
 
     @screenshot_folder.setter
     def screenshot_folder(self, value: Path):
@@ -53,11 +50,10 @@ class AppSettings(QObject):
 
     @property
     def image_format(self) -> ImageFormat:
-        if (
-            value := self._settings.value("image_format", defaultValue=None, type=str)
-        ) is None:
+        key = "image_format"
+        if not self._settings.contains(key):
             return self._defaults.image_format
-        return ImageFormat[value]
+        return ImageFormat[self._settings.value(key, type=str)]
 
     @image_format.setter
     def image_format(self, value: ImageFormat):
@@ -65,13 +61,10 @@ class AppSettings(QObject):
 
     @property
     def screenshot_hotkey(self) -> str:
-        if (
-            value := self._settings.value(
-                "screenshot_hotkey", defaultValue=None, type=str
-            )
-        ) is None:
+        key = "screenshot_hotkey"
+        if not self._settings.contains(key):
             return self._defaults.screenshot_hotkey
-        return value
+        return self._settings.value(key, type=str)
 
     @screenshot_hotkey.setter
     def screenshot_hotkey(self, value: str):
@@ -79,13 +72,10 @@ class AppSettings(QObject):
 
     @property
     def file_name_format(self) -> str:
-        if (
-            value := self._settings.value(
-                "file_name_format", defaultValue=None, type=str
-            )
-        ) is None:
+        key = "file_name_format"
+        if not self._settings.contains(key):
             return self._defaults.file_name_format
-        return value
+        return self._settings.value(key, type=str)
 
     @file_name_format.setter
     def file_name_format(self, value: str):
@@ -93,11 +83,10 @@ class AppSettings(QObject):
 
     @property
     def date_format(self) -> str:
-        if (
-            value := self._settings.value("date_format", defaultValue=None, type=str)
-        ) is None:
-            return self._defaults.date_format
-        return value
+        key = "date_format"
+        if not self._settings.contains(key):
+            return self._defaults.file_name_format
+        return self._settings.value(key, type=str)
 
     @date_format.setter
     def date_format(self, value: str):
@@ -105,13 +94,10 @@ class AppSettings(QObject):
 
     @property
     def minimize_to_tray(self) -> bool:
-        if (
-            value := self._settings.value(
-                "minimize_to_tray", defaultValue=None, type=bool
-            )
-        ) is None:
+        key = "minimize_to_tray"
+        if not self._settings.contains(key):
             return self._defaults.minimize_to_tray
-        return value
+        return self._settings.value(key, type=bool)
 
     @minimize_to_tray.setter
     def minimize_to_tray(self, value: bool):
@@ -119,13 +105,10 @@ class AppSettings(QObject):
     
     @property
     def play_sound(self) -> bool:
-        if (
-            value := self._settings.value(
-                "play_sound", defaultValue=None, type=bool
-            )
-        ) is None:
-            return self._defaults.play_sound
-        return value
+        key = "play_sound"
+        if not self._settings.contains(key):
+            return self._defaults.minimize_to_tray
+        return self._settings.value(key, type=bool)
 
     @play_sound.setter
     def play_sound(self, value: bool):
