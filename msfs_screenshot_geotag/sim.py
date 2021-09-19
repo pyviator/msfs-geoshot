@@ -6,11 +6,10 @@ Copyright (C) 2020 Luuk3333 <https://github.com/Luuk3333/msfs-screenshot-gps-dat
 Used under the GNU Affero General Public License v3.0
 """
 
-import time
 import traceback
 import warnings
 from dataclasses import asdict, dataclass
-from typing import List, Optional, Set
+from typing import Any, List, Optional, Set, Dict
 
 import psutil
 from SimConnect import AircraftRequests, SimConnect
@@ -24,7 +23,8 @@ class SimServiceError(Exception):
 
 
 @dataclass
-class _RawSimLocationData:
+class _RawSimData:
+    # GPS
     latitude: Optional[float]  # degrees
     longitude: Optional[float]  # degrees
     altitude: Optional[float]  # m
@@ -32,10 +32,13 @@ class _RawSimLocationData:
     heading: Optional[float]  # aircraft (not camera!) heading
     dest_latitude: Optional[float]
     dest_longitude: Optional[float]
+    # Misc
+    aircraft_type: Optional[bytes]
 
 
 @dataclass
-class _SimLocationData:
+class _SimData:
+    # GPS
     latitude: float  # degrees
     longitude: float  # degrees
     altitude: float  # m
@@ -43,10 +46,11 @@ class _SimLocationData:
     heading: float
     dest_latitude: Optional[float]  # radians
     dest_longitude: Optional[float]  # radians
-    time: float  # s since epoch
+    # Misc
+    aircraft_type: Optional[str]
 
 
-_nullable_sim_data: Set[str] = set(("dest_latitude", "dest_longitude"))
+_nullable_sim_data: Set[str] = set(("dest_latitude", "dest_longitude", "aircraft_type"))
 
 
 class SimService:
@@ -57,7 +61,7 @@ class SimService:
     def _is_sim_running(self) -> bool:
         return self._sim_executable in (p.name() for p in psutil.process_iter())
 
-    def _is_user_in_flight(self, sim_location_data: _SimLocationData) -> bool:
+    def _is_user_in_flight(self, sim_location_data: _SimData) -> bool:
         return not (
             abs(sim_location_data.latitude) < 0.1
             and abs(sim_location_data.longitude) < 0.1
@@ -88,7 +92,7 @@ class SimService:
 
         aircraft_requests = AircraftRequests(sim_connect)
 
-        raw_sim_location_data = _RawSimLocationData(
+        raw_sim_location_data = _RawSimData(
             latitude=aircraft_requests.get("GPS_POSITION_LAT"),
             longitude=aircraft_requests.get("GPS_POSITION_LON"),
             altitude=aircraft_requests.get("GPS_POSITION_ALT"),
@@ -96,6 +100,7 @@ class SimService:
             heading=aircraft_requests.get("GPS_GROUND_TRUE_HEADING"),
             dest_latitude=aircraft_requests.get("GPS_WP_NEXT_LAT"),
             dest_longitude=aircraft_requests.get("GPS_WP_NEXT_LON"),
+            aircraft_type=aircraft_requests.get("TITLE"),
         )
         # TITLE
 
@@ -112,9 +117,17 @@ class SimService:
                 f"Got invalid location data from SimConnect for the following values: {null_values}"
             )
 
-        sim_location_data = _SimLocationData(
-            **asdict(raw_sim_location_data), time=time.time()
-        )
+        sim_location_data_dict: Dict[str, Any] = {}
+
+        for key, value in asdict(raw_sim_location_data).items():
+            if isinstance(value, bytes):
+                try:
+                    value = value.decode("utf-8")
+                except Exception:
+                    value = value.decode("ascii")
+            sim_location_data_dict[key] = value
+
+        sim_location_data = _SimData(**sim_location_data_dict)
 
         if not self._is_user_in_flight(sim_location_data):
             warnings.warn("User is not currently in flight.")
@@ -122,10 +135,11 @@ class SimService:
 
         return self._sim_location_to_metadata(sim_location_data)
 
-    def _sim_location_to_metadata(
-        self, sim_location_data: _SimLocationData
-    ) -> Metadata:
+    def _sim_location_to_metadata(self, sim_location_data: _SimData) -> Metadata:
+        description = sim_location_data.aircraft_type
+
         return Metadata(
+            # GPS
             GPSLatitude=round(sim_location_data.latitude, 5),
             GPSLongitude=round(sim_location_data.longitude, 5),
             GPSAltitude=round(sim_location_data.altitude, 2),
@@ -137,4 +151,7 @@ class SimService:
             GPSDestLatitude=round(sim_location_data.dest_latitude, 5)
             if sim_location_data.dest_latitude
             else None,
+            # MISC
+            Description=description,
+            ImageDescription=description,
         )

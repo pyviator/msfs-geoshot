@@ -11,7 +11,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Literal, Optional
 
-from . import DEBUG, BINARY_PATH
+from . import DEBUG, BINARY_PATH, __app_name__, __version__
 
 _LongitudeRefType = Literal["E", "W"]
 _LatitudeRefType = Literal["N", "S"]
@@ -19,6 +19,10 @@ _LatitudeRefType = Literal["N", "S"]
 
 @dataclass
 class Metadata:
+    # ---- EXIF ----
+
+    # -- GPS --
+    # regular
     GPSLatitude: float
     GPSLongitude: float
     GPSAltitude: float
@@ -26,20 +30,31 @@ class Metadata:
     GPSImgDirection: float
     GPSDestLatitude: Optional[float] = None
     GPSDestLongitude: Optional[float] = None
-    # --- Computed ---:
+    # computed
     GPSLatitudeRef: _LatitudeRefType = field(init=False)
     GPSLongitudeRef: _LongitudeRefType = field(init=False)
     GPSAltitudeRef: Literal[0, 1] = field(init=False)  # below/above sea level
     GPSDestLatitudeRef: Optional[_LatitudeRefType] = field(init=False, default=None)
     GPSDestLongitudeRef: Optional[_LongitudeRefType] = field(init=False, default=None)
-    # --- Constant ---:
-    GPSSpeedRef: Literal["K", "M", "N"] = field(init=False)  # km/h, mph, knots
+    # constant
+    GPSSpeedRef: Literal["K", "M", "N"] = field(
+        init=False, default="K"
+    )  # km/h, mph, knots
+    # -- MISC --
+    Make: str = field(init=False, default=__app_name__)  # captured by this tool
+    Model: str = field(init=False, default=__version__)
+    ImageDescription: Optional[str] = None  # plane title
+
+    # ---- XMP ----
+    Description: Optional[str] = None  # plane title
+    Creator: str = field(init=False, default=__app_name__)
+    Source: str = field(init=False, default="MSFS")
 
     def __post_init__(self):
+        """Calculate derivative fields dynamically"""
         self.GPSLatitudeRef = "N" if self.GPSLatitude >= 0 else "S"
         self.GPSLongitudeRef = "E" if self.GPSLongitude >= 0 else "W"
         self.GPSAltitudeRef = 0 if self.GPSAltitude >= 0 else 1
-        self.GPSSpeedRef = "K"
         if self.GPSDestLatitude is not None:
             self.GPSDestLatitudeRef = "N" if self.GPSDestLatitude >= 0 else "S"
         if self.GPSDestLongitude is not None:
