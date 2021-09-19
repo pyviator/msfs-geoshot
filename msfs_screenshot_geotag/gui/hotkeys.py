@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from msfs_screenshot_geotag import DEBUG
 from typing import TYPE_CHECKING, Dict, Optional
 from PyQt5 import sip
 
@@ -68,8 +69,11 @@ class GlobalHotkeyService(QObject):
         for window_id in window_ids:
             try:
                 keybinder.unregister_hotkey(window_id, hotkey.key)
+                if DEBUG:
+                    print(f"Unbound hotkey for {window_id}")
             except Exception as e:
-                print(e)
+                if DEBUG:
+                    print(f"Could not unbind hotkey for {window_id}")
                 pass
 
     def send_hotkey_signal(self, hotkey_id: HotkeyID):
@@ -77,5 +81,6 @@ class GlobalHotkeyService(QObject):
         signal.emit()
 
     def unbind_all_hotkeys(self):
+        print("Unbinding all")
         for hotkey_id in self._hotkeys.keys():
             self.unbind_hotkey(hotkey_id)

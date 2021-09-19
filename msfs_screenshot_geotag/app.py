@@ -1,6 +1,7 @@
 import sys
 from typing import List
 
+import multiexit
 from PyQt5.QtCore import QAbstractEventDispatcher
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QStyle
@@ -27,6 +28,7 @@ class Application(QApplication):
 
 
 def run():
+    multiexit.install(except_hook=False)
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
 
     error_handler = ErrorHandler(app)
@@ -73,8 +75,16 @@ def run():
     event_dispatcher.installNativeEventFilter(win_event_filter)
 
     hotkey_service = GlobalHotkeyService(keybinder=keybinder, parent=app)  # type: ignore
+    
     # Hotkey not unbound will not be usable until system restart, so be extra careful:
     main_window.closed.connect(hotkey_service.unbind_all_hotkeys)
+
+    def on_signal_exit():
+        hotkey_service.unbind_all_hotkeys()
+        app.exit()
+        sys.exit(1)
+
+    multiexit.register(on_signal_exit)
 
     hotkey_service.bind_hotkey(
         HotkeyID.take_screenshot, app_settings.screenshot_hotkey, main_window
