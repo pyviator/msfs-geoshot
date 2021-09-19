@@ -37,9 +37,8 @@ class Metadata:
     GPSDestLatitudeRef: Optional[_LatitudeRefType] = field(init=False, default=None)
     GPSDestLongitudeRef: Optional[_LongitudeRefType] = field(init=False, default=None)
     # constant
-    GPSSpeedRef: Literal["K", "M", "N"] = field(
-        init=False, default="K"
-    )  # km/h, mph, knots
+    GPSSpeedRef: Literal["K", "M", "N"] = field(init=False, default="K")  # km/h
+    GPSImgDirectionRef: Literal["M", "T"] = field(init=False, default="T")  # true north
     # -- MISC --
     Make: str = field(init=False, default=__app_name__)  # captured by this tool
     Model: str = field(init=False, default=__version__)
