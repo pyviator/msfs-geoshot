@@ -1,15 +1,13 @@
 from dataclasses import asdict, dataclass
 from enum import Enum
-from msfs_screenshot_geotag.windows import WindowRectangle
 from pathlib import Path
 from typing import Dict, Optional
 
-import win32gui
 from PIL import ImageGrab
 
 from . import __app_name__
-from .exif import ExifData
 from .names import FileNameComposer
+from .windows import WindowRectangle
 
 
 class ImageFormat(Enum):
