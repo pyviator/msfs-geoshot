@@ -9,6 +9,7 @@ from pyqtkeybind import keybinder
 from . import RESOURCES_PATH, __app_name__, __version__
 from .exif import ExifService
 from .gui.controller import ScreenShotController
+from .gui.error_handler import ErrorHandler, show_error
 from .gui.hotkeys import GlobalHotkeyService, HotkeyID, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.settings import AppSettings
@@ -27,6 +28,11 @@ class Application(QApplication):
 
 def run():
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
+
+    error_handler = ErrorHandler(app)
+    error_handler.exception_caught.connect(show_error)
+    sys.excepthook = error_handler
+
     icon_window = QIcon(str(RESOURCES_PATH / "main.ico"))
     icon_tray = QIcon(str(RESOURCES_PATH / "tray.png"))
     app.setWindowIcon(icon_window)
@@ -67,6 +73,9 @@ def run():
     event_dispatcher.installNativeEventFilter(win_event_filter)
 
     hotkey_service = GlobalHotkeyService(keybinder=keybinder, parent=app)  # type: ignore
+    # Hotkey not unbound will not be usable until system restart, so be extra careful:
+    main_window.closed.connect(hotkey_service.unbind_all_hotkeys)
+
     hotkey_service.bind_hotkey(
         HotkeyID.take_screenshot, app_settings.screenshot_hotkey, main_window
     )
@@ -77,8 +86,6 @@ def run():
     main_window.hotkey_changed.connect(
         lambda hotkey_id, key: hotkey_service.bind_hotkey(hotkey_id, key, main_window)
     )
-
-    main_window.closed.connect(hotkey_service.unbind_all_hotkeys)
 
     tray_icon_widget.show()
     main_window.show()
