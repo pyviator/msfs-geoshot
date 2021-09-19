@@ -7,7 +7,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
 
-from . import RESOURCES_PATH, __app_name__, __version__
+from . import DEBUG, RESOURCES_PATH, __app_name__, __version__
 from .metadata import MetadataService
 from .gui.controller import ScreenShotController
 from .gui.error_handler import ErrorHandler, show_error
@@ -31,9 +31,10 @@ def run():
     multiexit.install(except_hook=False)
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
 
-    error_handler = ErrorHandler(app)
-    error_handler.exception_caught.connect(show_error)
-    sys.excepthook = error_handler
+    if not DEBUG:
+        error_handler = ErrorHandler(app)
+        error_handler.exception_caught.connect(show_error)
+        sys.excepthook = error_handler
 
     icon_window = QIcon(str(RESOURCES_PATH / "main.ico"))
     icon_tray = QIcon(str(RESOURCES_PATH / "tray.png"))
