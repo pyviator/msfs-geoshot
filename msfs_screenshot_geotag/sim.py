@@ -29,6 +29,7 @@ class _RawSimLocationData:
     longitude: Optional[float]  # degrees
     altitude: Optional[float]  # m
     speed: Optional[float]  # m/s
+    heading: Optional[float]  # aircraft (not camera!) heading
     dest_latitude: Optional[float]
     dest_longitude: Optional[float]
 
@@ -39,6 +40,7 @@ class _SimLocationData:
     longitude: float  # degrees
     altitude: float  # m
     speed: float  # m/s
+    heading: float
     dest_latitude: Optional[float]  # radians
     dest_longitude: Optional[float]  # radians
     time: float  # s since epoch
@@ -91,9 +93,11 @@ class SimService:
             longitude=aircraft_requests.get("GPS_POSITION_LON"),
             altitude=aircraft_requests.get("GPS_POSITION_ALT"),
             speed=aircraft_requests.get("GPS_GROUND_SPEED"),
+            heading=aircraft_requests.get("GPS_GROUND_TRUE_HEADING"),
             dest_latitude=aircraft_requests.get("GPS_WP_NEXT_LAT"),
             dest_longitude=aircraft_requests.get("GPS_WP_NEXT_LON"),
         )
+        # TITLE
 
         sim_connect.exit()
 
@@ -126,6 +130,7 @@ class SimService:
             GPSLongitude=round(sim_location_data.longitude, 5),
             GPSAltitude=round(sim_location_data.altitude, 2),
             GPSSpeed=round(sim_location_data.speed * 3.6, 2),  # m/s to km/h
+            GPSImgDirection=round(sim_location_data.heading, 5),
             GPSDestLongitude=round(sim_location_data.dest_longitude, 5)
             if sim_location_data.dest_longitude
             else None,

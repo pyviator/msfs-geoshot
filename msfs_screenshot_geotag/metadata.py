@@ -23,6 +23,7 @@ class Metadata:
     GPSLongitude: float
     GPSAltitude: float
     GPSSpeed: float
+    GPSImgDirection: float
     GPSDestLatitude: Optional[float] = None
     GPSDestLongitude: Optional[float] = None
     # --- Computed ---:

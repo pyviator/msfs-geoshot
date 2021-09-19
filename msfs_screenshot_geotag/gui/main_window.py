@@ -18,13 +18,6 @@ from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
 from .hotkeys import HotkeyID
 
-mock_metadata = Metadata(
-    GPSLatitude=30,
-    GPSLongitude=30,
-    GPSAltitude=100,
-    GPSSpeed=200,  # m/s to km/h
-)
-
 
 class MainWindow(QMainWindow):
 

@@ -26,6 +26,7 @@ _mock_metadata = Metadata(
     GPSLongitude=60,
     GPSAltitude=100,
     GPSSpeed=200,
+    GPSImgDirection=0
 )
 
 
