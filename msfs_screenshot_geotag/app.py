@@ -1,3 +1,4 @@
+from msfs_screenshot_geotag.gui.controller import ScreenShotController
 import sys
 from typing import List
 
@@ -25,11 +26,9 @@ class Application(QApplication):
 
 
 def run():
-    app = Application(
-        argv=sys.argv, name=__app_name__, version=__version__
-    )
-    window_image = QIcon(str(RESOURCES_PATH / "main.ico"))
-    tray_image = QIcon(str(RESOURCES_PATH / "tray.png"))
+    app = Application(argv=sys.argv, name=__app_name__, version=__version__)
+    icon_window = QIcon(str(RESOURCES_PATH / "main.ico"))
+    icon_tray = QIcon(str(RESOURCES_PATH / "tray.png"))
 
     user_agent = __app_name__.replace(" ", "_")
 
@@ -39,20 +38,27 @@ def run():
     screenshot_service = ScreenshotService(file_name_composer=file_name_composer)
     app_settings = AppSettings(app)
 
-    screenshot_folder = app_settings.screenshot_folder
-    if not screenshot_folder.is_dir():
-        screenshot_folder.mkdir(parents=True, exist_ok=True)
-
-    main_window = MainWindow(
+    screenshot_controller = ScreenShotController(
         sim_service=sim_service,
         exif_service=exif_service,
         screenshot_service=screenshot_service,
-        settings=app_settings,
         file_name_composer=file_name_composer,
+        settings=app_settings,
+        parent=app,
     )
-    main_window.setWindowIcon(window_image)
 
-    tray_icon = AppTrayIcon(tray_image, main_window)
+    main_window = MainWindow(
+        file_name_composer=file_name_composer, settings=app_settings
+    )
+    main_window.setWindowIcon(icon_window)
+
+    screenshot_controller.sim_window_found.connect(main_window.on_sim_window_found)  # type: ignore
+    screenshot_controller.screenshot_taken.connect(main_window.on_screenshot_taken)  # type: ignore
+    screenshot_controller.error.connect(main_window.on_screenshot_error)  # type: ignore
+
+    main_window.screenshot_requested.connect(screenshot_controller.take_screenshot)  # type: ignore
+
+    tray_icon_widget = AppTrayIcon(icon_tray, main_window)
 
     keybinder.init()
 
@@ -67,15 +73,16 @@ def run():
     hotkey_service.set_hotkeys(
         [
             Hotkey(
-                key=app_settings.screenshot_hotkey, callback=main_window.take_screenshot
+                key=app_settings.screenshot_hotkey,
+                callback=screenshot_controller.take_screenshot,  # type: ignore
             )
         ]
     )
 
-    main_window.closed.connect(tray_icon.hide)
+    main_window.closed.connect(tray_icon_widget.hide)
     main_window.closed.connect(hotkey_service.remove_hotkeys)
 
-    tray_icon.show()
+    tray_icon_widget.show()
     main_window.show()
 
     return app.exec()

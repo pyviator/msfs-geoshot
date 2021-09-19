@@ -4,15 +4,13 @@ from typing import Optional
 
 from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
-from PyQt5.QtMultimedia import QSound
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
 from .. import RESOURCES_PATH, __app_name__, __author__, __version__
-from ..exif import ExifData, ExifService
+from ..exif import ExifData
 from ..names import FileNameComposer
-from ..screenshots import ImageFormat, ScreenshotService
-from ..sim import SimService, SimServiceError
-from ..windows import get_window_rectangle, raise_window_to_foreground
+from ..screenshots import ImageFormat
+from .controller import ScreenShotResult
 from .forms.main_window import Ui_MainWindow
 from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
@@ -29,6 +27,7 @@ mock_exif_data = ExifData(
 
 class MainWindow(QMainWindow):
 
+    screenshot_requested = pyqtSignal()
     closed = pyqtSignal()
 
     _maps_url = "https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"
@@ -36,17 +35,11 @@ class MainWindow(QMainWindow):
 
     def __init__(
         self,
-        sim_service: SimService,
-        exif_service: ExifService,
-        screenshot_service: ScreenshotService,
-        settings: AppSettings,
         file_name_composer: FileNameComposer,
+        settings: AppSettings,
     ):
         super().__init__()
 
-        self._sim_service = sim_service
-        self._exif_service = exif_service
-        self._screenshot_service = screenshot_service
         self._file_name_composer = file_name_composer
         self._settings = settings
 
@@ -70,60 +63,33 @@ class MainWindow(QMainWindow):
         self._setup_input_widget_connections()
         self._setup_button_connections()
 
-        self._form.title.setText(f"<b>{__app_name__}</b> v{__version__} by {__author__}")
+        self._form.title.setText(
+            f"<b>{__app_name__}</b> v{__version__} by {__author__}"
+        )
         self.setWindowTitle(__app_name__)
 
-    def take_screenshot(self) -> bool:
-        try:
-            exif_data = self._sim_service.get_flight_data()
-        except SimServiceError as e:
-            # print(e)
-            # self._notification_handler.notify(
-            #     message="<b>Error</b>: Could not connect to Simulator<br>or received invalid data",
-            #     color=NotificationColor.error,
-            # )
-            exif_data = mock_exif_data  # DEBUG
-            # return False
+    @pyqtSlot(ScreenShotResult)
+    def on_screenshot_taken(self, result: ScreenShotResult):
+        self._notification_handler.notify(
+            message=f"<b>Screenshot saved</b>: {result.path.name}",
+            color=NotificationColor.success,
+            onclick=self._on_open_last_screenshot,  # type: ignore
+        )
+        self._set_last_opened_screenshot(path=result.path, exif_data=result.exif_data)
 
-        window_id = self._sim_service.get_simulator_main_window_id()
-        raise_window_to_foreground(window_id)
-        window_rectangle = get_window_rectangle(window_id)
+    @pyqtSlot(str)
+    def on_screenshot_error(self, message: str):
+        self._notification_handler.notify(
+            message=f"<b>Error</b>: {message}",
+            color=NotificationColor.error,
+        )
 
-        # window_rectangle = (0, 0, 1920, 1200)
-
+    @pyqtSlot()
+    def on_sim_window_found(self):
         if self._settings.play_sound:
             winsound.PlaySound(
                 self._shutter_sound_path, winsound.SND_FILENAME | winsound.SND_ASYNC
             )
-
-        screenshot = self._screenshot_service.take_screenshot(
-            window_rectangle=window_rectangle,
-            target_folder=self._settings.screenshot_folder,
-            file_name_format=self._settings.file_name_format,
-            date_format=self._settings.date_format,
-            exif_data=exif_data,
-            image_format=self._settings.image_format,
-        )
-
-        if exif_data:
-            if not self._exif_service.write_data(
-                image_path=screenshot, exif_data=exif_data
-            ):
-                self._notification_handler.notify(
-                    message="<b>Error</b>: Could not write metadata to screenshot",
-                    color=NotificationColor.error,
-                )
-                return False
-
-        self._notification_handler.notify(
-            message=f"<b>Screenshot saved</b>: {screenshot.name}",
-            color=NotificationColor.success,
-            onclick=self._on_open_last_screenshot,  # type: ignore
-        )
-
-        self._set_last_opened_screenshot(path=screenshot, exif_data=exif_data)
-
-        return True
 
     def _setup_format_field_description(self):
         supported_fields = self._file_name_composer.get_supported_fields()
@@ -159,7 +125,7 @@ class MainWindow(QMainWindow):
         self._form.date_format.setValidator(self._date_format_validator)
 
     def _setup_button_connections(self):
-        self._form.take_screenshot.clicked.connect(self.take_screenshot)
+        self._form.take_screenshot.clicked.connect(self.screenshot_requested)
         self._form.quit_button.clicked.connect(
             self._on_quit_button, Qt.ConnectionType.QueuedConnection
         )  # queued connection recommended on slots that close QApplication

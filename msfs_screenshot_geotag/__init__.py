@@ -19,3 +19,4 @@ BINARY_PATH = Path(_resource_path("_bin"))
 RESOURCES_PATH = Path(_resource_path("_resources"))
 
 DEBUG = os.environ.get("DEBUG") is not None
+MOCK_SIMULATOR = os.environ.get("MOCK_SIMULATOR") is not None
