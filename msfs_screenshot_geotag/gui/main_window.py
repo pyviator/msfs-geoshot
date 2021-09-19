@@ -16,6 +16,7 @@ from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
 from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
+from .hotkeys import HotkeyID
 
 mock_exif_data = ExifData(
     GPSLatitude=30,
@@ -28,6 +29,7 @@ mock_exif_data = ExifData(
 class MainWindow(QMainWindow):
 
     screenshot_requested = pyqtSignal()
+    hotkey_changed = pyqtSignal(HotkeyID, str)
     closed = pyqtSignal()
 
     _maps_url = "https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"
@@ -202,6 +204,10 @@ class MainWindow(QMainWindow):
         self._load_ui_state_from_settings()
         self._setup_input_widget_connections()
         self._setup_button_labels()
+        # FIXME: should not have to do this manually
+        self.hotkey_changed.emit(
+            HotkeyID.take_screenshot, self._settings.defaults.screenshot_hotkey
+        )
 
     @pyqtSlot()
     def _on_restore_defaults_advanced(self):
@@ -233,7 +239,9 @@ class MainWindow(QMainWindow):
         if not new_hotkey or not new_hotkey.toString():
             return
 
-        self._settings.screenshot_hotkey = new_hotkey.toString()
+        key = new_hotkey.toString()
+        self.hotkey_changed.emit(HotkeyID.take_screenshot, key)
+        self._settings.screenshot_hotkey = key
         self._setup_button_labels()
 
     @pyqtSlot(int)

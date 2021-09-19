@@ -1,4 +1,3 @@
-from msfs_screenshot_geotag.gui.controller import ScreenShotController
 import sys
 from typing import List
 
@@ -9,7 +8,8 @@ from pyqtkeybind import keybinder
 
 from . import RESOURCES_PATH, __app_name__, __version__
 from .exif import ExifService
-from .gui.hotkeys import GlobalHotkeyService, Hotkey, WindowsEventFilter
+from .gui.controller import ScreenShotController
+from .gui.hotkeys import GlobalHotkeyService, HotkeyID, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.settings import AppSettings
 from .gui.tray_icon import AppTrayIcon
@@ -66,19 +66,19 @@ def run():
     event_dispatcher = QAbstractEventDispatcher.instance()
     event_dispatcher.installNativeEventFilter(win_event_filter)
 
-    hotkey_service = GlobalHotkeyService(
-        keybinder=keybinder, window_id=main_window.winId()  # type: ignore
+    hotkey_service = GlobalHotkeyService(keybinder=keybinder, parent=app)  # type: ignore
+    hotkey_service.bind_hotkey(
+        HotkeyID.take_screenshot, app_settings.screenshot_hotkey, main_window
     )
-    hotkey_service.set_hotkeys(
-        [
-            Hotkey(
-                key=app_settings.screenshot_hotkey,
-                callback=screenshot_controller.take_screenshot,  # type: ignore
-            )
-        ]
+    hotkey_service.take_screenshot_pressed.connect(
+        screenshot_controller.take_screenshot  # type: ignore
     )
 
-    main_window.closed.connect(hotkey_service.remove_hotkeys)
+    main_window.hotkey_changed.connect(
+        lambda hotkey_id, key: hotkey_service.bind_hotkey(hotkey_id, key, main_window)
+    )
+
+    main_window.closed.connect(hotkey_service.unbind_all_hotkeys)
 
     tray_icon_widget.show()
     main_window.show()
