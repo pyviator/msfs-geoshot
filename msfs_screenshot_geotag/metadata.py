@@ -29,8 +29,8 @@ class Metadata:
     GPSLatitudeRef: _LatitudeRefType = field(init=False)
     GPSLongitudeRef: _LongitudeRefType = field(init=False)
     GPSAltitudeRef: Literal[0, 1] = field(init=False)  # below/above sea level
-    GPSDestLatitudeRef: Optional[_LatitudeRefType] = field(init=False)
-    GPSDestLongitudeRef: Optional[_LongitudeRefType] = field(init=False)
+    GPSDestLatitudeRef: Optional[_LatitudeRefType] = field(init=False, default=None)
+    GPSDestLongitudeRef: Optional[_LongitudeRefType] = field(init=False, default=None)
     # --- Constant ---:
     GPSSpeedRef: Literal["K", "M", "N"] = field(init=False)  # km/h, mph, knots
 
