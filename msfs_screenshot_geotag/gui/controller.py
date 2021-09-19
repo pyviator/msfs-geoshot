@@ -8,7 +8,7 @@ from msfs_screenshot_geotag.gui.settings import AppSettings
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 
 from .. import MOCK_SIMULATOR
-from ..exif import ExifData, ExifService
+from ..metadata import Metadata, MetadataService
 from ..names import FileNameComposer
 from ..screenshots import ScreenshotService
 from ..sim import SimService, SimServiceError
@@ -18,10 +18,10 @@ from ..windows import WindowRectangle, get_window_rectangle, raise_window_to_for
 @dataclass
 class ScreenShotResult:
     path: Path
-    exif_data: Optional[ExifData]
+    metadata: Optional[Metadata]
 
 
-_mock_exif_data = ExifData(
+_mock_metadata = Metadata(
     GPSLatitude=60,
     GPSLongitude=60,
     GPSAltitude=100,
@@ -38,7 +38,7 @@ class ScreenShotController(QObject):
     def __init__(
         self,
         sim_service: SimService,
-        exif_service: ExifService,
+        metadata_service: MetadataService,
         screenshot_service: ScreenshotService,
         file_name_composer: FileNameComposer,
         settings: AppSettings,
@@ -46,7 +46,7 @@ class ScreenShotController(QObject):
     ):
         super().__init__(parent)
         self._sim_service = sim_service
-        self._exif_service = exif_service
+        self._metadata_service = metadata_service
         self._screenshot_service = screenshot_service
         self._file_name_composer = file_name_composer
         self._settings = settings
@@ -58,10 +58,10 @@ class ScreenShotController(QObject):
             screenshot_folder.mkdir(parents=True, exist_ok=True)
 
         try:
-            exif_data = self._sim_service.get_flight_data()
+            metadata = self._sim_service.get_flight_data()
         except SimServiceError as e:
             if MOCK_SIMULATOR:
-                exif_data = _mock_exif_data  # DEBUG
+                metadata = _mock_metadata  # DEBUG
             else:
                 print(e)
                 self.error.emit(
@@ -89,15 +89,15 @@ class ScreenShotController(QObject):
 
         error = None
 
-        if exif_data and not self._exif_service.write_data(
-            image_path=screenshot_path, exif_data=exif_data
+        if metadata and not self._metadata_service.write_data(
+            image_path=screenshot_path, metadata=metadata
         ):
             error = "Could not write metadata to screenshot"
 
         screenshot_name = self._file_name_composer.compose_name(
             name_format=self._settings.file_name_format,
             date_format=self._settings.date_format,
-            exif_data=exif_data,
+            metadata=metadata,
         )
         # avoid hitting Windows file name length limit
         truncated_name = screenshot_name[:250]
@@ -110,5 +110,5 @@ class ScreenShotController(QObject):
             self.error.emit("Could not write metadata to screenshot")
         else:
             self.screenshot_taken.emit(
-                ScreenShotResult(path=screenshot_path, exif_data=exif_data)
+                ScreenShotResult(path=screenshot_path, metadata=metadata)
             )

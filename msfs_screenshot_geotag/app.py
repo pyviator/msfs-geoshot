@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
 
 from . import RESOURCES_PATH, __app_name__, __version__
-from .exif import ExifService
+from .metadata import MetadataService
 from .gui.controller import ScreenShotController
 from .gui.error_handler import ErrorHandler, show_error
 from .gui.hotkeys import GlobalHotkeyService, HotkeyID, WindowsEventFilter
@@ -40,14 +40,14 @@ def run():
     app.setWindowIcon(icon_window)
 
     sim_service = SimService()
-    exif_service = ExifService()
+    metadata_service = MetadataService()
     file_name_composer = FileNameComposer()
     screenshot_service = ScreenshotService(file_name_composer)
     app_settings = AppSettings(app)
 
     screenshot_controller = ScreenShotController(
         sim_service=sim_service,
-        exif_service=exif_service,
+        metadata_service=metadata_service,
         screenshot_service=screenshot_service,
         file_name_composer=file_name_composer,
         settings=app_settings,

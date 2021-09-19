@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
 from .. import RESOURCES_PATH, __app_name__, __author__, __version__
-from ..exif import ExifData
+from ..metadata import Metadata
 from ..names import FileNameComposer
 from ..screenshots import ImageFormat
 from .controller import ScreenShotResult
@@ -18,7 +18,7 @@ from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
 from .hotkeys import HotkeyID
 
-mock_exif_data = ExifData(
+mock_metadata = Metadata(
     GPSLatitude=30,
     GPSLongitude=30,
     GPSAltitude=100,
@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         self._settings = settings
 
         self._last_screenshot: Optional[Path] = None
-        self._last_exif_data: Optional[ExifData] = None
+        self._last_metadata: Optional[Metadata] = None
 
         self._notification_handler = NotificationHandler(parent=self)
 
@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
             color=NotificationColor.success,
             onclick=self._on_open_last_screenshot,  # type: ignore
         )
-        self._set_last_opened_screenshot(path=result.path, exif_data=result.exif_data)
+        self._set_last_opened_screenshot(path=result.path, metadata=result.metadata)
 
     @pyqtSlot(str)
     def on_screenshot_error(self, message: str):
@@ -258,18 +258,18 @@ class MainWindow(QMainWindow):
         QDesktopServices.openUrl(url)
 
     def _set_last_opened_screenshot(
-        self, path: Path, exif_data: Optional[ExifData] = None
+        self, path: Path, metadata: Optional[Metadata] = None
     ):
         self._form.view_last_screenshot.setEnabled(True)
         self._last_screenshot = path
 
         if (
-            exif_data
-            and exif_data.GPSLatitude is not None
-            and exif_data.GPSLongitude is not None
+            metadata
+            and metadata.GPSLatitude is not None
+            and metadata.GPSLongitude is not None
         ):
             self._form.view_last_location.setEnabled(True)
-        self._last_exif_data = exif_data
+        self._last_metadata = metadata
 
     @pyqtSlot()
     def _on_open_last_screenshot(self):
@@ -283,10 +283,10 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def _on_open_last_location(self):
-        if not self._last_exif_data:
+        if not self._last_metadata:
             return
-        latitude = self._last_exif_data.GPSLatitude
-        longitude = self._last_exif_data.GPSLongitude
+        latitude = self._last_metadata.GPSLatitude
+        longitude = self._last_metadata.GPSLongitude
 
         if latitude is None or longitude is None:
             print("Invalid GPS data for last screenshot")

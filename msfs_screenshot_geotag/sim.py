@@ -15,7 +15,7 @@ from typing import List, Optional, Set
 import psutil
 from SimConnect import AircraftRequests, SimConnect
 
-from .exif import ExifData
+from .metadata import Metadata
 from .windows import get_window_ids_by_process_name, get_window_title_by_window_id
 
 
@@ -74,7 +74,7 @@ class SimService:
             raise SimServiceError("Could not find simulator window.")
         return results[0]
 
-    def get_flight_data(self) -> Optional[ExifData]:
+    def get_flight_data(self) -> Optional[Metadata]:
         if not self._is_sim_running():
             raise SimServiceError("Simulator is not running")
 
@@ -116,12 +116,12 @@ class SimService:
             warnings.warn("User is not currently in flight.")
             return None
 
-        return self._sim_location_to_exif_data(sim_location_data)
+        return self._sim_location_to_metadata(sim_location_data)
 
-    def _sim_location_to_exif_data(
+    def _sim_location_to_metadata(
         self, sim_location_data: _SimLocationData
-    ) -> ExifData:
-        return ExifData(
+    ) -> Metadata:
+        return Metadata(
             GPSLatitude=round(sim_location_data.latitude, 5),
             GPSLongitude=round(sim_location_data.longitude, 5),
             GPSAltitude=round(sim_location_data.altitude, 2),

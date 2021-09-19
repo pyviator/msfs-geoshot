@@ -18,13 +18,13 @@ _LatitudeRefType = Literal["N", "S"]
 
 
 @dataclass
-class ExifData:
+class Metadata:
     GPSLatitude: float
     GPSLongitude: float
     GPSAltitude: float
     GPSSpeed: float
-    GPSDestLatitude: Optional[float]
-    GPSDestLongitude: Optional[float]
+    GPSDestLatitude: Optional[float] = None
+    GPSDestLongitude: Optional[float] = None
     # --- Computed ---:
     GPSLatitudeRef: _LatitudeRefType = field(init=False)
     GPSLongitudeRef: _LongitudeRefType = field(init=False)
@@ -45,21 +45,21 @@ class ExifData:
             self.GPSDestLongitudeRef = "E" if self.GPSDestLongitude >= 0 else "W"
 
 
-class ExifService:
+class MetadataService:
 
     _exiftool = BINARY_PATH / "exiftool.exe"
 
     def write_data(
         self,
         image_path: Path,
-        exif_data: ExifData,
+        metadata: Metadata,
     ) -> bool:
         arguments = ["-n", "-overwrite_original"]
 
         if DEBUG:
             arguments.append("-verbose")
 
-        for attribute, value in asdict(exif_data).items():
+        for attribute, value in asdict(metadata).items():
             if value == -999999:
                 # TODO: Is this necessary?
                 print(f"Invalid value {value} for attribute {attribute}. Skipping.")

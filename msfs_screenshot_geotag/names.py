@@ -10,7 +10,7 @@ from geopy.geocoders import Nominatim
 from geopy.location import Location
 
 from . import __app_name__
-from .exif import ExifData
+from .metadata import Metadata
 
 
 class FileNameField(NamedTuple):
@@ -40,7 +40,7 @@ class FileNameComposer:
     _user_agent = __app_name__.replace(" ", "_")
 
     def compose_name(
-        self, name_format: str, date_format: str, exif_data: Optional[ExifData] = None
+        self, name_format: str, date_format: str, metadata: Optional[Metadata] = None
     ):
         is_valid_name_format, error = self.is_name_format_valid(name_format)
         if not is_valid_name_format:
@@ -53,7 +53,7 @@ class FileNameComposer:
         format_data: Dict[str, Optional[str]] = {
             "datetime": self._get_datetime_string(date_format),
             "geocode": (
-                self._maybe_get_geocode_string(exif_data) if exif_data else None
+                self._maybe_get_geocode_string(metadata) if metadata else None
             )
             or "no-geocode-found",
         }
@@ -124,13 +124,13 @@ class FileNameComposer:
         capture_datetime = datetime.fromtimestamp(capture_time, tz=local_timezone)
         return capture_datetime.strftime(date_format)
 
-    def _maybe_get_geocode_string(self, exif_data: ExifData) -> Optional[str]:
+    def _maybe_get_geocode_string(self, metadata: Metadata) -> Optional[str]:
         try:
             geolocator = Nominatim(user_agent=self._user_agent)
             location: Location = cast(
                 Location,
                 geolocator.reverse(
-                    (exif_data.GPSLatitude, exif_data.GPSLongitude),
+                    (metadata.GPSLatitude, metadata.GPSLongitude),
                     language="en-US,en",
                     exactly_one=True,
                     zoom=10,  # limit to city region
