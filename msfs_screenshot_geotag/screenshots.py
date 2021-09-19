@@ -50,23 +50,15 @@ class ScreenshotService:
     def take_screenshot(
         self,
         target_folder: Path,
-        file_name_format: str,
-        date_format: str,
+        name: str,
         window_rectangle: Optional[WindowRectangle] = None,
-        exif_data: Optional[ExifData] = None,
         image_format: ImageFormat = ImageFormat.JPEG,
     ) -> Path:
         if not target_folder.is_dir():
             target_folder.mkdir(parents=True, exist_ok=True)
 
-        screenshot_name = self._get_screenshot_name(
-            file_name_format=file_name_format,
-            date_format=date_format,
-            image_format=image_format,
-            exif_data=exif_data,
-        )
-
-        out_path = target_folder / screenshot_name
+        extension = image_format.value
+        out_path = target_folder / f"{name}.{extension}"
 
         self._grab_screenshot(
             window_rectangle=window_rectangle,
@@ -75,25 +67,6 @@ class ScreenshotService:
         )
 
         return out_path
-
-    def _get_screenshot_name(
-        self,
-        file_name_format: str,
-        date_format: str,
-        image_format: ImageFormat,
-        exif_data: Optional[ExifData],
-    ) -> str:
-        file_stem = self._file_name_composer.compose_name(
-            name_format=file_name_format,
-            date_format=date_format,
-            exif_data=exif_data,
-        )
-
-        extension = image_format.value
-        truncated_file_stem = file_stem[:250]
-        file_name = f"{truncated_file_stem}.{extension}"
-
-        return file_name
 
     def _grab_screenshot(
         self,

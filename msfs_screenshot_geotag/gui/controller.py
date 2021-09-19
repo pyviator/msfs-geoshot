@@ -76,21 +76,27 @@ class ScreenShotController(QObject):
 
         self.sim_window_found.emit()
 
-        screenshot = self._screenshot_service.take_screenshot(
-            window_rectangle=window_rectangle,
-            target_folder=self._settings.screenshot_folder,
-            file_name_format=self._settings.file_name_format,
+        screenshot_name = self._file_name_composer.compose_name(
+            name_format=self._settings.file_name_format,
             date_format=self._settings.date_format,
             exif_data=exif_data,
+        )
+        # avoid hitting Windows file name length limit
+        truncated_name = screenshot_name[:250]
+
+        screenshot_path = self._screenshot_service.take_screenshot(
+            window_rectangle=window_rectangle,
+            target_folder=self._settings.screenshot_folder,
+            name=truncated_name,
             image_format=self._settings.image_format,
         )
 
         if exif_data and not self._exif_service.write_data(
-            image_path=screenshot, exif_data=exif_data
+            image_path=screenshot_path, exif_data=exif_data
         ):
             self.error.emit("Could not write metadata to screenshot")
             return
 
         self.screenshot_taken.emit(
-            ScreenShotResult(path=screenshot, exif_data=exif_data)
+            ScreenShotResult(path=screenshot_path, exif_data=exif_data)
         )
