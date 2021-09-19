@@ -92,7 +92,7 @@ class SimService:
             altitude=aircraft_requests.get("GPS_POSITION_ALT"),
             speed=aircraft_requests.get("GPS_GROUND_SPEED"),
             dest_latitude=aircraft_requests.get("GPS_WP_NEXT_LAT"),
-            dest_longitude=aircraft_requests.get("GPS_WP_NEXT_Long"),
+            dest_longitude=aircraft_requests.get("GPS_WP_NEXT_LON"),
         )
 
         sim_connect.exit()
