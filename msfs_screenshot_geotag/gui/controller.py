@@ -1,3 +1,5 @@
+import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Tuple
@@ -20,8 +22,8 @@ class ScreenShotResult:
 
 
 _mock_exif_data = ExifData(
-    GPSLatitude=30,
-    GPSLongitude=30,
+    GPSLatitude=60,
+    GPSLongitude=60,
     GPSAltitude=100,
     GPSSpeed=200,
 )
@@ -76,6 +78,22 @@ class ScreenShotController(QObject):
 
         self.sim_window_found.emit()
 
+        temporary_name = f"{round(time.time())}-{uuid.uuid4()}"
+
+        screenshot_path = self._screenshot_service.take_screenshot(
+            window_rectangle=window_rectangle,
+            target_folder=self._settings.screenshot_folder,
+            name=temporary_name,
+            image_format=self._settings.image_format,
+        )
+
+        error = None
+
+        if exif_data and not self._exif_service.write_data(
+            image_path=screenshot_path, exif_data=exif_data
+        ):
+            error = "Could not write metadata to screenshot"
+
         screenshot_name = self._file_name_composer.compose_name(
             name_format=self._settings.file_name_format,
             date_format=self._settings.date_format,
@@ -84,19 +102,13 @@ class ScreenShotController(QObject):
         # avoid hitting Windows file name length limit
         truncated_name = screenshot_name[:250]
 
-        screenshot_path = self._screenshot_service.take_screenshot(
-            window_rectangle=window_rectangle,
-            target_folder=self._settings.screenshot_folder,
-            name=truncated_name,
-            image_format=self._settings.image_format,
+        screenshot_path = screenshot_path.rename(
+            screenshot_path.with_stem(truncated_name)
         )
 
-        if exif_data and not self._exif_service.write_data(
-            image_path=screenshot_path, exif_data=exif_data
-        ):
+        if error:
             self.error.emit("Could not write metadata to screenshot")
-            return
-
-        self.screenshot_taken.emit(
-            ScreenShotResult(path=screenshot_path, exif_data=exif_data)
-        )
+        else:
+            self.screenshot_taken.emit(
+                ScreenShotResult(path=screenshot_path, exif_data=exif_data)
+            )
