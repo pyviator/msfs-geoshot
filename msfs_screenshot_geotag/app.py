@@ -29,13 +29,12 @@ def run():
     app = Application(argv=sys.argv, name=__app_name__, version=__version__)
     icon_window = QIcon(str(RESOURCES_PATH / "main.ico"))
     icon_tray = QIcon(str(RESOURCES_PATH / "tray.png"))
-
-    user_agent = __app_name__.replace(" ", "_")
+    app.setWindowIcon(icon_window)
 
     sim_service = SimService()
     exif_service = ExifService()
-    file_name_composer = FileNameComposer(user_agent=user_agent)
-    screenshot_service = ScreenshotService(file_name_composer=file_name_composer)
+    file_name_composer = FileNameComposer()
+    screenshot_service = ScreenshotService(file_name_composer)
     app_settings = AppSettings(app)
 
     screenshot_controller = ScreenShotController(
@@ -50,7 +49,6 @@ def run():
     main_window = MainWindow(
         file_name_composer=file_name_composer, settings=app_settings
     )
-    main_window.setWindowIcon(icon_window)
 
     screenshot_controller.sim_window_found.connect(main_window.on_sim_window_found)  # type: ignore
     screenshot_controller.screenshot_taken.connect(main_window.on_screenshot_taken)  # type: ignore
@@ -59,6 +57,7 @@ def run():
     main_window.screenshot_requested.connect(screenshot_controller.take_screenshot)  # type: ignore
 
     tray_icon_widget = AppTrayIcon(icon_tray, main_window)
+    main_window.closed.connect(tray_icon_widget.hide)
 
     keybinder.init()
 
@@ -79,7 +78,6 @@ def run():
         ]
     )
 
-    main_window.closed.connect(tray_icon_widget.hide)
     main_window.closed.connect(hotkey_service.remove_hotkeys)
 
     tray_icon_widget.show()

@@ -36,8 +36,8 @@ OSM Nominatim</a>.""",
 
 
 class FileNameComposer:
-    def __init__(self, user_agent: str):
-        self._user_agent = user_agent
+
+    _user_agent = __app_name__.replace(" ", "_")
 
     def compose_name(
         self, name_format: str, date_format: str, exif_data: Optional[ExifData] = None
