@@ -82,6 +82,7 @@ def run():
 
     def on_signal_exit():
         hotkey_service.unbind_all_hotkeys()
+        tray_icon_widget.hide()
         app.exit()
         sys.exit(1)
 
