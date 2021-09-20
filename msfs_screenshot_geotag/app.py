@@ -2,7 +2,7 @@ import sys
 from typing import List
 
 import multiexit
-from PyQt5.QtCore import QAbstractEventDispatcher
+from PyQt5.QtCore import QAbstractEventDispatcher, QThreadPool
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
@@ -15,6 +15,7 @@ from .gui.hotkeys import GlobalHotkeyService, HotkeyID, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.settings import AppSettings
 from .gui.tray_icon import AppTrayIcon
+from .gui.thumbnails import ThumbnailMaker
 from .metadata import MetadataService
 from .names import FileNameComposer
 from .screenshots import ScreenshotService
@@ -60,9 +61,18 @@ def run():
         file_name_composer=file_name_composer, settings=app_settings
     )
 
+    thumbnail_maker = ThumbnailMaker(
+        thread_pool=QThreadPool.globalInstance(), thumbnail_height=64, parent=app
+    )
+
     screenshot_controller.sim_window_found.connect(main_window.on_sim_window_found)  # type: ignore
     screenshot_controller.screenshot_taken.connect(main_window.on_screenshot_taken)  # type: ignore
     screenshot_controller.error.connect(main_window.on_screenshot_error)  # type: ignore
+
+    screenshot_controller.screenshot_taken.connect(
+        lambda result: thumbnail_maker.create_thumbnail(str(result.path))  # type: ignore
+    )
+    thumbnail_maker.thumb_ready.connect(main_window.on_thumbnail_ready)  # type: ignore
 
     main_window.screenshot_requested.connect(screenshot_controller.take_screenshot)  # type: ignore
     main_window.credits_requested.connect(lambda: show_credits(main_window))

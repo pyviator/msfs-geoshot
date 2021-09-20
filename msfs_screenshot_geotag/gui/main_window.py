@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence
+from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence, QPixmap
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
 from .. import RESOURCES_PATH, __app_name__, __author__, __version__
@@ -47,6 +47,9 @@ class MainWindow(QMainWindow):
         self._form = Ui_MainWindow()
         self._form.setupUi(self)
 
+        # hide until links to forum, etc. ready
+        self._form.updates.hide()
+
         self._select_hotkey = CustomKeySequenceEdit(parent=self)
         self._form.layout_select_hotkey.addWidget(self._select_hotkey)
         self._form.open_screenshots.setFocus()  # prevent focus steal by hotkey
@@ -63,6 +66,10 @@ class MainWindow(QMainWindow):
             f"<b>{__app_name__}</b> v{__version__} by {__author__}"
         )
         self.setWindowTitle(__app_name__)
+
+    @pyqtSlot(QPixmap)
+    def on_thumbnail_ready(self, thumbnail: QPixmap):
+        self._form.thumbnail.setPixmap(thumbnail)
 
     @pyqtSlot(ScreenShotResult)
     def on_screenshot_taken(self, result: ScreenShotResult):
