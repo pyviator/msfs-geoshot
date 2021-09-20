@@ -21,6 +21,7 @@ class _SettingsData:
     date_format: str = "%Y-%m-%d-%H%M%S"
     minimize_to_tray: bool = False
     play_sound: bool = True
+    show_notification: bool = True
 
 
 class AppSettings(QObject):
@@ -36,6 +37,18 @@ class AppSettings(QObject):
             application=__app_name__,
             parent=self,
         )
+
+    # ---- General methods -----
+
+    @property
+    def defaults(self):
+        return self._defaults
+
+    def restore_defaults(self):
+        for attribute, value in asdict(self._defaults).items():
+            setattr(self, attribute, value)
+
+    # ---- Settings getters/setters -----
 
     @property
     def screenshot_folder(self) -> Path:
@@ -115,9 +128,13 @@ class AppSettings(QObject):
         self._settings.setValue("play_sound", value)
 
     @property
-    def defaults(self):
-        return self._defaults
+    def show_notification(self) -> bool:
+        key = "show_notification"
+        if not self._settings.contains(key):
+            return self._defaults.minimize_to_tray
+        return self._settings.value(key, type=bool)
 
-    def restore_defaults(self):
-        for attribute, value in asdict(self._defaults).items():
-            setattr(self, attribute, value)
+    @show_notification.setter
+    def show_notification(self, value: bool):
+        self._settings.setValue("show_notification", value)
+

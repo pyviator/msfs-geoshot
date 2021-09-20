@@ -91,11 +91,12 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(ScreenShotResult)
     def on_screenshot_taken(self, result: ScreenShotResult):
-        self._notification_handler.notify(
-            message=f"<b>Screenshot saved</b>: {result.path.name}",
-            color=NotificationColor.success,
-            onclick=self._on_open_last_screenshot,  # type: ignore
-        )
+        if self._settings.show_notification:
+            self._notification_handler.notify(
+                message=f"<b>Screenshot saved</b>: {result.path.name}",
+                color=NotificationColor.success,
+                onclick=self._on_open_last_screenshot,  # type: ignore
+            )
         self._set_last_opened_screenshot(path=result.path, metadata=result.metadata)
 
     @pyqtSlot(str)
@@ -176,6 +177,9 @@ class MainWindow(QMainWindow):
             self._on_minimize_to_tray_changed
         )
         self._form.play_sound.stateChanged.connect(self._on_play_sound_changed)
+        self._form.show_notification.stateChanged.connect(
+            self._on_show_Notification_changed
+        )
 
     def _tear_down_input_widget_connections(self):
         self._form.select_format.currentTextChanged.disconnect(
@@ -186,6 +190,9 @@ class MainWindow(QMainWindow):
             self._on_minimize_to_tray_changed
         )
         self._form.play_sound.stateChanged.disconnect(self._on_play_sound_changed)
+        self._form.show_notification.stateChanged.disconnect(
+            self._on_show_Notification_changed
+        )
 
     def _load_ui_state_from_settings(self):
         self._form.current_folder.setText(str(self._settings.screenshot_folder))
@@ -199,6 +206,7 @@ class MainWindow(QMainWindow):
         self._form.date_format.setText(self._settings.date_format)
         self._form.minimize_to_tray.setChecked(self._settings.minimize_to_tray)
         self._form.play_sound.setChecked(self._settings.play_sound)
+        self._form.show_notification.setChecked(self._settings.show_notification)
 
     @pyqtSlot()
     def _on_file_name_format_save(self):
@@ -271,6 +279,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot(int)
     def _on_play_sound_changed(self, state: int):
         self._settings.play_sound = state == Qt.CheckState.Checked
+
+    @pyqtSlot(int)
+    def _on_show_Notification_changed(self, state: int):
+        self._settings.show_notification = state == Qt.CheckState.Checked
 
     @pyqtSlot()
     def _on_open_folder(self):

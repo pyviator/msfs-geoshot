@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>546</width>
-    <height>484</height>
+    <height>527</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -217,6 +217,13 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetMinimumSize</enum>
         </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Folder</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1" colspan="3">
          <widget class="QLineEdit" name="current_folder">
           <property name="enabled">
@@ -226,9 +233,6 @@
            <bool>true</bool>
           </property>
          </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="select_format"/>
         </item>
         <item row="5" column="1" colspan="4">
          <widget class="QLabel" name="label_6">
@@ -240,17 +244,13 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Folder</string>
-          </property>
-         </widget>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="select_format"/>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_4">
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_11">
           <property name="text">
-           <string>Image Format</string>
+           <string>App Behavior</string>
           </property>
          </widget>
         </item>
@@ -269,13 +269,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Hotkey</string>
-          </property>
-         </widget>
         </item>
         <item row="3" column="1">
          <spacer name="verticalSpacer">
@@ -309,6 +302,20 @@
           </property>
          </spacer>
         </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Image Format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Hotkey</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="1">
          <layout class="QHBoxLayout" name="layout_select_hotkey">
           <property name="spacing">
@@ -316,14 +323,28 @@
           </property>
          </layout>
         </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="label_11">
+        <item row="7" column="1" colspan="2">
+         <widget class="QCheckBox" name="minimize_to_tray">
           <property name="text">
-           <string>App behavior</string>
+           <string>Minimize and close to tray</string>
           </property>
          </widget>
         </item>
-        <item row="9" column="3" colspan="2">
+        <item row="0" column="4">
+         <widget class="QPushButton" name="select_folder">
+          <property name="text">
+           <string>Select</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1" colspan="2">
+         <widget class="QCheckBox" name="play_sound">
+          <property name="text">
+           <string>Play shutter sound on screenshot capture</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="3" colspan="2">
          <widget class="QPushButton" name="restore_defaults">
           <property name="minimumSize">
            <size>
@@ -352,24 +373,10 @@
           </property>
          </spacer>
         </item>
-        <item row="0" column="4">
-         <widget class="QPushButton" name="select_folder">
+        <item row="9" column="1" colspan="2">
+         <widget class="QCheckBox" name="show_notification">
           <property name="text">
-           <string>Select</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1" colspan="2">
-         <widget class="QCheckBox" name="minimize_to_tray">
-          <property name="text">
-           <string>Minimize and close to tray</string>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1" colspan="2">
-         <widget class="QCheckBox" name="play_sound">
-          <property name="text">
-           <string>Play shutter sound on screenshot capture</string>
+           <string>Show notification on screenshot capture</string>
           </property>
          </widget>
         </item>
