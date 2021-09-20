@@ -13,9 +13,9 @@ from PyInstaller.utils.win32.versioninfo import (
     VSVersionInfo,
 )
 
-from msfs_screenshot_geotag import __app_name__, __author__, __version__
+from msfs_geoshot import __app_name__, __author__, __version__
 
-PACKAGE_NAME = "msfs_screenshot_geotag"
+PACKAGE_NAME = "msfs_geoshot"
 
 
 # ---- Windows version info ----

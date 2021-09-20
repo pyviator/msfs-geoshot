@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "msfs-screenshot-geotag"
+name = "msfs-geoshot"
 version = "0.1.0"
 description = ""
 authors = ["placeholder <placeholder3433475435@placeholder43453.com>"]

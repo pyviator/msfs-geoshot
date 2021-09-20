@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from msfs_screenshot_geotag.gui.settings import AppSettings
+from msfs_geoshot.gui.settings import AppSettings
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 
 from .. import MOCK_SIMULATOR

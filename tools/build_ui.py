@@ -3,7 +3,7 @@
 from pathlib import Path
 import subprocess
 
-PACKAGE_NAME = "msfs_screenshot_geotag"
+PACKAGE_NAME = "msfs_geoshot"
 
 root_project_path = Path(__file__).parent.parent
 qtdesigner_folder = root_project_path / "qtdesigner"

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from msfs_screenshot_geotag import DEBUG
+from msfs_geoshot import DEBUG
 from typing import TYPE_CHECKING, Dict, Optional
 from PyQt5 import sip
 

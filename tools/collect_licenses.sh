@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGE_NAME="msfs_screenshot_geotag"
+PACKAGE_NAME="msfs_geoshot"
 RESOURCES_PATH="${PACKAGE_NAME}/_resources"
 BINARIES_PATH="$PACKAGE_NAME/_bin"
 LICENSES_PATH="${PACKAGE_NAME}/_licenses"

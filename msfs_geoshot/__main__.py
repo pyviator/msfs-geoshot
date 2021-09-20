@@ -2,6 +2,6 @@
 
 import sys
 
-from msfs_screenshot_geotag.app import run
+from msfs_geoshot.app import run
 
 sys.exit(run())

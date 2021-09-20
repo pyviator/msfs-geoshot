@@ -140,5 +140,5 @@ cython_debug/
 .vscode
 temp/
 notes/
-msfs_screenshot_geotag/gui/forms/
-msfs_screenshot_geotag/_licenses/
+msfs_geoshot/gui/forms/
+msfs_geoshot/_licenses/
