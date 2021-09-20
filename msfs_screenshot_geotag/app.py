@@ -62,7 +62,7 @@ def run():
     )
 
     thumbnail_maker = ThumbnailMaker(
-        thread_pool=QThreadPool.globalInstance(), thumbnail_height=64, parent=app
+        thread_pool=QThreadPool.globalInstance(), thumbnail_height=96, parent=app
     )
 
     screenshot_controller.sim_window_found.connect(main_window.on_sim_window_found)  # type: ignore

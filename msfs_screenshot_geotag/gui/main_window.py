@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Optional
 
 from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QCloseEvent, QDesktopServices, QKeySequence, QPixmap
-from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
+from PyQt5.QtGui import QCloseEvent, QCursor, QDesktopServices, QKeySequence, QPixmap
+from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QLineEdit, QMainWindow
 
 from .. import RESOURCES_PATH, __app_name__, __author__, __version__
 from ..metadata import Metadata
@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
 
         # hide until links to forum, etc. ready
         self._form.updates.hide()
+        self._form.view_last_location.hide()
 
         self._select_hotkey = CustomKeySequenceEdit(parent=self)
         self._form.layout_select_hotkey.addWidget(self._select_hotkey)
@@ -69,6 +70,10 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QPixmap)
     def on_thumbnail_ready(self, thumbnail: QPixmap):
+        cursor = QCursor()
+        cursor.setShape(Qt.CursorShape.PointingHandCursor)
+        self._form.thumbnail.setCursor(QCursor())
+        self._form.thumbnail.setFrameShape(QFrame.Shape.NoFrame)
         self._form.thumbnail.setPixmap(thumbnail)
 
     @pyqtSlot(ScreenShotResult)
@@ -138,7 +143,7 @@ class MainWindow(QMainWindow):
             self._on_restore_defaults_advanced
         )
         self._form.open_screenshots.clicked.connect(self._on_open_folder)
-        self._form.view_last_screenshot.clicked.connect(self._on_open_last_screenshot)
+        # self._form.view_last_screenshot.clicked.connect(self._on_open_last_screenshot)
         self._form.view_last_location.clicked.connect(self._on_open_last_location)
         self._form.file_name_format_save.clicked.connect(self._on_file_name_format_save)
         self._form.date_format_save.clicked.connect(self._on_date_format_save)
@@ -262,7 +267,7 @@ class MainWindow(QMainWindow):
     def _set_last_opened_screenshot(
         self, path: Path, metadata: Optional[Metadata] = None
     ):
-        self._form.view_last_screenshot.setEnabled(True)
+        # self._form.view_last_screenshot.setEnabled(True)
         self._last_screenshot = path
 
         if (
@@ -270,6 +275,7 @@ class MainWindow(QMainWindow):
             and metadata.GPSLatitude is not None
             and metadata.GPSLongitude is not None
         ):
+            self._form.view_last_location.show()
             self._form.view_last_location.setEnabled(True)
         self._last_metadata = metadata
 
