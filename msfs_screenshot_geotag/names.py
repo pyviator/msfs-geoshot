@@ -30,7 +30,7 @@ _file_name_fields: List[FileNameField] = [
         name="geocode",
         required=False,
         description="""A human-readable description of the location the screenshot
-was taken at (e.g. <i>USA-New_York-New_York_City</i>), as returned by <a href='https://wiki.openstreetmap.org/wiki/Nominatim'>
+was taken at (e.g. <i>USA-Texas-Austin</i>), as returned by <a href='https://wiki.openstreetmap.org/wiki/Nominatim'>
 OSM Nominatim</a>.""",
     ),
 ]
