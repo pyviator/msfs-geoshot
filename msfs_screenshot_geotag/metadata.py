@@ -113,7 +113,11 @@ class MetadataService:
 
         try:
             output = subprocess.check_output(
-                command_line, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                command_line,
+                text=True,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
             if DEBUG:
                 print(output)
