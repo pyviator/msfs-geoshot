@@ -17,7 +17,7 @@ from .time import get_datetime_string
 class FileNameField(NamedTuple):
     name: str
     required: bool
-    description: str
+    description: str  # html
 
 
 _file_name_fields: List[FileNameField] = [
