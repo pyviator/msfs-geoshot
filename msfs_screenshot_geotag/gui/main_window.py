@@ -17,6 +17,7 @@ from .notification import NotificationColor, NotificationHandler
 from .settings import AppSettings
 from .validators import DateFormatValidator, FileNameFormatValidator
 from .hotkeys import HotkeyID
+from .thumbnails import ThumbnailWidget
 
 
 class MainWindow(QMainWindow):
@@ -55,6 +56,9 @@ class MainWindow(QMainWindow):
         self._form.layout_select_hotkey.addWidget(self._select_hotkey)
         self._form.open_screenshots.setFocus()  # prevent focus steal by hotkey
 
+        self._thumbnail_widget = ThumbnailWidget(self)
+        self._form.thumbnail_layout.insertWidget(0, self._thumbnail_widget)
+
         self._load_ui_state_from_settings()
         self._setup_input_validators()
         self._setup_format_field_description()
@@ -72,9 +76,10 @@ class MainWindow(QMainWindow):
     def on_thumbnail_ready(self, thumbnail: QPixmap):
         cursor = QCursor()
         cursor.setShape(Qt.CursorShape.PointingHandCursor)
-        self._form.thumbnail.setCursor(QCursor())
-        self._form.thumbnail.setFrameShape(QFrame.Shape.NoFrame)
-        self._form.thumbnail.setPixmap(thumbnail)
+        self._thumbnail_widget.setCursor(cursor)
+        self._thumbnail_widget.clicked.connect(self._on_open_last_screenshot)  # type: ignore
+        self._thumbnail_widget.setFrameShape(QFrame.Shape.NoFrame)
+        self._thumbnail_widget.setPixmap(thumbnail)
 
     @pyqtSlot(ScreenShotResult)
     def on_screenshot_taken(self, result: ScreenShotResult):
