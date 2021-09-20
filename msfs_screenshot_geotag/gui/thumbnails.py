@@ -45,12 +45,10 @@ class ThumbnailWidget(QLabel):
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.setFrameShadow(QFrame.Sunken)
         self.setMinimumSize(QSize(170, 96))
         self.setMaximumSize(QSize(16777215, 96))
-        self.setFrameShape(QFrame.Box)
         self.setAlignment(
-            Qt.AlignmentFlag.AlignRight
+            Qt.AlignmentFlag.AlignRight  # type: ignore
             | Qt.AlignmentFlag.AlignTrailing
             | Qt.AlignmentFlag.AlignVCenter
         )

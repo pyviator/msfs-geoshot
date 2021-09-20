@@ -2,8 +2,15 @@ import winsound
 from pathlib import Path
 from typing import Optional
 
-from PyQt5.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QCloseEvent, QCursor, QDesktopServices, QKeySequence, QPixmap
+from PyQt5.QtCore import QEvent, QSize, QSizeF, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import (
+    QCloseEvent,
+    QCursor,
+    QDesktopServices,
+    QIcon,
+    QKeySequence,
+    QPixmap,
+)
 from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QLineEdit, QMainWindow
 
 from .. import RESOURCES_PATH, __app_name__, __author__, __version__
@@ -34,6 +41,7 @@ class MainWindow(QMainWindow):
         self,
         file_name_composer: FileNameComposer,
         settings: AppSettings,
+        app_icon: QIcon,
     ):
         super().__init__()
 
@@ -59,6 +67,7 @@ class MainWindow(QMainWindow):
         self._thumbnail_widget = ThumbnailWidget(self)
         self._form.thumbnail_layout.insertWidget(0, self._thumbnail_widget)
         self._thumbnail_widget.clicked.connect(self._on_open_last_screenshot)  # type: ignore
+        self._thumbnail_widget.setPixmap(app_icon.pixmap(QSize(170, 96)))
 
         self._load_ui_state_from_settings()
         self._setup_input_validators()
@@ -78,7 +87,6 @@ class MainWindow(QMainWindow):
         cursor = QCursor()
         cursor.setShape(Qt.CursorShape.PointingHandCursor)
         self._thumbnail_widget.setCursor(cursor)
-        self._thumbnail_widget.setFrameShape(QFrame.Shape.NoFrame)
         self._thumbnail_widget.setPixmap(thumbnail)
 
     @pyqtSlot(ScreenShotResult)

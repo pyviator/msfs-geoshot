@@ -58,7 +58,7 @@ def run():
     )
 
     main_window = MainWindow(
-        file_name_composer=file_name_composer, settings=app_settings
+        file_name_composer=file_name_composer, settings=app_settings, app_icon=icon_window
     )
 
     thumbnail_maker = ThumbnailMaker(
