@@ -2,7 +2,7 @@ import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 from msfs_screenshot_geotag.gui.settings import AppSettings
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
@@ -12,22 +12,13 @@ from ..metadata import Metadata, MetadataService
 from ..names import FileNameComposer
 from ..screenshots import ScreenshotService
 from ..sim import SimService, SimServiceError
-from ..windows import WindowRectangle, get_window_rectangle, raise_window_to_foreground
+from ..windows import get_window_rectangle, raise_window_to_foreground
 
 
 @dataclass
 class ScreenShotResult:
     path: Path
     metadata: Optional[Metadata]
-
-
-_mock_metadata = Metadata(
-    GPSLatitude=60,
-    GPSLongitude=60,
-    GPSAltitude=100,
-    GPSSpeed=200,
-    GPSImgDirection=0
-)
 
 
 class ScreenShotController(QObject):
@@ -62,7 +53,9 @@ class ScreenShotController(QObject):
             metadata = self._sim_service.get_flight_data()
         except SimServiceError as e:
             if MOCK_SIMULATOR:
-                metadata = _mock_metadata  # DEBUG
+                from ..debug import get_mock_metadata
+
+                metadata = get_mock_metadata()
             else:
                 print(e)
                 self.error.emit(
@@ -71,7 +64,9 @@ class ScreenShotController(QObject):
                 return
 
         if MOCK_SIMULATOR:
-            window_rectangle = WindowRectangle(0, 0, 1920, 1200)
+            from ..debug import get_mock_window_rectangle
+
+            window_rectangle = get_mock_window_rectangle()
         else:
             window_id = self._sim_service.get_simulator_main_window_id()
             raise_window_to_foreground(window_id)

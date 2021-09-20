@@ -17,9 +17,25 @@ _LongitudeRefType = Literal["E", "W"]
 _LatitudeRefType = Literal["N", "S"]
 
 
+EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
+EXIF_OFFSET_FORMAT = "%s%H:%M"
+
 @dataclass
 class Metadata:
+    # ---- INTERNAL ----
+    capture_time: float
+
     # ---- EXIF ----
+
+    # -- Date/time --
+
+    # regular
+    AllDates: str  # "YYYY:mm:dd HH:MM:SS", sets DateTimeOriginal, CreateDate, ModifyDate
+    OffsetTime: str  # "±HH:MM"
+
+    # computed
+    OffsetTimeOriginal: str = field(init=False)
+    OffsetTimeDigitalized: str = field(init=False)
 
     # -- GPS --
     # regular
@@ -51,6 +67,9 @@ class Metadata:
 
     def __post_init__(self):
         """Calculate derivative fields dynamically"""
+        self.OffsetTimeOriginal = self.OffsetTime
+        self.OffsetTimeDigitalized = self.OffsetTime
+
         self.GPSLatitudeRef = "N" if self.GPSLatitude >= 0 else "S"
         self.GPSLongitudeRef = "E" if self.GPSLongitude >= 0 else "W"
         self.GPSAltitudeRef = 0 if self.GPSAltitude >= 0 else 1
@@ -75,7 +94,10 @@ class MetadataService:
             arguments.append("-verbose")
 
         for attribute, value in asdict(metadata).items():
-            if value == -999999:
+            if value == "capture_time":
+                # internal value
+                continue
+            elif value == -999999:
                 # TODO: Is this necessary?
                 print(f"Invalid value {value} for attribute {attribute}. Skipping.")
                 continue

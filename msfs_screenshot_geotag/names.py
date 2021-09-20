@@ -11,6 +11,7 @@ from geopy.location import Location
 
 from . import __app_name__
 from .metadata import Metadata
+from .time import get_datetime_string
 
 
 class FileNameField(NamedTuple):
@@ -50,11 +51,13 @@ class FileNameComposer:
         if not is_valid_date_format:
             raise ValueError(f"Invalid format string provided: {error}")
 
+        capture_time = metadata.capture_time if metadata else time.time()
+
         format_data: Dict[str, Optional[str]] = {
-            "datetime": self._get_datetime_string(date_format),
-            "geocode": (
-                self._maybe_get_geocode_string(metadata) if metadata else None
-            )
+            "datetime": get_datetime_string(
+                timestamp_utc=capture_time, date_format=date_format
+            ),
+            "geocode": (self._maybe_get_geocode_string(metadata) if metadata else None)
             or "no-geocode-found",
         }
 
@@ -116,13 +119,6 @@ class FileNameComposer:
 
     def get_supported_fields(self) -> List[FileNameField]:
         return _file_name_fields
-
-    def _get_datetime_string(self, date_format: str) -> str:
-        # TODO: Get from screenshot if available
-        capture_time = time.time()
-        local_timezone = tzlocal.get_localzone()
-        capture_datetime = datetime.fromtimestamp(capture_time, tz=local_timezone)
-        return capture_datetime.strftime(date_format)
 
     def _maybe_get_geocode_string(self, metadata: Metadata) -> Optional[str]:
         try:

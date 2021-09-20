@@ -6,15 +6,21 @@ Copyright (C) 2020 Luuk3333 <https://github.com/Luuk3333/msfs-screenshot-gps-dat
 Used under the GNU Affero General Public License v3.0
 """
 
+import time
 import traceback
 import warnings
 from dataclasses import asdict, dataclass
-from typing import Any, List, Optional, Set, Dict
+from typing import Any, Dict, List, Optional, Set
 
 import psutil
 from SimConnect import AircraftRequests, SimConnect
 
-from .metadata import Metadata
+from .metadata import EXIF_DATE_FORMAT, EXIF_OFFSET_FORMAT, Metadata
+from .time import (
+    get_datetime_string,
+    get_local_offset_delta,
+    string_format_time_delta,
+)
 from .windows import get_window_ids_by_process_name, get_window_title_by_window_id
 
 
@@ -137,8 +143,20 @@ class SimService:
 
     def _sim_location_to_metadata(self, sim_location_data: _SimData) -> Metadata:
         description = sim_location_data.aircraft_type
+        capture_time = time.time()
+
+        datetime_string = get_datetime_string(
+           capture_time, date_format=EXIF_DATE_FORMAT
+        )
+        offset_timedelta = get_local_offset_delta()
+        offset_time = string_format_time_delta(offset_timedelta, EXIF_OFFSET_FORMAT)
 
         return Metadata(
+            # Internal
+            capture_time = capture_time,
+            # Date
+            AllDates=datetime_string,
+            OffsetTime=offset_time,
             # GPS
             GPSLatitude=round(sim_location_data.latitude, 5),
             GPSLongitude=round(sim_location_data.longitude, 5),
