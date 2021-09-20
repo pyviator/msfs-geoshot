@@ -11,6 +11,7 @@ import traceback
 import warnings
 from dataclasses import asdict, dataclass
 from typing import Any, Dict, List, Optional, Set
+import math
 
 import psutil
 from SimConnect import AircraftRequests, SimConnect
@@ -35,7 +36,7 @@ class _RawSimData:
     longitude: Optional[float]  # degrees
     altitude: Optional[float]  # m
     speed: Optional[float]  # m/s
-    heading: Optional[float]  # aircraft (not camera!) heading
+    heading: Optional[float]  # aircraft (not camera!) heading, radians
     dest_latitude: Optional[float]
     dest_longitude: Optional[float]
     # Misc
@@ -162,7 +163,7 @@ class SimService:
             GPSLongitude=round(sim_location_data.longitude, 5),
             GPSAltitude=round(sim_location_data.altitude, 2),
             GPSSpeed=round(sim_location_data.speed * 3.6, 2),  # m/s to km/h
-            GPSImgDirection=round(sim_location_data.heading, 5),
+            GPSImgDirection=round(math.degrees(sim_location_data.heading), 5),
             GPSDestLongitude=round(sim_location_data.dest_longitude, 5)
             if sim_location_data.dest_longitude
             else None,

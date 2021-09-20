@@ -40,13 +40,13 @@ class Metadata:
 
     # -- GPS --
     # regular
-    GPSLatitude: float
-    GPSLongitude: float
+    GPSLatitude: float  # degrees
+    GPSLongitude: float  # degrees
     GPSAltitude: float
     GPSSpeed: float
-    GPSImgDirection: float
-    GPSDestLatitude: Optional[float] = None
-    GPSDestLongitude: Optional[float] = None
+    GPSImgDirection: float  # degrees
+    GPSDestLatitude: Optional[float] = None  # degrees
+    GPSDestLongitude: Optional[float] = None  # degrees
     # computed
     GPSLatitudeRef: _LatitudeRefType = field(init=False)
     GPSLongitudeRef: _LongitudeRefType = field(init=False)
