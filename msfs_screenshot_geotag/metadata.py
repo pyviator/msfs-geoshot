@@ -18,7 +18,8 @@ _LatitudeRefType = Literal["N", "S"]
 
 
 EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
-EXIF_OFFSET_FORMAT = "%s%H:%M"
+EXIF_OFFSET_FORMAT = "%s%H:%M"  # custom format, %s stands for sign here
+
 
 @dataclass
 class Metadata:
