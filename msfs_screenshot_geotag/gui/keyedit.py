@@ -7,14 +7,14 @@ from PyQt5.QtCore import Qt
 class CustomKeySequenceEdit(QKeySequenceEdit):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.editingFinished.connect(self._truncate_shortcut)
+        self.editingFinished.connect(self._truncate_and_clear_focus)
         self._last_shortcut: Optional[QKeySequence] = None
         self.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
     def keyPressEvent(self, key_event: QKeyEvent) -> None:
         return super().keyPressEvent(key_event)
 
-    def _truncate_shortcut(self):
+    def _truncate_and_clear_focus(self):
         # Do not allow sequential shortcuts and make sure to fill out field
         # if empty
         sequence = self.keySequence()
@@ -25,6 +25,7 @@ class CustomKeySequenceEdit(QKeySequenceEdit):
         value = sequence[0]
         new_shortcut = QKeySequence(value)
         self.setKeySequence(new_shortcut)
+        self.clearFocus()
 
     def focusInEvent(self, focus_event: QFocusEvent) -> None:
         self._last_shortcut = self.keySequence()
