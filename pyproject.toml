@@ -23,7 +23,7 @@ black = "^21.8b0"
 mypy = "^0.910"
 flake8 = "^3.9.2"
 types-tzlocal = "^0.1.1"
-pyinstaller = "4.1.0"
+pyinstaller = "4.3"
 pip-licenses = "^3.5.2"
 types-Markdown = "^3.3.2"
 
