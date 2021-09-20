@@ -22,6 +22,7 @@ from .hotkeys import HotkeyID
 class MainWindow(QMainWindow):
 
     screenshot_requested = pyqtSignal()
+    credits_requested = pyqtSignal()
     hotkey_changed = pyqtSignal(HotkeyID, str)
     closed = pyqtSignal()
 
@@ -134,6 +135,7 @@ class MainWindow(QMainWindow):
         self._form.view_last_location.clicked.connect(self._on_open_last_location)
         self._form.file_name_format_save.clicked.connect(self._on_file_name_format_save)
         self._form.date_format_save.clicked.connect(self._on_date_format_save)
+        self._form.credits.clicked.connect(self.credits_requested)
 
     def _setup_button_labels(self):
         self._form.take_screenshot.setText(

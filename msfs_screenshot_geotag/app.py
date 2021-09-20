@@ -8,13 +8,14 @@ from PyQt5.QtWidgets import QApplication, QStyle
 from pyqtkeybind import keybinder
 
 from . import DEBUG, RESOURCES_PATH, __app_name__, __version__
-from .metadata import MetadataService
 from .gui.controller import ScreenShotController
+from .gui.credits import show_credits
 from .gui.error_handler import ErrorHandler, show_error
 from .gui.hotkeys import GlobalHotkeyService, HotkeyID, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.settings import AppSettings
 from .gui.tray_icon import AppTrayIcon
+from .metadata import MetadataService
 from .names import FileNameComposer
 from .screenshots import ScreenshotService
 from .sim import SimService
@@ -64,6 +65,7 @@ def run():
     screenshot_controller.error.connect(main_window.on_screenshot_error)  # type: ignore
 
     main_window.screenshot_requested.connect(screenshot_controller.take_screenshot)  # type: ignore
+    main_window.credits_requested.connect(lambda: show_credits(main_window))
 
     tray_icon_widget = AppTrayIcon(icon_tray, main_window)
     main_window.closed.connect(tray_icon_widget.hide)
@@ -76,7 +78,7 @@ def run():
     event_dispatcher.installNativeEventFilter(win_event_filter)
 
     hotkey_service = GlobalHotkeyService(keybinder=keybinder, parent=app)  # type: ignore
-    
+
     # Hotkey not unbound will not be usable until system restart, so be extra careful:
     main_window.closed.connect(hotkey_service.unbind_all_hotkeys)
 

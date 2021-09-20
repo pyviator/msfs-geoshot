@@ -488,14 +488,14 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="credits">
         <property name="text">
          <string>⭐ Credits</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="updates">
         <property name="text">
          <string>📰 Updates</string>
         </property>

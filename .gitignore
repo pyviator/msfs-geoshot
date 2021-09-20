@@ -141,4 +141,4 @@ cython_debug/
 temp/
 notes/
 msfs_screenshot_geotag/gui/forms/
-msfs_screenshot_geotag/_resources/licenses.txt
+msfs_screenshot_geotag/_licenses/

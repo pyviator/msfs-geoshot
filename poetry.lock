@@ -485,6 +485,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "types-markdown"
+version = "3.3.2"
+description = "Typing stubs for Markdown"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "types-pytz"
 version = "2021.1.2"
 description = "Typing stubs for pytz"
@@ -556,7 +564,7 @@ six = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d3dfe169542256c9bd62c86f0987798f28b1d4d3c33a6ace4fe4825296d45f8f"
+content-hash = "6eec116a709774ab8ab6d11ed8a96ae69db695cf6b5fdff748057020fc9c063e"
 
 [metadata.files]
 altgraph = [
@@ -945,6 +953,10 @@ toml = [
 tomli = [
     {file = "tomli-1.2.1-py3-none-any.whl", hash = "sha256:8dd0e9524d6f386271a36b41dbf6c57d8e32fd96fd22b6584679dc569d20899f"},
     {file = "tomli-1.2.1.tar.gz", hash = "sha256:a5b75cb6f3968abb47af1b40c1819dc519ea82bcc065776a866e8d74c5ca9442"},
+]
+types-markdown = [
+    {file = "types-Markdown-3.3.2.tar.gz", hash = "sha256:6779c629223cf8acbed7582b8b98643a1beb958f788375776468e0dab4e103c3"},
+    {file = "types_Markdown-3.3.2-py3-none-any.whl", hash = "sha256:c5dcc255b43afa3b6c5e481ced4c524b559680bd4de5d59c56629283ef759d59"},
 ]
 types-pytz = [
     {file = "types-pytz-2021.1.2.tar.gz", hash = "sha256:448828a06f2aaa840e57364d866c661645a045e532f817e4f10c8c3ab2b66651"},

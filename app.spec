@@ -75,6 +75,7 @@ binaries = [
 ]
 datas = [
     (f"{PACKAGE_NAME}\\_resources", "_resources"),
+    (f"{PACKAGE_NAME}\\_licenses", "_licenses"),
 ]
 hiddenimports = []
 tmp_ret = collect_all("tzdata")
