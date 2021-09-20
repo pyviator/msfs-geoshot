@@ -58,6 +58,7 @@ class MainWindow(QMainWindow):
 
         self._thumbnail_widget = ThumbnailWidget(self)
         self._form.thumbnail_layout.insertWidget(0, self._thumbnail_widget)
+        self._thumbnail_widget.clicked.connect(self._on_open_last_screenshot)  # type: ignore
 
         self._load_ui_state_from_settings()
         self._setup_input_validators()
@@ -77,7 +78,6 @@ class MainWindow(QMainWindow):
         cursor = QCursor()
         cursor.setShape(Qt.CursorShape.PointingHandCursor)
         self._thumbnail_widget.setCursor(cursor)
-        self._thumbnail_widget.clicked.connect(self._on_open_last_screenshot)  # type: ignore
         self._thumbnail_widget.setFrameShape(QFrame.Shape.NoFrame)
         self._thumbnail_widget.setPixmap(thumbnail)
 
@@ -286,7 +286,9 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def _on_open_last_screenshot(self):
-        if not self._last_screenshot or not self._last_screenshot.is_file():
+        if not self._last_screenshot:
+            return False
+        elif not self._last_screenshot.is_file():
             self._notification_handler.notify(
                 "File no longer exists", color=NotificationColor.error
             )
