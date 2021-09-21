@@ -11,5 +11,8 @@ licenses:
 
 develop: qtgui licenses
 
-build: qtgui licenses
-	pyinstaller app.spec
+build-standalone: qtgui licenses
+	pyinstaller packaging/pyinstaller.spec
+
+build-installer: qtgui licenses
+	pynsist packaging/pnsist.cfg
