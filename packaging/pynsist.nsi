@@ -25,12 +25,37 @@ Delete "$DESKTOP\[[scname]].lnk"
 
 
 [% block sections %]
+
+; The "" makes the section hidden.
+Section "" SecUninstallPrevious
+
+    Call UninstallPrevious
+
+SectionEnd
+
 [[ super() ]]
 
 Function LaunchLink
   [% for scname in ib.shortcuts %]
     ExecShell "" "$SMPROGRAMS\[[scname]].lnk"
   [% endfor %]
+FunctionEnd
+
+Function UninstallPrevious
+    ; Check for uninstaller.
+    ReadRegStr $R0 SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString"
+      
+    ${If} $R0 == ""        
+        Goto Done
+    ${EndIf}
+
+    DetailPrint "$R0"
+    DetailPrint "Removing previous installation."    
+
+    ; Run the uninstaller silently.
+    ExecWait '"$R0 /S"'
+
+    Done:
 FunctionEnd
 
 [% endblock sections  %]
