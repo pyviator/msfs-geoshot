@@ -142,3 +142,4 @@ temp/
 notes/
 msfs_geoshot/gui/forms/
 msfs_geoshot/_licenses/
+packaging/pynsist.cfg
