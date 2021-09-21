@@ -15,4 +15,4 @@ build-standalone: qtgui licenses
 	pyinstaller packaging/pyinstaller.spec
 
 build-installer: qtgui licenses
-	pynsist packaging/pnsist.cfg
+	pynsist packaging/pynsist.cfg
