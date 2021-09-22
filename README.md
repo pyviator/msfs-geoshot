@@ -25,7 +25,7 @@ GeoShot is a **screenshot** tool for **Microsoft Flight Simulator**. It allows u
 
 ## Installation and Use
 
-An easy-to-use installer for MSFS GeoShot is available on flightsim.to, where you will also find some simple instructions to get you started (though using the tool should be fairly self-explanatory for the most part).
+An easy-to-use installer for MSFS GeoShot is available on [flightsim.to](https://flightsim.to/file/20868/geoshot-geotagged-screenshots-and-more), where you will also find some simple instructions to get you started (though using the tool should be fairly self-explanatory for the most part).
 
 ## Contributing
 
