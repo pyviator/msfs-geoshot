@@ -80,6 +80,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.</p>
 
+{media_licenses_text}
+
 <p>{__app_name__} is built on the shoulder of giants, with a special shout-out
 due for the following members of the MSFS community:</p>
 

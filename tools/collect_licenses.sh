@@ -22,5 +22,9 @@ bundled_packages=$(poetry show --no-dev | cut -d " " -f 1 | tr "\n" " ")
 pip-licenses --from=mixed --format=plain-vertical --with-authors --with-urls --with-license-file --no-license-path --output-file "$out_file" --packages ${bundled_packages}
 sed -i -- 's/UNKNOWN//g' "$out_file"
 
+# Media
+out_file="$LICENSES_PATH/licenses_media.txt"
+python -m markdown "$RESOURCES_PATH/license.md" > "$out_file"
+
 # Own license
 cp LICENSE "$LICENSES_PATH/license.txt"

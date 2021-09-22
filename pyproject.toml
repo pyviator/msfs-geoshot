@@ -28,6 +28,7 @@ pip-licenses = "^3.5.2"
 types-Markdown = "^3.3.2"
 pynsist = "^2.7"
 Jinja2 = "^3.0.1"
+Markdown = "^3.3.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
