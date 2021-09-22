@@ -65,7 +65,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Create geotagged screenshots of your✈️ Flight Simulator flights and view them on a map using your photos app / service of choice!</string>
+             <string>Create screenshots of your Flight Simulator flights with 🌍 geotags and other helpful 🏷️ metadata attached!</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -176,7 +176,7 @@
             <item>
              <widget class="QToolButton" name="view_last_location">
               <property name="text">
-               <string>🌍 View location...</string>
+               <string>🗺️ View Location...</string>
               </property>
              </widget>
             </item>
