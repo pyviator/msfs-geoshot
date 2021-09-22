@@ -79,6 +79,7 @@ def run():
 
     tray_icon_widget = AppTrayIcon(icon_tray, main_window)
     main_window.closed.connect(tray_icon_widget.hide)
+    tray_icon_widget.quit_requested.connect(main_window.quit)  # type: ignore
 
     keybinder.init()
 

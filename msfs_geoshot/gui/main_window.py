@@ -149,7 +149,7 @@ class MainWindow(QMainWindow):
     def _setup_button_connections(self):
         self._form.take_screenshot.clicked.connect(self.screenshot_requested)
         self._form.quit_button.clicked.connect(
-            self._on_quit_button, Qt.ConnectionType.QueuedConnection
+            self.quit, Qt.ConnectionType.QueuedConnection
         )  # queued connection recommended on slots that close QApplication
         self._form.select_folder.clicked.connect(self._on_select_folder)
         self._form.restore_defaults.clicked.connect(self._on_restore_defaults)
@@ -332,7 +332,7 @@ class MainWindow(QMainWindow):
         QDesktopServices.openUrl(url)
 
     @pyqtSlot()
-    def _on_quit_button(self):
+    def quit(self):
         self.closed.emit()
         QApplication.quit()
 

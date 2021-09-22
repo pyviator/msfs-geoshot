@@ -1,11 +1,14 @@
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMenu, QSystemTrayIcon
+from PyQt5.QtWidgets import QMenu, QSystemTrayIcon
 
 from .. import __app_name__
 from .main_window import MainWindow
 
 
 class AppTrayIcon(QSystemTrayIcon):
+    quit_requested = pyqtSignal()
+
     def __init__(self, icon: QIcon, main_window: MainWindow):
         super().__init__(icon, main_window)
         self._main_window = main_window
@@ -19,7 +22,7 @@ class AppTrayIcon(QSystemTrayIcon):
         menu.addSeparator()
 
         action = menu.addAction("Quit")
-        action.triggered.connect(QApplication.exit)  # type: ignore
+        action.triggered.connect(self.quit_requested.emit)  # type: ignore
 
         self.setContextMenu(menu)
 
