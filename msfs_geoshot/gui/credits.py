@@ -70,6 +70,9 @@ Contributions are welcome!</p>
 </div>
 
 <div style="font-size: 10pt">
+
+<p><em>Regarding {__app_name__}&#39;s code</em>:</p>
+
 <p>This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -80,7 +83,15 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.</p>
 
+<p><em>Regarding non-code-files</em>:</p>
+
 {media_licenses_text}
+
+<p>Compiled builds of MSFS GeoShot include <a href="https://github.com/odwdinc/Python-SimConnect/">Python-SimConnect</a> 
+which ships with a bundled version of the SimConnect.dll from Microsoft Flight Simulator&#39;s SDK. 
+Microsoft Flight Simulator is © Microsoft Corporation. Any assets from Microsoft Flight Simulator 
+used by MSFS GeoShot (SimConnect.dll) are used under Microsoft&#39;s &quot;Game Content Usage Rules&quot;. 
+This project is not in any way endorsed by or affiliated with Microsoft.</p>
 
 <p>{__app_name__} is built on the shoulder of giants, with a special shout-out
 due for the following members of the MSFS community:</p>
