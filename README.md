@@ -1,4 +1,4 @@
-<center><img height=240 src="./assets/logo.png"></img></center>
+<p align="center"><img height=240 src="./assets/logo.png"></img></p>
 
 # MSFS GeoShot
 
