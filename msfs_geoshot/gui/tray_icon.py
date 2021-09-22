@@ -26,7 +26,7 @@ class AppTrayIcon(QSystemTrayIcon):
     def _on_activated(self, activation_reason: QSystemTrayIcon.ActivationReason):
         if activation_reason == QSystemTrayIcon.ActivationReason.Context:
             return
-        if self._main_window.isVisible():
+        if self._main_window.isVisible() and not self._main_window.isMinimized():
             self._main_window.showMinimized()
         else:
             self._show_main_window()
