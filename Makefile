@@ -1,4 +1,5 @@
 SHELL = /bin/bash
+PROJECT = msfs_geoshot
 
 install:
 	poetry install
@@ -9,7 +10,15 @@ qtgui:
 licenses:
 	./tools/collect_licenses.sh
 
+check:
+	python -m mypy $(PROJECT)
+	python -m flake8 $(PROJECT)
+	python -m black --check $(PROJECT)
+
 develop: qtgui licenses
+
+run: develop
+	python -m $(PROJECT)
 
 pynsist-config:
 	./tools/build_pynsist_config.py
