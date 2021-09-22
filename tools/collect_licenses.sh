@@ -24,7 +24,7 @@ sed -i -- 's/UNKNOWN//g' "$out_file"
 
 # Media
 out_file="$LICENSES_PATH/licenses_media.txt"
-python -m markdown "$RESOURCES_PATH/license.md" > "$out_file"
+python -m markdown "$RESOURCES_PATH/README.md" > "$out_file"
 
 # Own license
 cp LICENSE "$LICENSES_PATH/license.txt"
