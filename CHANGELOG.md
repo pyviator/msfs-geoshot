@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed an issue that would cause the initial settings to be set to the wrong values (thanks to vbazillio for the heads-up!)
+- Fixed an issue that would prevent MSFS GeoShot from capturing screenshots when MSFS was minimized
 
 ### Changed
 
