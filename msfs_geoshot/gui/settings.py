@@ -1,4 +1,3 @@
-from enum import Enum
 from pathlib import Path
 from typing import Optional
 
@@ -138,3 +137,13 @@ class AppSettings(QObject):
     def show_notification(self, value: bool):
         self._settings.setValue("show_notification", value)
 
+    @property
+    def times_launched(self) -> int:
+        key = "internal/times_launched"
+        if not self._settings.contains(key):
+            return 0
+        return self._settings.value(key, type=int)
+
+    @times_launched.setter
+    def times_launched(self, value: int):
+        self._settings.setValue("internal/times_launched", value)

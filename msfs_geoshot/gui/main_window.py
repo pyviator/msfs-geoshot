@@ -2,7 +2,7 @@ import winsound
 from pathlib import Path
 from typing import Optional
 
-from PyQt5.QtCore import QEvent, QSize, QSizeF, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QEvent, QSize, Qt, QTimer, QUrl, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import (
     QCloseEvent,
     QCursor,
@@ -11,20 +11,21 @@ from PyQt5.QtGui import (
     QKeySequence,
     QPixmap,
 )
-from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QLineEdit, QMainWindow
+from PyQt5.QtWidgets import QApplication, QFileDialog, QLineEdit, QMainWindow
 
-from .. import RESOURCES_PATH, __app_name__, __author__, __version__, __store_url__
+from .. import RESOURCES_PATH, __app_name__, __author__, __store_url__, __version__
 from ..metadata import Metadata
 from ..names import FileNameComposer
 from ..screenshots import ImageFormat
 from .controller import ScreenShotResult
 from .forms.main_window import Ui_MainWindow
+from .hotkeys import HotkeyID
 from .keyedit import CustomKeySequenceEdit
 from .notification import NotificationColor, NotificationHandler
 from .settings import AppSettings
-from .validators import DateFormatValidator, FileNameFormatValidator
-from .hotkeys import HotkeyID
 from .thumbnails import ThumbnailWidget
+from .util import open_url
+from .validators import DateFormatValidator, FileNameFormatValidator
 
 
 class MainWindow(QMainWindow):
@@ -290,8 +291,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def _on_open_store(self):
-        url = QUrl(__store_url__)
-        QDesktopServices.openUrl(url)
+        open_url(__store_url__)
 
     def _set_last_opened_screenshot(
         self, path: Path, metadata: Optional[Metadata] = None
@@ -331,9 +331,8 @@ class MainWindow(QMainWindow):
             print("Invalid GPS data for last screenshot")
             return
 
-        url_str = self._maps_url.format(latitude=latitude, longitude=longitude)
-        url = QUrl(url_str)
-        QDesktopServices.openUrl(url)
+        url = self._maps_url.format(latitude=latitude, longitude=longitude)
+        open_url(url)
 
     @pyqtSlot()
     def quit(self):

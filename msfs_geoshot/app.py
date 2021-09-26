@@ -11,11 +11,12 @@ from . import DEBUG, RESOURCES_PATH, __app_name__, __version__
 from .gui.controller import ScreenShotController
 from .gui.credits import show_credits
 from .gui.error_handler import ErrorHandler, show_error
+from .gui.feedback import FeedbackDialog
 from .gui.hotkeys import GlobalHotkeyService, HotkeyID, WindowsEventFilter
 from .gui.main_window import MainWindow
 from .gui.settings import AppSettings
-from .gui.tray_icon import AppTrayIcon
 from .gui.thumbnails import ThumbnailMaker
+from .gui.tray_icon import AppTrayIcon
 from .metadata import MetadataService
 from .names import FileNameComposer
 from .screenshots import ScreenshotService
@@ -58,7 +59,9 @@ def run():
     )
 
     main_window = MainWindow(
-        file_name_composer=file_name_composer, settings=app_settings, app_icon=icon_window
+        file_name_composer=file_name_composer,
+        settings=app_settings,
+        app_icon=icon_window,
     )
 
     thumbnail_maker = ThumbnailMaker(
@@ -112,7 +115,13 @@ def run():
         lambda hotkey_id, key: hotkey_service.bind_hotkey(hotkey_id, key, main_window)
     )
 
+    app_settings.times_launched += 1
+
     tray_icon_widget.show()
     main_window.show()
+
+    if app_settings.times_launched == 10:
+        feedback_dialog = FeedbackDialog(main_window)
+        feedback_dialog.exec()
 
     return app.exec()

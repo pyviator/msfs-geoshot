@@ -10,6 +10,7 @@ __author_link__ = "https://github.com/pyviator"
 __app_name__ = "MSFS GeoShot"
 __copyright_year__ = 2021
 __repository__ = "https://github.com/pyviator/msfs-geoshot"
+__issues_tracker__ = "https://github.com/pyviator/msfs-geoshot/issues"
 __support_thread__ = ""
 __store_url__ = "https://flightsim.to/file/20868/geoshot-geotagged-screenshots-and-more"
 
