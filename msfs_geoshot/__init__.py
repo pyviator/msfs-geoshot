@@ -11,6 +11,7 @@ __app_name__ = "MSFS GeoShot"
 __copyright_year__ = 2021
 __repository__ = "https://github.com/pyviator/msfs-geoshot"
 __support_thread__ = ""
+__store_url__ = "https://flightsim.to/file/20868/geoshot-geotagged-screenshots-and-more"
 
 def _resource_path(relative_path):
     """Shim for getting absolute path to resource that works in pyinstaller-bundled version"""

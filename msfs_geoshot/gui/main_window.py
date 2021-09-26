@@ -13,7 +13,7 @@ from PyQt5.QtGui import (
 )
 from PyQt5.QtWidgets import QApplication, QFileDialog, QFrame, QLineEdit, QMainWindow
 
-from .. import RESOURCES_PATH, __app_name__, __author__, __version__
+from .. import RESOURCES_PATH, __app_name__, __author__, __version__, __store_url__
 from ..metadata import Metadata
 from ..names import FileNameComposer
 from ..screenshots import ImageFormat
@@ -56,8 +56,6 @@ class MainWindow(QMainWindow):
         self._form = Ui_MainWindow()
         self._form.setupUi(self)
 
-        # hide until links to forum, etc. ready
-        self._form.updates.hide()
         self._form.view_last_location.hide()
 
         self._select_hotkey = CustomKeySequenceEdit(parent=self)
@@ -162,6 +160,7 @@ class MainWindow(QMainWindow):
         self._form.file_name_format_save.clicked.connect(self._on_file_name_format_save)
         self._form.date_format_save.clicked.connect(self._on_date_format_save)
         self._form.credits.clicked.connect(self.credits_requested)
+        self._form.updates.clicked.connect(self._on_open_store)
 
     def _setup_button_labels(self):
         self._form.take_screenshot.setText(
@@ -287,6 +286,11 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def _on_open_folder(self):
         url = QUrl.fromLocalFile(str(self._settings.screenshot_folder))
+        QDesktopServices.openUrl(url)
+
+    @pyqtSlot()
+    def _on_open_store(self):
+        url = QUrl(__store_url__)
         QDesktopServices.openUrl(url)
 
     def _set_last_opened_screenshot(
