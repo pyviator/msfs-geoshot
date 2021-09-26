@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-__version__ = "1.0.0-beta.1"
+__version__ = "1.0.0-beta.2"
 __author__ = "pyviator"
 __author_link__ = "https://github.com/pyviator"
 __app_name__ = "MSFS GeoShot"
