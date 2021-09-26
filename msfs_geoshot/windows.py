@@ -52,4 +52,7 @@ def raise_window_to_foreground(window_id: int):
 
 
 def get_window_rectangle(window_id: int) -> WindowRectangle:
-    return WindowRectangle(*win32gui.GetWindowRect(window_id))  # type: ignore
+    top_left_x, top_left_y, bottom_right_x, bottom_right_y = win32gui.GetClientRect(window_id)  # type: ignore
+    top_left = win32gui.ClientToScreen(window_id, (top_left_x, top_left_y))  # type: ignore
+    bottom_right = win32gui.ClientToScreen(window_id, (bottom_right_x, bottom_right_y))  # type: ignore
+    return WindowRectangle(*top_left, *bottom_right)  # type: ignore
