@@ -98,7 +98,7 @@ class AppSettings(QObject):
     def date_format(self) -> str:
         key = "date_format"
         if not self._settings.contains(key):
-            return self._defaults.file_name_format
+            return self._defaults.date_format
         return self._settings.value(key, type=str)
 
     @date_format.setter
@@ -120,7 +120,7 @@ class AppSettings(QObject):
     def play_sound(self) -> bool:
         key = "play_sound"
         if not self._settings.contains(key):
-            return self._defaults.minimize_to_tray
+            return self._defaults.play_sound
         return self._settings.value(key, type=bool)
 
     @play_sound.setter
@@ -131,7 +131,7 @@ class AppSettings(QObject):
     def show_notification(self) -> bool:
         key = "show_notification"
         if not self._settings.contains(key):
-            return self._defaults.minimize_to_tray
+            return self._defaults.show_notification
         return self._settings.value(key, type=bool)
 
     @show_notification.setter
