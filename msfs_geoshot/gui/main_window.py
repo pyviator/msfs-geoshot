@@ -176,6 +176,9 @@ class MainWindow(QMainWindow):
         self._form.minimize_to_tray.stateChanged.connect(
             self._on_minimize_to_tray_changed
         )
+        self._form.start_to_tray.stateChanged.connect(
+            self._on_start_to_tray_changed
+        )
         self._form.play_sound.stateChanged.connect(self._on_play_sound_changed)
         self._form.show_notification.stateChanged.connect(
             self._on_show_Notification_changed
@@ -188,6 +191,9 @@ class MainWindow(QMainWindow):
         self._select_hotkey.keySequenceChanged.disconnect(self._on_hotkey_changed)
         self._form.minimize_to_tray.stateChanged.disconnect(
             self._on_minimize_to_tray_changed
+        )
+        self._form.start_to_tray.stateChanged.connect(
+            self._on_start_to_tray_changed
         )
         self._form.play_sound.stateChanged.disconnect(self._on_play_sound_changed)
         self._form.show_notification.stateChanged.disconnect(
@@ -205,6 +211,7 @@ class MainWindow(QMainWindow):
         self._form.file_name_format.setText(self._settings.file_name_format)
         self._form.date_format.setText(self._settings.date_format)
         self._form.minimize_to_tray.setChecked(self._settings.minimize_to_tray)
+        self._form.start_to_tray.setChecked(self._settings.start_to_tray)
         self._form.play_sound.setChecked(self._settings.play_sound)
         self._form.show_notification.setChecked(self._settings.show_notification)
 
@@ -275,6 +282,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot(int)
     def _on_minimize_to_tray_changed(self, state: int):
         self._settings.minimize_to_tray = state == Qt.CheckState.Checked
+
+    @pyqtSlot(int)
+    def _on_start_to_tray_changed(self, state: int):
+        self._settings.start_to_tray = state == Qt.CheckState.Checked
 
     @pyqtSlot(int)
     def _on_play_sound_changed(self, state: int):

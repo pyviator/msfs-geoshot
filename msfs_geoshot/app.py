@@ -118,7 +118,8 @@ def run():
     app_settings.times_launched += 1
 
     tray_icon_widget.show()
-    main_window.show()
+    if not app_settings.start_to_tray:
+        main_window.show()
 
     if app_settings.times_launched == 10:
         feedback_dialog = FeedbackDialog(main_window)

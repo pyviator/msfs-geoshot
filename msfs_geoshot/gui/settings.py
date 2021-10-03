@@ -19,6 +19,7 @@ class _SettingsData:
     file_name_format: str = "MSFS_{datetime}_{geocode}"
     date_format: str = "%Y-%m-%d-%H%M%S"
     minimize_to_tray: bool = False
+    start_to_tray: bool = False
     play_sound: bool = True
     show_notification: bool = True
 
@@ -114,6 +115,17 @@ class AppSettings(QObject):
     @minimize_to_tray.setter
     def minimize_to_tray(self, value: bool):
         self._settings.setValue("minimize_to_tray", value)
+    
+    @property
+    def start_to_tray(self) -> bool:
+        key = "start_to_tray"
+        if not self._settings.contains(key):
+            return self._defaults.start_to_tray
+        return self._settings.value(key, type=bool)
+
+    @start_to_tray.setter
+    def start_to_tray(self, value: bool):
+        self._settings.setValue("start_to_tray", value)
     
     @property
     def play_sound(self) -> bool:
