@@ -1,3 +1,4 @@
+import re
 import time
 import uuid
 from dataclasses import dataclass
@@ -95,6 +96,8 @@ class ScreenShotController(QObject):
             date_format=self._settings.date_format,
             metadata=metadata,
         )
+        # clean of illegal filename characters
+        screenshot_name = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "_", screenshot_name)
         # avoid hitting Windows file name length limit
         truncated_name = screenshot_name[:250]
 
