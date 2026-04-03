@@ -62,11 +62,16 @@ _nullable_sim_data: Set[str] = set(("dest_latitude", "dest_longitude", "aircraft
 
 class SimService:
 
-    _sim_executable = "FlightSimulator.exe"
+    _sim_executables = {"FlightSimulator.exe", "FlightSimulator2024.exe"}
     _sim_window_title = "Microsoft Flight Simulator"
 
+    def _get_running_sim_executable(self) -> Optional[str]:
+        running_names = {p.name() for p in psutil.process_iter()}
+        found = self._sim_executables & running_names
+        return found.pop() if found else None
+
     def _is_sim_running(self) -> bool:
-        return self._sim_executable in (p.name() for p in psutil.process_iter())
+        return self._get_running_sim_executable() is not None
 
     def _is_user_in_flight(self, sim_location_data: _SimData) -> bool:
         return not (
@@ -76,7 +81,10 @@ class SimService:
         )
 
     def get_simulator_main_window_id(self) -> int:
-        window_ids = get_window_ids_by_process_name(self._sim_executable)
+        exe = self._get_running_sim_executable()
+        if not exe:
+            raise SimServiceError("Could not find simulator window.")
+        window_ids = get_window_ids_by_process_name(exe)
         results: List[int] = []
         for window_id in window_ids:
             if self._sim_window_title in get_window_title_by_window_id(window_id):
@@ -109,7 +117,6 @@ class SimService:
             dest_longitude=aircraft_requests.get("GPS_WP_NEXT_LON"),
             aircraft_type=aircraft_requests.get("TITLE"),
         )
-        # TITLE
 
         sim_connect.exit()
 

@@ -4,6 +4,29 @@
 
 GeoShot is a **screenshot** tool for **Microsoft Flight Simulator**. It allows users to create metadata-enriched screenshots of their flights, enabling use cases such as keeping track of screenshot locations via **geotags**.
 
+## MSFS 2024 Support
+
+This fork adds compatibility with **Microsoft Flight Simulator 2024**.
+The original tool only detected `FlightSimulator.exe` (MSFS 2020). This fork
+also detects `FlightSimulator2024.exe`, making it work with both versions.
+
+### Running from source (MSFS 2020 or 2024)
+
+**Requirements:** Python 3.9+, 64-bit Windows
+```bash
+git clone https://github.com/fitzroymckay/msfs-geoshot.git
+cd msfs-geoshot
+python -m venv .venv
+.venv\Scripts\activate
+pip install SimConnect psutil PyQt5 multiexit piexif requests Pillow pywin32 pyqt5-tools
+pyuic5 qtdesigner\feedback.ui -o msfs_geoshot\gui\forms\feedback.py
+pyuic5 qtdesigner\main_window.ui -o msfs_geoshot\gui\forms\main_window.py
+New-Item msfs_geoshot\gui\forms\__init__.py -Type File
+python -m msfs_geoshot
+```
+
+Start MSFS 2024 and load into a flight before running the tool.
+
 ## Screenshots
 
 *Interface*
